@@ -1,0 +1,9 @@
+{
+    "require": {
+        "monolog/monolog": "2.0.*",
+		"phpunit/phpunit": "8.5.*"
+    },
+     "autoload": {
+        "psr-4": {"LuxorPlayer\\": "src/LuxorPlayer/"}
+    }
+}

@@ -10,4 +10,9 @@ class FileDownloaderTest extends TestCase
         
         $this->assertIsBool($fileDownloader->downloadCsv());
     }
+    
+    public function testLocalLuxorCsvExistsAfterDownloadCsv()
+    {
+        $this->assertFileExists(__DIR__ . '/../files/luxor.csv');
+    }
 }

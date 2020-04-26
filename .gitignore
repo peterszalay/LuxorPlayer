@@ -4,3 +4,4 @@
 vendor/*
 logs/*
 files/*.csv
+*.cache

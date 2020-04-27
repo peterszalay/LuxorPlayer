@@ -4,23 +4,25 @@ use LuxorPlayer\FileProcessor;
 
 class FileProcessorTest extends TestCase
 {
-    public function testGetDrawResultsIsEmptyWhenFileNotReadYet()
+    
+    protected $fileProcessor;
+    
+    protected function setUp(): void 
     {
-        $fileProcessor = new FileProcessor;
-        
-        $this->assertEmpty($fileProcessor->getDrawResults());
-        
-        return $fileProcessor;
+        $this->fileProcessor = new FileProcessor;
     }
     
-    /**
-     * @depends testGetDrawResultsIsEmptyWhenFileNotReadYet
-     */
-    public function testGetDrawResultsIsNotEmptyWhenFileIsReadIn(FileProcessor $fileProcessor)
+    public function testGetDrawResultsIsEmptyWhenFileNotReadYet()
+    {     
+        $this->assertEmpty($this->fileProcessor->getDrawResults());
+
+    }
+    
+    public function testGetDrawResultsIsNotEmptyWhenFileIsReadIn()
     {
-        $fileProcessor->readFileIntoArray();
+        $this->fileProcessor->readFileIntoArray();
         
-        $this->assertNotEmpty($fileProcessor->getDrawResults());
+        $this->assertNotEmpty($this->fileProcessor->getDrawResults());
     }
 }
     

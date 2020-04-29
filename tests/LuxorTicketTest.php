@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 use LuxorPlayer\LuxorTicket;
 
-class LuxorticketrTest extends TestCase
+class LuxorTicketTest extends TestCase
 {
     public function testCreate()
     {

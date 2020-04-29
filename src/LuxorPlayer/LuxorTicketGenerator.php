@@ -55,6 +55,8 @@ class LuxorTicketGenerator {
     /**
      * Generate one ticket populated with random numbers
      * 
+     * @todo implement force odd even ratio, force prime ratio functionality
+     * 
      * @param boolean $forceEvenOddRatio
      * @param boolean $forcePrimeRatio
      * @return int[][]

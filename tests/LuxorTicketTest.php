@@ -4,16 +4,8 @@ use LuxorPlayer\LuxorTicket;
 
 class LuxorTicketTest extends TestCase
 {
-    protected $luxorTicket;
     
-    
-    protected function setUp(): void
-    {
-        $this->luxorTicket = LuxorTicket::create([],[]);
-    }
-    
-    
-    public function testClassHasPictureAndFrameAttributes()
+    public function testLuxorTicketClassHasPictureAndFrameAttributes()
     {
         $this->assertClassHasAttribute('picture', LuxorTicket::class);
         
@@ -22,22 +14,21 @@ class LuxorTicketTest extends TestCase
     
     public function testCreateWithEmptyValues()
     {
+        $luxorTicket = LuxorTicket::create([],[]);
         
-        $this->assertEquals($this->luxorTicket->picture, []);
+        $this->assertEquals($luxorTicket->picture, []);
         
-        $this->assertEquals($this->luxorTicket->frame, []);
+        $this->assertEquals($luxorTicket->frame, []);
     }
-    
-    
-    
+      
     public function testCreateWithNonEmptyValues()
     {
         
-        $this->luxorTicket = LuxorTicket::create([25,20,45,38,48,46],[12,2,11,8,19,22,43,36,57,59,70,69,73,72]);
+        $luxorTicket = LuxorTicket::create([25,20,45,38,48,46],[12,2,11,8,19,22,43,36,57,59,70,69,73,72]);
         
-        $this->assertEquals($this->luxorTicket->picture, [25,20,45,38,48,46]);
+        $this->assertEquals($luxorTicket->picture, [25,20,45,38,48,46]);
         
-        $this->assertEquals($this->luxorTicket->frame, [12,2,11,8,19,22,43,36,57,59,70,69,73,72]);
+        $this->assertEquals($luxorTicket->frame, [12,2,11,8,19,22,43,36,57,59,70,69,73,72]);
         
     }
 }

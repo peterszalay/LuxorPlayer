@@ -75,4 +75,88 @@ class DrawProcessorTest extends TestCase
         
         $this->assertEquals($results[75]['avg_draw_position'], 0);
     }
+    
+    public function testEnsureDivisableByFiveReturnsCorrectResults()
+    {
+        $reflector = new ReflectionClass(DrawProcessor::class);
+        $method = $reflector->getMethod('ensureDivisableByFive');
+        $method->setAccessible(true);
+        
+        $result = $method->invokeArgs($this->drawProcessor, [26]);
+        $this->assertEquals($result, 25);
+        
+        $result = $method->invokeArgs($this->drawProcessor, [-100]);
+        $this->assertEquals($result, 20);
+        
+        $result = $method->invokeArgs($this->drawProcessor, [79]);
+        $this->assertEquals($result, 75);
+        
+        $result = $method->invokeArgs($this->drawProcessor, [99]);
+        $this->assertEquals($result, 80);
+    }
+    
+    public function testSliceArrayReturnsArrayWithSizeOf15()
+    {
+        $reflector = new ReflectionClass(DrawProcessor::class);
+        $method = $reflector->getMethod('sliceArray');
+        $method->setAccessible(true);
+        
+        $draw = array_fill(1, 75, 0);
+        $result = $method->invokeArgs($this->drawProcessor, [$draw, 1]);
+        $this->assertEquals(sizeof($result), 15);       
+    }
+    
+    public function testSliceArrayReturnsOnlyCorrectValues()
+    {
+        $reflector = new ReflectionClass(DrawProcessor::class);
+        $method = $reflector->getMethod('sliceArray');
+        $method->setAccessible(true);
+        
+        $draw = array_fill(1, 75, ['times_drawn' => 0, 'avg_draw_position' => 0]);
+        $result = $method->invokeArgs($this->drawProcessor, [$draw, 1]);
+        $sum = 0;
+        foreach($result as $num){
+            $sum += $num['times_drawn'];
+            $sum += $num['avg_draw_position'];
+        }
+        $this->assertEquals($sum, 0);
+        
+        $draw[1]['times_drawn'] = 10;
+        $draw[1]['avg_draw_position'] = 5;
+        
+        $result = $method->invokeArgs($this->drawProcessor, [$draw, 1]);
+        $this->assertEquals($result[0]['number'], 1);
+        $this->assertEquals($result[0]['times_drawn'], 10);
+        $this->assertEquals($result[0]['avg_draw_position'], 5);
+    }
+    
+    public function testSimplifyArrayReturnsOneDimensionalArray()
+    {
+        $reflector = new ReflectionClass(DrawProcessor::class);
+        $method = $reflector->getMethod('simplifyArray');
+        $method->setAccessible(true);
+        
+        $slice = array_fill(0, 15, ['number' => 0, 'times_drawn' => 0, 'avg_draw_position' => 0]);
+        for($i = 0; $i < 15; $i++){
+            $slice[$i]['number'] = $i + 1;
+        }
+        $result = $method->invokeArgs($this->drawProcessor, [$slice]);
+        $this->assertEquals(sizeof($result), 15);
+        $this->assertEquals($result[0], 1);
+        $this->assertEquals($result[7], 8);
+        $this->assertEquals($result[14], 15);
+    }
+    
+    public function testGetMostDrawnNumbersReturnsArray()
+    {
+        $draws = [];
+        $draws[0][1] = array_fill(1, 75, 0);
+        $draws[1][1] = array_fill(1, 75, 0);
+        $draws[2][1] = array_fill(1, 75, 0);
+        $draws[3][1] = array_fill(1, 75, 0);
+        
+        $results = $this->drawProcessor->getMostDrawnNumbers($draws, 50);
+        $this->assertIsArray($results);
+        print_r($results);
+    }
 }

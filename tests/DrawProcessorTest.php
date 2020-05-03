@@ -147,7 +147,7 @@ class DrawProcessorTest extends TestCase
         $this->assertEquals($result[14], 15);
     }
     
-    public function testGetMostDrawnNumbersReturnsArray()
+    public function testGetMostDrawnNumbersReturnsArrayContainingFiveArrays()
     {
         $draws = [];
         $draws[0][1] = array_fill(1, 75, 0);
@@ -157,6 +157,45 @@ class DrawProcessorTest extends TestCase
         
         $results = $this->drawProcessor->getMostDrawnNumbers($draws, 50);
         $this->assertIsArray($results);
-        print_r($results);
+        $this->assertEquals(sizeof($results), 5);
+        $this->assertIsArray($results['first_range'] );
+        $this->assertIsArray($results['second_range']);
+        $this->assertIsArray($results['third_range']);
+        $this->assertIsArray($results['fourth_range']);
+        $this->assertIsArray($results['fifth_range']);
+    }
+    
+    public function testGetMostDrawnNumbersReturnsCorrectSizeRangeInCorrectOrder()
+    {
+        $draws = [];
+        $draws[0][1] = array_fill(1, 75, 0);
+        $draws[1][1] = array_fill(1, 75, 0);
+        $draws[2][1] = array_fill(1, 75, 0);
+        $draws[3][1] = array_fill(1, 75, 0);
+        
+        $draws[1][1][1] = 3;
+        
+        $draws[0][1][2] = 40;
+        
+        $draws[0][1][3] = 22;
+        $draws[2][1][3] = 10;
+        
+        $draws[1][1][5] = 23;
+        $draws[3][1][5] = 10;
+        
+        $draws[3][1][6] = 12;
+        
+        $draws[0][1][7] = 32;
+        
+        $draws[0][1][11] = 10;
+        $draws[1][1][11] = 20;
+        $draws[2][1][11] = 30;
+        
+        $draws[0][1][15] = 12;
+        $draws[1][1][15] = 2;
+        $draws[2][1][15] = 27;
+        
+        $results = $this->drawProcessor->getMostDrawnNumbers($draws, 30);
+        $this->assertEquals($results['first_range'], [15,11,3,5,1,6]);
     }
 }

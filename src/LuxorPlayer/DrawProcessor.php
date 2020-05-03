@@ -37,18 +37,40 @@ class DrawProcessor {
      * @param number $numberOfMostDrawn
      * @return array
      */
-    public function getMostDrawnNumbers($draws, $numberOfMostDrawn = 40){
+    public function getMostDrawnNumbers($draws, $numberOfMostDrawn = 40){     
+        return $this->getDrawnNumbersAccordingToOrdering($draws, $numberOfMostDrawn, "orderByMostDrawn");
+    }
+    
+    /**
+     * Return least drawn numbers by range from draws
+     *
+     * @param array $draws
+     * @param number $numberOfLeastDrawn
+     * @return array
+     */
+    public function getLeastDrawnNumbers($draws, $numberOfLeastDrawn = 40){
+        return $this->getDrawnNumbersAccordingToOrdering($draws, $numberOfLeastDrawn, "orderByLeastDrawn");
+    }
+    
+    /**
+     * Helper function which returns numbers ordered in five ranges
+     * 
+     * @param array $draws
+     * @param int $numberOfMostDrawn
+     * @param int $ordering
+     * @return array
+     */
+    private function getDrawnNumbersAccordingToOrdering($draws, $numberOfMostDrawn, $ordering){
         $numberOfMostDrawn = $this->ensureDivisableByFive($numberOfMostDrawn);
         $numberOfMostDrawnPerSlice = $numberOfMostDrawn / 5;
         $results = $this->getNumberDrawStatistics($draws);
-        $firstRange = $this->createSimplifiedOrderedSlice($results, 1, $numberOfMostDrawnPerSlice, "orderByMostDrawn");
-        $secondRange = $this->createSimplifiedOrderedSlice($results, 16, $numberOfMostDrawnPerSlice, "orderByMostDrawn");
-        $thirdRange = $this->createSimplifiedOrderedSlice($results, 31, $numberOfMostDrawnPerSlice, "orderByMostDrawn");
-        $fourthRange = $this->createSimplifiedOrderedSlice($results, 46, $numberOfMostDrawnPerSlice, "orderByMostDrawn");
-        $fifthRange = $this->createSimplifiedOrderedSlice($results, 61, $numberOfMostDrawnPerSlice, "orderByMostDrawn");
+        $firstRange = $this->createSimplifiedOrderedSlice($results, 1, $numberOfMostDrawnPerSlice, $ordering);
+        $secondRange = $this->createSimplifiedOrderedSlice($results, 16, $numberOfMostDrawnPerSlice, $ordering);
+        $thirdRange = $this->createSimplifiedOrderedSlice($results, 31, $numberOfMostDrawnPerSlice, $ordering);
+        $fourthRange = $this->createSimplifiedOrderedSlice($results, 46, $numberOfMostDrawnPerSlice, $ordering);
+        $fifthRange = $this->createSimplifiedOrderedSlice($results, 61, $numberOfMostDrawnPerSlice, $ordering);
         
         return ['first_range' => $firstRange, 'second_range' => $secondRange, 'third_range' => $thirdRange, 'fourth_range' => $fourthRange, 'fifth_range' => $fifthRange];
-        
     }
     
     /**

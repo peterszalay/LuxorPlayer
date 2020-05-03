@@ -41,12 +41,10 @@ class LuxorTicketGenerator {
      * Generate number of tickets with randomly selected numbers
      * 
      * @param int $numberOfTickets
-     * @param boolean $forceEvenOddRatio
-     * @param boolean $forcePrimeRatio
      */
-    public function generateTicketsWithRandomNumbers($numberOfTickets, $forceEvenOddRatio = false, $forcePrimeRatio = false){
+    public function generateTicketsWithRandomNumbers($numberOfTickets){
         for($i = 0; $i < $numberOfTickets; $i++){
-            $this->tickets[$i] = $this->generateTicketWithRandomNumbers($forceEvenOddRatio, $forcePrimeRatio);     
+            $this->tickets[$i] = $this->generateTicketWithRandomNumbers();     
         }
         $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/game.log', Logger::INFO));
         $this->logger->info($numberOfTickets. " number of tickets wtih random numbers generated...");
@@ -57,11 +55,9 @@ class LuxorTicketGenerator {
      * 
      * @todo implement force odd even ratio, force prime ratio functionality
      * 
-     * @param boolean $forceEvenOddRatio
-     * @param boolean $forcePrimeRatio
      * @return int[][]
      */
-    public function generateTicketWithRandomNumbers($forceEvenOddRatio, $forcePrimeRatio){
+    public function generateTicketWithRandomNumbers(){
         $this->fillRanges();
         $frame = [];
         $picture = [];

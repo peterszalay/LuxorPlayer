@@ -47,7 +47,21 @@ class LuxorTicketGenerator {
             $this->tickets[$i] = $this->generateTicketWithRandomNumbers();     
         }
         $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/game.log', Logger::INFO));
-        $this->logger->info($numberOfTickets. " number of tickets wtih random numbers generated...");
+        $this->logger->info($numberOfTickets. " number of tickets with random numbers generated...");
+    }
+    
+    /**
+     * Generate number of tickets with randomly selected numbers from selection
+     * 
+     * @param int $numberOfTickets
+     * @param array $selection
+     */
+    public function generateTicketsFromSelection($numberOfTickets, $selection){
+        for($i = 0; $i < $numberOfTickets; $i++){
+            $this->tickets[$i] = $this->generateTicketFromSelection($selection);
+        }
+        $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/game.log', Logger::INFO));
+        $this->logger->info($numberOfTickets. " number of tickets with random numbers from selection generated...");
     }
     
     /**
@@ -55,7 +69,7 @@ class LuxorTicketGenerator {
      * 
      * @todo implement force odd even ratio, force prime ratio functionality
      * 
-     * @return int[][]
+     * @return \LuxorPlayer\LuxorTicket
      */
     public function generateTicketWithRandomNumbers(){
         $this->fillRanges();
@@ -117,6 +131,62 @@ class LuxorTicketGenerator {
                 }
             }
         } 
+        return LuxorTicket::create($picture, $frame);
+    }
+    
+    /**
+     * Generate ticket from selection of number split into 5 ranges
+     * 
+     * @param array $selection
+     * @return \LuxorPlayer\LuxorTicket
+     */
+    public function generateTicketFromSelection($selection){
+        $frame = [];
+        $picture = [];
+        $i = 1;
+        $this->firstRange = $selection['first_range'];
+        $this->secondRange = $selection['second_range'];
+        $this->thirdRange = $selection['third_range'];
+        $this->fourthRange = $selection['fourth_range'];
+        $this->fifthRange = $selection['fifth_range'];
+        while($i <= 20){
+            if($i <= 4){
+                shuffle($this->firstRange);
+                $frame[] = array_pop($this->firstRange);
+                $i++;
+            } elseif ($i <= 8){
+                shuffle($this->secondRange);
+                if($i <= 6){   
+                    $frame[] = array_pop($this->secondRange);
+                    $i++;
+                } else {
+                    $picture[] = array_pop($this->secondRange);
+                    $i++;
+                }          
+            } elseif($i <= 12){
+                shuffle($this->thirdRange);
+                if($i <= 10){
+                    $frame[] = array_pop($this->thirdRange);
+                    $i++;
+                } else {
+                    $picture[] = array_pop($this->thirdRange);
+                    $i++;
+                }
+            } elseif($i <= 16){
+                shuffle($this->fourthRange);
+                if($i <= 14){ 
+                    $frame[] = array_pop($this->fourthRange);
+                    $i++;
+                } else {
+                    $picture[] = array_pop($this->fourthRange);
+                    $i++;
+                }
+            } else {
+                shuffle($this->fifthRange);
+                $frame[] = array_pop($this->fifthRange);
+                $i++;
+            }
+        }
         return LuxorTicket::create($picture, $frame);
     }
     

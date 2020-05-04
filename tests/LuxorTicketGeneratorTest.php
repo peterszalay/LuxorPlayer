@@ -14,14 +14,14 @@ class LuxorTicketGeneratorTest extends TestCase
     
     public function testGenerateTicketWithRandomNumbersReturnsInstanceOfLuxorTicket()
     {
-        $luxorTicket = $this->luxorTicketGenerator->generateTicketWithRandomNumbers(false, false);
+        $luxorTicket = $this->luxorTicketGenerator->generateTicketWithRandomNumbers();
         
         $this->assertInstanceOf(LuxorTicket::class, $luxorTicket);
     }
     
     public function testGenerateTicketWithRandomNumbersReturnsTicketWithCorrectSizePictureAndFrame()
     {
-        $luxorTicket = $this->luxorTicketGenerator->generateTicketWithRandomNumbers(false, false);
+        $luxorTicket = $this->luxorTicketGenerator->generateTicketWithRandomNumbers();
         
         $this->assertEquals(sizeof($luxorTicket->picture), 6);
         
@@ -30,7 +30,7 @@ class LuxorTicketGeneratorTest extends TestCase
     
     public function testGenerateTicketWithRandomNumbersReturnsTicketWithPictureAndFrameInCorrectRange()
     {
-        $luxorTicket = $this->luxorTicketGenerator->generateTicketWithRandomNumbers(false, false);
+        $luxorTicket = $this->luxorTicketGenerator->generateTicketWithRandomNumbers();
         
         $pictureInRange = true;
         
@@ -69,5 +69,21 @@ class LuxorTicketGeneratorTest extends TestCase
         }
         
         $this->assertTrue($pictureFrameOnlyContainsDifferentNumbers);
+    }
+    
+    public function testGenerateTicketFromSelectionReturnsLuxorTicketWithCorrectPictureFrameSizes()
+    {
+        $ranges = ['first_range' => [ 1, 2, 3, 4, 5, 6, 7, 8], 'second_range' => [16,17,18,19,20,21,22,23], 
+                   'third_range' => [31,32,33,34,35,36,37,38], 'fourth_range' => [46,47,48,49,50,51,52,53], 
+                   'fifth_range' => [61,62,63,64,65,66,67,68]];
+        
+        $luxorTicket = $this->luxorTicketGenerator->generateTicketFromSelection($ranges);
+        
+        $this->assertInstanceOf(LuxorTicket::class, $luxorTicket);
+        
+        $this->assertEquals(sizeof($luxorTicket->picture), 6);
+        
+        $this->assertEquals(sizeof($luxorTicket->frame), 14); 
+        
     }
 }

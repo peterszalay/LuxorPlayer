@@ -56,9 +56,9 @@ class LuxorTicketGenerator {
      * @param int $numberOfTickets
      * @param array $selection
      */
-    public function generateTicketsFromSelection($numberOfTickets, $selection){
+    public function generateTicketsWithRandomNumbersFromSelection($numberOfTickets, $selection){
         for($i = 0; $i < $numberOfTickets; $i++){
-            $this->tickets[$i] = $this->generateTicketFromSelection($selection);
+            $this->tickets[$i] = $this->generateTicketWithRandomNumbersFromSelection($selection);
         }
         $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/game.log', Logger::INFO));
         $this->logger->info($numberOfTickets. " number of tickets with random numbers from selection generated...");
@@ -140,7 +140,7 @@ class LuxorTicketGenerator {
      * @param array $selection
      * @return \LuxorPlayer\LuxorTicket
      */
-    public function generateTicketFromSelection($selection){
+    public function generateTicketWithRandomNumbersFromSelection($selection){
         $frame = [];
         $picture = [];
         $i = 1;
@@ -153,39 +153,32 @@ class LuxorTicketGenerator {
             if($i <= 4){
                 shuffle($this->firstRange);
                 $frame[] = array_pop($this->firstRange);
-                $i++;
             } elseif ($i <= 8){
                 shuffle($this->secondRange);
                 if($i <= 6){   
                     $frame[] = array_pop($this->secondRange);
-                    $i++;
                 } else {
                     $picture[] = array_pop($this->secondRange);
-                    $i++;
                 }          
             } elseif($i <= 12){
                 shuffle($this->thirdRange);
                 if($i <= 10){
                     $frame[] = array_pop($this->thirdRange);
-                    $i++;
                 } else {
                     $picture[] = array_pop($this->thirdRange);
-                    $i++;
                 }
             } elseif($i <= 16){
                 shuffle($this->fourthRange);
                 if($i <= 14){ 
                     $frame[] = array_pop($this->fourthRange);
-                    $i++;
                 } else {
                     $picture[] = array_pop($this->fourthRange);
-                    $i++;
                 }
             } else {
                 shuffle($this->fifthRange);
                 $frame[] = array_pop($this->fifthRange);
-                $i++;
             }
+            $i++;
         }
         return LuxorTicket::create($picture, $frame);
     }
@@ -212,6 +205,67 @@ class LuxorTicketGenerator {
         $this->thirdRange = range(31,45);
         $this->fourthRange = range(46,60);
         $this->fifthRange = range(61,75);
+    }
+    
+    /**
+     * Helper function that merges two selections (can be used to combine most and least drawn numbers)
+     *
+     * @param array $selection1
+     * @param array $selection2
+     * @return array
+     */
+    public function mergeTwofSelections($selection1, $selection2){
+        $firstRange = array_values(array_unique(array_merge($selection1['first_range'], $selection2['first_range'])));
+        $secondRange = array_values(array_unique(array_merge($selection1['second_range'], $selection2['second_range'])));
+        $thirdRange = array_values(array_unique(array_merge($selection1['third_range'], $selection2['third_range'])));
+        $fourthRange = array_values(array_unique(array_merge($selection1['fourth_range'], $selection2['fourth_range'])));
+        $fifthRange = array_values(array_unique(array_merge($selection1['fifth_range'], $selection2['fifth_range'])));
+        return ['first_range' => $firstRange, 'second_range' => $secondRange, 'third_range' => $thirdRange, 'fourth_range' => $fourthRange, 'fifth_range' => $fifthRange];
+    }
+    
+    /**
+     * Helper function that returns a selection of random numbers of size (rounded so it is minimum 5, maximum 40 and dividable by 5) 
+     * 
+     * @param int $size
+     * @return array
+     */
+    public function generateRandomSelection($size){
+        $this->fillRanges();
+        $firstRange = [];
+        $secondRange = [];
+        $thirdRange = [];
+        $fourthRange = [];
+        $fifthRange = [];
+        if($size <= 5){
+            $size = 5;
+        }
+        if($size >= 40){
+            $size = 40;
+        }
+        if($size % 5 != 0){
+            $size = $size - ($size % 5);
+        }
+        $i = 1;
+        while($i <= $size){
+            if($i <= ($size / 5)){
+                shuffle($this->firstRange);
+                $firstRange[] = array_pop($this->firstRange);
+            } elseif ($i <= (($size / 5) * 2)){
+                shuffle($this->secondRange);
+                $secondRange[] = array_pop($this->secondRange);
+            } elseif($i <= (($size / 5) * 3)) {
+                shuffle($this->thirdRange);
+                $thirdRange[] = array_pop($this->thirdRange);
+            } elseif ($i <= (($size / 5)* 4)) {
+                shuffle($this->fourthRange);
+                $fourthRange[] = array_pop($this->fourthRange);
+            } else {
+                shuffle($this->fifthRange);
+                $fifthRange[] = array_pop($this->fifthRange);
+            }
+            $i++;
+        } 
+        return ['first_range' => $firstRange, 'second_range' => $secondRange, 'third_range' => $thirdRange, 'fourth_range' => $fourthRange, 'fifth_range' => $fifthRange];
     }
     
 }

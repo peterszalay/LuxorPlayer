@@ -56,19 +56,19 @@ class DrawProcessor {
      * Helper function which returns numbers ordered in five ranges
      * 
      * @param array $draws
-     * @param int $numberOfMostDrawn
+     * @param int $numberOfDrawn
      * @param int $ordering
      * @return array
      */
-    private function getDrawnNumbersAccordingToOrdering($draws, $numberOfMostDrawn, $ordering){
-        $numberOfMostDrawn = $this->ensureDivisableByFive($numberOfMostDrawn);
-        $numberOfMostDrawnPerSlice = $numberOfMostDrawn / 5;
+    private function getDrawnNumbersAccordingToOrdering($draws, $numberOfDrawn, $ordering){
+        $numberOfDrawn = $this->ensureDivisableByFive($numberOfDrawn);
+        $numberOfDrawnPerSlice = $numberOfDrawn / 5;
         $results = $this->getNumberDrawStatistics($draws);
-        $firstRange = $this->createSimplifiedOrderedSlice($results, 1, $numberOfMostDrawnPerSlice, $ordering);
-        $secondRange = $this->createSimplifiedOrderedSlice($results, 16, $numberOfMostDrawnPerSlice, $ordering);
-        $thirdRange = $this->createSimplifiedOrderedSlice($results, 31, $numberOfMostDrawnPerSlice, $ordering);
-        $fourthRange = $this->createSimplifiedOrderedSlice($results, 46, $numberOfMostDrawnPerSlice, $ordering);
-        $fifthRange = $this->createSimplifiedOrderedSlice($results, 61, $numberOfMostDrawnPerSlice, $ordering);
+        $firstRange = $this->createSimplifiedOrderedSlice($results, 1, $numberOfDrawnPerSlice, $ordering);
+        $secondRange = $this->createSimplifiedOrderedSlice($results, 16, $numberOfDrawnPerSlice, $ordering);
+        $thirdRange = $this->createSimplifiedOrderedSlice($results, 31, $numberOfDrawnPerSlice, $ordering);
+        $fourthRange = $this->createSimplifiedOrderedSlice($results, 46, $numberOfDrawnPerSlice, $ordering);
+        $fifthRange = $this->createSimplifiedOrderedSlice($results, 61, $numberOfDrawnPerSlice, $ordering);
         
         return ['first_range' => $firstRange, 'second_range' => $secondRange, 'third_range' => $thirdRange, 'fourth_range' => $fourthRange, 'fifth_range' => $fifthRange];
     }
@@ -173,5 +173,4 @@ class DrawProcessor {
         }
         return 0;
     }
-    
 }

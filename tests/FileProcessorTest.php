@@ -24,5 +24,12 @@ class FileProcessorTest extends TestCase
         
         $this->assertNotEmpty($this->fileProcessor->getDrawResults());
     }
+    
+    public function testGetDrawResultsReturnCorrectSizeArray()
+    {
+        $this->fileProcessor->readFileIntoArray(50);
+        
+        $this->assertEquals(sizeof($this->fileProcessor->getDrawResults()), 50);
+    }
 }
     

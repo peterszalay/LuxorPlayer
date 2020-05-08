@@ -38,20 +38,63 @@ class LuxorPlayer {
      */
     public function playWithRandomNumbers($regenerateTicketsBeforeEveryDraw = false){
         $this->game = new LuxorGame();
+        $this->fileProcessor->readFileIntoArray($this->drawCount);
+        $draws = $this->fileProcessor->getDrawResults();
         if($regenerateTicketsBeforeEveryDraw){
-            $this->fileProcessor->readFileIntoArray($this->drawCount);
-            $draws = $this->fileProcessor->getDrawResults();
             foreach($draws as $draw){
                 $this->ticketGenerator->generateTicketsWithRandomNumbers($this->ticketCount);
                 $this->game->processTicketsForADraw($this->ticketGenerator->getTickets(), $draw);
             }
             return $this->game->getResults();
         } else {
-            $this->fileProcessor->readFileIntoArray($this->drawCount);
             $this->ticketGenerator->generateTicketsWithRandomNumbers($this->ticketCount);
-            $results = $this->game->processTicketsForDraws($this->ticketGenerator->getTickets(), $this->fileProcessor->getDrawResults());
+            $results = $this->game->processTicketsForDraws($this->ticketGenerator->getTickets(), $draws);
             return $results;
         }
+    }
+    
+    /**
+     * Play with selected numbers
+     * 
+     * @param int $previousDrawsToSelectFrom
+     * @param int $firstSelection
+     * @param string $ordering
+     * @param int $secondSelection
+     * @return array
+     */
+    public function playWithSelectedNumbers($previousDrawsToSelectFrom, $firstSelection, $ordering = "MOST_DRAWN", $secondSelection = 0){
+        $this->game = new LuxorGame();
+        $this->fileProcessor->readFileIntoArray($this->drawCount + $previousDrawsToSelectFrom);
+        $draws = array_reverse($this->fileProcessor->getDrawResults());
+        for($i = 0; $i < $this->drawCount; $i++){
+            $lastDraw = array_pop($draws);
+            $previousDraws = array_slice($draws, -($previousDrawsToSelectFrom), $previousDrawsToSelectFrom, true);
+            switch($ordering){
+                case "LEAST_DRAWN":
+                    $selection = $this->drawProcessor->getLeastDrawnNumbers($previousDraws, $firstSelection);
+                    break;
+                case "LEAST_AND_MOST_DRAWN":
+                    $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($previousDraws, $firstSelection);
+                    $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $secondSelection);
+                    $selection = $this->ticketGenerator->mergeTwofSelections($leastDrawnSelection, $mostDrawnSelection);
+                    break;
+                case "LEAST_DRAWN_AND_RANDOM":
+                    $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($previousDraws, $firstSelection);
+                    $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
+                    $selection = $this->ticketGenerator->mergeTwofSelections($leastDrawnSelection, $randomSelection);
+                    break;
+                case "MOST_DRAWN_AND_RANDOM":
+                    $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $secondSelection);
+                    $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
+                    $selection = $this->ticketGenerator->mergeTwofSelections($mostDrawnSelection, $randomSelection);
+                    break;
+                case "MOST_DRAWN": default:
+                    $selection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);
+            }
+            $this->ticketGenerator->generateTicketsWithRandomNumbersFromSelection($this->ticketCount, $selection);
+            $this->game->processTicketsForADraw($this->ticketGenerator->getTickets(), $lastDraw);
+        }
+        return $this->game->getResults();
     }
 
     /**

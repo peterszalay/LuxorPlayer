@@ -29,9 +29,11 @@ class FileProcessor {
         }
         if($drawCount > 0){
             if (file_exists($file['file_paths']['local_path']) && ($handle = fopen($file['file_paths']['local_path'], "r")) !== FALSE) {
-                $i = $drawCount - 1;
+                $i = 0;
                 while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
-                    //print $data[2] . ' ' . $data[3] . ' ' . $data[4] . ' ' . $data[5] . ' ' . $data[6] . ' numbers start here: ' . $data[7] . PHP_EOL;
+                    if($i >= $drawCount){
+                        break;
+                    }
                     $this->drawResults[$i][0]['date'] = $data[2];
                     $this->drawResults[$i][0]['jackpot_limit'] = $data[3]; 
                     $this->drawResults[$i][0]['first_picture'] = $data[4]; 
@@ -48,10 +50,7 @@ class FileProcessor {
                        $counter++;
                        $j++;
                    }
-                   if($i <= 0){
-                       break;
-                   }
-                   $i--;
+                   $i++;
                 }
                 fclose($handle);
             }

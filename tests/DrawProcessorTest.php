@@ -86,13 +86,13 @@ class DrawProcessorTest extends TestCase
         $this->assertEquals($result, 25);
         
         $result = $method->invokeArgs($this->drawProcessor, [-100]);
-        $this->assertEquals($result, 20);
+        $this->assertEquals($result, 5);
         
         $result = $method->invokeArgs($this->drawProcessor, [79]);
-        $this->assertEquals($result, 75);
+        $this->assertEquals($result, 70);
         
         $result = $method->invokeArgs($this->drawProcessor, [99]);
-        $this->assertEquals($result, 80);
+        $this->assertEquals($result, 70);
     }
     
     public function testSliceArrayReturnsArrayWithSizeOf15()

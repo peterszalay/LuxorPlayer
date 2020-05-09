@@ -130,11 +130,11 @@ class DrawProcessor {
      * @return number
      */
     private function ensureDivisableByFive($numberOfDrawn){
-        if($numberOfDrawn <= 20){
-            return 20;
+        if($numberOfDrawn <= 5){
+            return 5;
         }
-        if($numberOfDrawn >= 80){
-            return 80;
+        if($numberOfDrawn >= 70){
+            return 70;
         }
         if($numberOfDrawn % 5 != 0){
             $numberOfDrawn = $numberOfDrawn - ($numberOfDrawn % 5);

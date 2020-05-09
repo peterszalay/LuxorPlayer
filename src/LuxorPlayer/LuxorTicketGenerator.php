@@ -1,9 +1,6 @@
 <?php
 namespace LuxorPlayer;
 
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-
 
 class LuxorTicketGenerator {
     
@@ -25,7 +22,6 @@ class LuxorTicketGenerator {
     
     
     public function __construct(){
-        $this->logger = new Logger($this->name);
     }
     
     /**
@@ -46,8 +42,6 @@ class LuxorTicketGenerator {
         for($i = 0; $i < $numberOfTickets; $i++){
             $this->tickets[$i] = $this->generateTicketWithRandomNumbers();     
         }
-        $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/game.log', Logger::INFO));
-        $this->logger->info($numberOfTickets. " number of tickets with random numbers generated...");
     }
     
     /**
@@ -60,8 +54,6 @@ class LuxorTicketGenerator {
         for($i = 0; $i < $numberOfTickets; $i++){
             $this->tickets[$i] = $this->generateTicketWithRandomNumbersFromSelection($selection);
         }
-        $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/game.log', Logger::INFO));
-        $this->logger->info($numberOfTickets. " number of tickets with random numbers from selection generated...");
     }
     
     /**

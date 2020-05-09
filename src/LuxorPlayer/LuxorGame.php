@@ -1,9 +1,6 @@
 <?php
 namespace LuxorPlayer;
 
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-
 
 class LuxorGame {
     
@@ -12,7 +9,6 @@ class LuxorGame {
     private $results = [];
     
     public function __construct(){
-        $this->logger = new Logger($this->name);
         $this->results['jackpot'] = 0;
         $this->results['luxor'] = 0; 
         $this->results['first_frame'] = 0; 

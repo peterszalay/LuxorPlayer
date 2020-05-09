@@ -1,9 +1,6 @@
 <?php
 namespace LuxorPlayer;
 
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-
 
 class FileProcessor {
     
@@ -15,7 +12,6 @@ class FileProcessor {
     private $drawResults = [];
     
     public function __construct(){
-        $this->logger = new Logger($this->name);
     }
     
     /**
@@ -54,8 +50,6 @@ class FileProcessor {
                 }
                 fclose($handle);
             }
-            $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/game.log', Logger::INFO));
-            $this->logger->info("Last " . $drawCount . " draws loaded for game simulation...");
         }
     }
     

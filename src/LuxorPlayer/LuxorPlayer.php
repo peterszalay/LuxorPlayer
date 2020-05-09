@@ -1,9 +1,6 @@
 <?php
 namespace LuxorPlayer;
 
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-
 
 class LuxorPlayer {
    
@@ -62,7 +59,7 @@ class LuxorPlayer {
      * @param int $secondSelection
      * @return array
      */
-    public function playWithSelectedNumbers($previousDrawsToSelectFrom, $firstSelection, $ordering = "MOST_DRAWN", $secondSelection = 0){
+    public function playWithSelectedNumbers($previousDrawsToSelectFrom, $firstSelection, $ordering = "MOST_DRAWN", $secondSelection = 0, $thirdSelection = 0){
         $this->game = new LuxorGame();
         $this->fileProcessor->readFileIntoArray($this->drawCount + $previousDrawsToSelectFrom);
         $draws = array_reverse($this->fileProcessor->getDrawResults());
@@ -84,9 +81,16 @@ class LuxorPlayer {
                     $selection = $this->ticketGenerator->mergeTwofSelections($leastDrawnSelection, $randomSelection);
                     break;
                 case "MOST_DRAWN_AND_RANDOM":
-                    $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $secondSelection);
+                    $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);
                     $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
                     $selection = $this->ticketGenerator->mergeTwofSelections($mostDrawnSelection, $randomSelection);
+                    break;
+                case "MOST_LEAST_AND_RANDOM":
+                    $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);
+                    $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($previousDraws, $secondSelection);
+                    $randomSelection = $this->ticketGenerator->generateRandomSelection($thirdSelection);
+                    $selection1 = $this->ticketGenerator->mergeTwofSelections($mostDrawnSelection, $leastDrawnSelection);
+                    $selection = $this->ticketGenerator->mergeTwofSelections($selection1, $randomSelection);
                     break;
                 case "MOST_DRAWN": default:
                     $selection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);

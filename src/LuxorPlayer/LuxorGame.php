@@ -85,10 +85,12 @@ class LuxorGame {
             }
             if(empty($ticketCopy->frame) && empty($ticketCopy->picture)){
                 if($drawNumber <= $draw[0]['jackpot_limit']){
+                    //print $draw[0]['date'] . ' jackpot' . PHP_EOL;
                     $this->results['jackpot']++;
                     $this->results['luxor']++;
                     break;
                 } else {
+                    //print $draw[0]['date'] . ' luxor' . PHP_EOL;
                     $this->results['luxor']++;
                     break;
                 }

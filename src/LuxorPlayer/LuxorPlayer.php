@@ -117,12 +117,41 @@ class LuxorPlayer {
         $this->ticketCount = $ticketCount;
     }
 
-    /**
-     * @param mixed $gameType
-     */
-    public function setGameType($gameType)
-    {
-        $this->gameType = $gameType;
+    public function generateNumbers($previousDrawsToSelectFrom, $firstSelection, $ordering = "MOST_DRAWN", $secondSelection = 0, $thirdSelection = 0){
+        $this->fileProcessor->readFileIntoArray($previousDrawsToSelectFrom);
+        $draws = $this->fileProcessor->getDrawResults();
+        print_r($draws);
+        $selection = [];
+        switch($ordering){
+            case "LEAST_DRAWN":
+                $selection = $this->drawProcessor->getLeastDrawnNumbers($draws, $firstSelection);
+                break;
+            case "LEAST_AND_MOST_DRAWN":
+                $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($draws, $firstSelection);
+                $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($draws, $secondSelection);
+                $selection = $this->ticketGenerator->mergeTwofSelections($leastDrawnSelection, $mostDrawnSelection);
+                break;
+            case "LEAST_DRAWN_AND_RANDOM":
+                $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($draws, $firstSelection);
+                $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
+                $selection = $this->ticketGenerator->mergeTwofSelections($leastDrawnSelection, $randomSelection);
+                break;
+            case "MOST_DRAWN_AND_RANDOM":
+                $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($draws, $firstSelection);
+                $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
+                $selection = $this->ticketGenerator->mergeTwofSelections($mostDrawnSelection, $randomSelection);
+                break;
+            case "MOST_LEAST_AND_RANDOM":
+                $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($draws, $firstSelection);
+                $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($draws, $secondSelection);
+                $randomSelection = $this->ticketGenerator->generateRandomSelection($thirdSelection);
+                $selection1 = $this->ticketGenerator->mergeTwofSelections($mostDrawnSelection, $leastDrawnSelection);
+                $selection = $this->ticketGenerator->mergeTwofSelections($selection1, $randomSelection);
+                break;
+            case "MOST_DRAWN": default:
+                $selection = $this->drawProcessor->getMostDrawnNumbers($draws, $firstSelection);
+        }
+        return $selection;
     }
 
     

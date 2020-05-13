@@ -56,6 +56,7 @@ function main()
                 break;
             case 2:
                 $playGame = false;
+                exitGame();
                 break;
             default:
                 print 'Please choose number 1 or 2...' . PHP_EOL;
@@ -92,18 +93,20 @@ $playMenu =
     
     $input = fgets($handle);
     
+    print PHP_EOL;
+    
     switch($input){
         case 1:
             playLuxorManually();
             break;
         case 2:
-            print PHP_EOL . 'Play with parameters given in configuration file...' . PHP_EOL;
+            print 'Play with parameters given in configuration file...' . PHP_EOL;
             break;
         case 3:
             main();
             break;       
         default:
-            print PHP_EOL . 'Please give number 1, 2 or 3...' . PHP_EOL;
+            print 'Please give number 1, 2 or 3...' . PHP_EOL;
             print $playMenu;
     }
         
@@ -111,7 +114,7 @@ $playMenu =
 
 function playLuxorManually()
 {
-    global $handle;
+    global $handle, $luxorPlayer;
     
     print "How many tickets do you want to play with? ";
     $numberOfTickets = intval(trim(fgets($handle)));
@@ -148,11 +151,12 @@ function playLuxorManually()
 6. Play most, least and random numbers mixed
 ' . PHP_EOL;
     
-    $trategy = '';
+    $strategy = '';
     $previousDrawsToSelectFrom = '';
-    $firstSelection = 0;
-    $secondSelection = 0;
-    $thirdSelection = 0;
+    $selection = [];
+    $selection['first'] = 0;
+    $selection['second'] = 0;
+    $selection['third'] = 0;
     
     $strategyId = intval(trim(fgets($handle)));
     print PHP_EOL;
@@ -165,63 +169,90 @@ function playLuxorManually()
         case 2:
             $strategy = "LEAST_DRAWN";
             print "How many least selected numbers should be selected? (5-70) ";
-            $firstSelection = intval(trim(fgets($handle)));
+            $selection['first'] = intval(trim(fgets($handle)));
             break;
         case 3:
             $strategy = "LEAST_AND_MOST_DRAWN";
+            print "How many least selected numbers should be selected? (5-70) ";
+            $selection['first'] = intval(trim(fgets($handle)));
+            print PHP_EOL;
             print "How many most selected numbers should be selected? (5-70) ";
-            $secondSelection = intval(trim(fgets($handle)));
+            $selection['second'] = intval(trim(fgets($handle)));
             break;
         case 4:
             $strategy = "MOST_DRAWN_AND_RANDOM";
             print "How many most selected numbers should be selected? (5-70) ";
-            $firstSelection = intval(trim(fgets($handle)));
+            $selection['first'] = intval(trim(fgets($handle)));
             print PHP_EOL;
             print "How many random numbers should be selected? (5-70) ";
-            $secondSelection = intval(trim(fgets($handle)));
+            $selection['second'] = intval(trim(fgets($handle)));
             break;
         case 5:
             $strategy = "LEAST_DRAWN_AND_RANDOM";
             print "How many least selected numbers should be selected? (5-70) ";
-            $firstSelection = intval(trim(fgets($handle)));
+            $selection['first'] = intval(trim(fgets($handle)));
             print PHP_EOL;
             print "How many random numbers should be selected? (5-70) ";
-            $secondSelection = intval(trim(fgets($handle)));
+            $selection['second'] = intval(trim(fgets($handle)));
             break;
         case 6:
             $strategy = "MOST_LEAST_AND_RANDOM";
             print "How many most selected numbers should be selected? (5-70) ";
-            $firstSelection = intval(trim(fgets($handle)));
+            $selection['first'] = intval(trim(fgets($handle)));
             print PHP_EOL;
             print "How many least selected numbers should be selected? (5-70) ";
-            $secondSelection = intval(trim(fgets($handle)));
+            $selection['second'] = intval(trim(fgets($handle)));
             print PHP_EOL;
             print "How many random numbers should be selected? (5-70) ";
-            $thirdSelection = intval(trim(fgets($handle)));
+            $selection['third'] = intval(trim(fgets($handle)));
             break;
         case 1: default:
             $strategy = "MOST_DRAWN";
             print "How many most selected numbers should be selected? (5-70) ";
-            $firstSelection = intval(trim(fgets($handle)));
+            $selection['first'] = intval(trim(fgets($handle)));
     }
     
     print PHP_EOL;
     
-    print "How many times do you want to repeat the draws? ";
+    print "How many times do you want to run the simulation? ";
     $numberOfTimesRepeated = intval(trim(fgets($handle)));
     while(!is_int($numberOfTimesRepeated)){
-        print PHP_EOL . "Please give number of times you want to cycle through the draws as a whole number (example: 10). Press E for exit! ";
+        print PHP_EOL . "Please give number of times you want to run the simulation as a whole number (example: 10). Press E for exit! ";
         $numberOfTimesRepeated = trim(fgets($handle));
         if($numberOfTimesRepeated == "E" || $numberOfTimesRepeated == "e"){
             main();
             break;
         }
     }
-    print PHP_EOL; 
+    print PHP_EOL;
     
+    print "DRAWS: " . $numberOfDraws . " TICKETS: " . $numberOfTickets . " TEST REPEATED: " . $numberOfTimesRepeated . PHP_EOL;
+    print "spent: " . number_format(($numberOfDraws * $numberOfTickets * 200), 0, ',', ' ');
+    if($numberOfTimesRepeated > 1){
+        print " * " . $numberOfTimesRepeated;
+    }
+    print " Ft" . PHP_EOL . PHP_EOL;
+    
+    $results = $luxorPlayer->play($numberOfDraws, $numberOfTickets, $previousDrawsToSelectFrom, $strategy, $selection, $numberOfTimesRepeated);
+    $i = 1;
+    foreach($results as $key => $value){
+        print $i  . '. ' . $key . ' reached a total of: ' . number_format((intval($value['total']) * 1000), 0, ',', ' ') . ' Ft' . PHP_EOL;
+        print 'jackpot: ' . $value['jackpot'] . ', luxor: ' . $value['luxor'] . ', first frame: ' . $value['first_frame'] . ', first picture: ' . $value['first_picture'] . ', frames: ' . $value['frames'] .
+        ', pictures: ' . $value['pictures'] . PHP_EOL . PHP_EOL;
+        $i++;
+     }
+     print PHP_EOL;
+     main();
 }
 
-fclose($handle);
+function exitGame()
+{
+    global $handle;
+    
+    fclose($handle);
+    print PHP_EOL;
+    print 'See you...' . PHP_EOL;
+}
 
-print PHP_EOL;
-print 'See you...' . PHP_EOL;
+
+

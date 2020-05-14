@@ -35,16 +35,15 @@ print PHP_EOL;
 print 'What would you like to do?' . PHP_EOL;
 
 $handle = fopen ("php://stdin","r");
+$playGame = true;
 
 main();
 
 function main()
 {
-    global $handle;
+    global $handle, $playGame;
     
     mainMenu();
-
-    $playGame = true;
     
     while($playGame)
     {
@@ -55,11 +54,14 @@ function main()
                 playLuxorMenu();
                 break;
             case 2:
+                generateNumbers();
+                break;
+            case 3:
                 $playGame = false;
                 exitGame();
                 break;
             default:
-                print 'Please choose number 1 or 2...' . PHP_EOL;
+                print 'Please choose number 1, 2 or 3...' . PHP_EOL;
                 mainMenu();
         }
         
@@ -71,7 +73,8 @@ function mainMenu()
     $menu =
     '
 1. Play luxor
-2. Quit game
+2. Generate number selection
+3. Quit game
 ' . PHP_EOL;
     
     print $menu;
@@ -243,6 +246,93 @@ function playLuxorManually()
      }
      print PHP_EOL;
      main();
+}
+
+function generateNumbers(){
+    
+    global $handle, $luxorPlayer;
+    
+    print "Choose your strategy:" . PHP_EOL;
+    
+    print '
+1. Most drawn (in previous draws)
+2. Least drawn (in previous draws)
+3. Play both, most and least drawn combined
+4. Play most drawn and random combined
+5. Play Least drawn and random combined
+6. Play most, least and random numbers mixed
+' . PHP_EOL;
+    
+    $strategy = '';
+    $previousDrawsToSelectFrom = '';
+    $selection = [];
+    $selection['first'] = 0;
+    $selection['second'] = 0;
+    $selection['third'] = 0;
+    
+    $strategyId = intval(trim(fgets($handle)));
+    print PHP_EOL;
+    
+    print "How many previous draws should be evaluated? ";
+    $previousDrawsToSelectFrom = intval(trim(fgets($handle)));
+    print PHP_EOL;
+    
+    switch($strategyId){
+        case 2:
+            $strategy = "LEAST_DRAWN";
+            print "How many least selected numbers should be selected? (5-70) ";
+            $selection['first'] = intval(trim(fgets($handle)));
+            break;
+        case 3:
+            $strategy = "LEAST_AND_MOST_DRAWN";
+            print "How many least selected numbers should be selected? (5-70) ";
+            $selection['first'] = intval(trim(fgets($handle)));
+            print PHP_EOL;
+            print "How many most selected numbers should be selected? (5-70) ";
+            $selection['second'] = intval(trim(fgets($handle)));
+            break;
+        case 4:
+            $strategy = "MOST_DRAWN_AND_RANDOM";
+            print "How many most selected numbers should be selected? (5-70) ";
+            $selection['first'] = intval(trim(fgets($handle)));
+            print PHP_EOL;
+            print "How many random numbers should be selected? (5-70) ";
+            $selection['second'] = intval(trim(fgets($handle)));
+            break;
+        case 5:
+            $strategy = "LEAST_DRAWN_AND_RANDOM";
+            print "How many least selected numbers should be selected? (5-70) ";
+            $selection['first'] = intval(trim(fgets($handle)));
+            print PHP_EOL;
+            print "How many random numbers should be selected? (5-70) ";
+            $selection['second'] = intval(trim(fgets($handle)));
+            break;
+        case 6:
+            $strategy = "MOST_LEAST_AND_RANDOM";
+            print "How many most selected numbers should be selected? (5-70) ";
+            $selection['first'] = intval(trim(fgets($handle)));
+            print PHP_EOL;
+            print "How many least selected numbers should be selected? (5-70) ";
+            $selection['second'] = intval(trim(fgets($handle)));
+            print PHP_EOL;
+            print "How many random numbers should be selected? (5-70) ";
+            $selection['third'] = intval(trim(fgets($handle)));
+            break;
+        case 1: default:
+            $strategy = "MOST_DRAWN";
+            print "How many most selected numbers should be selected? (5-70) ";
+            $selection['first'] = intval(trim(fgets($handle)));
+    }
+    
+    print PHP_EOL . PHP_EOL;
+    $results = $luxorPlayer->generateNumbers($previousDrawsToSelectFrom, $selection['first'], $strategy, $selection['second'], $selection['third']);
+    print '1. range: ' . implode(' ', $results['first_range']) . PHP_EOL;
+    print '2. range: ' . implode(' ', $results['second_range']) . PHP_EOL;
+    print '3. range: ' . implode(' ', $results['third_range']) . PHP_EOL;
+    print '4. range: ' . implode(' ', $results['fourth_range']) . PHP_EOL;
+    print '5. range: ' . implode(' ', $results['fifth_range']) . PHP_EOL;
+    print PHP_EOL;
+    main();
 }
 
 function exitGame()

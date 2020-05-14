@@ -183,7 +183,6 @@ class LuxorPlayer {
     public function generateNumbers($previousDrawsToSelectFrom, $firstSelection, $ordering = "MOST_DRAWN", $secondSelection = 0, $thirdSelection = 0){
         $this->fileProcessor->readFileIntoArray($previousDrawsToSelectFrom);
         $draws = $this->fileProcessor->getDrawResults();
-        print_r($draws);
         $selection = [];
         switch($ordering){
             case "LEAST_DRAWN":

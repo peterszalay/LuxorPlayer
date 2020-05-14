@@ -150,7 +150,7 @@ function playLuxorManually()
 2. Least drawn (in previous draws)
 3. Play both, most and least drawn combined
 4. Play most drawn and random combined
-5. Play Least drawn and random combined
+5. Play least drawn and random combined
 6. Play most, least and random numbers mixed
 ' . PHP_EOL;
     
@@ -252,15 +252,15 @@ function generateNumbers(){
     
     global $handle, $luxorPlayer;
     
-    print "Choose your strategy:" . PHP_EOL;
+    print PHP_EOL . "Choose your strategy:" . PHP_EOL;
     
     print '
 1. Most drawn (in previous draws)
 2. Least drawn (in previous draws)
-3. Play both, most and least drawn combined
-4. Play most drawn and random combined
-5. Play Least drawn and random combined
-6. Play most, least and random numbers mixed
+3. Most and least drawn combined
+4. Most drawn and random combined
+5. Least drawn and random combined
+6. Most, least and random numbers mixed
 ' . PHP_EOL;
     
     $strategy = '';

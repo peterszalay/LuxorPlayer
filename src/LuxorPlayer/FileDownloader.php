@@ -23,7 +23,7 @@ class FileDownloader {
      */    
     public function downloadCsv(){
         try {
-            $file = include  __DIR__ . '/../../config/app.php';
+            $file = include  __DIR__ . '/../../config/luxor.php';
             if(@fopen($file['file_paths']['remote_path'],"r")==true){
                 $header = get_headers($file['file_paths']['remote_path'], 1);          
                 $remoteTimestamp = 0;

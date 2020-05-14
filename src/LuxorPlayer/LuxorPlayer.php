@@ -24,6 +24,35 @@ class LuxorPlayer {
         $this->fileDownloader->downloadCsv();
     }
     
+    
+    /**
+     * Play luxor with parameters given in file
+     * 
+     * @return array
+     */
+    public function playFromConfig(){
+        try {
+            $file = include  __DIR__ . '/../../config/luxor.php';
+            if(isset($file['game_variables'])){
+                $drawCount = (isset($file['game_variables']['draws']) && is_int($file['game_variables']['draws']) && $file['game_variables']['draws'] > 1) ? $file['game_variables']['draws'] : 1;
+                $ticketCount = (isset($file['game_variables']['tickets']) && is_int($file['game_variables']['tickets']) && $file['game_variables']['tickets'] > 1) ? $file['game_variables']['tickets'] : 1;
+            } else {
+            }
+        } catch(\Exception $ex){
+        }
+    }
+    
+    /**
+     * Play luxor with manually given parameters
+     * 
+     * @param int $drawCount
+     * @param int $ticketCount
+     * @param int $previousDrawsToSelectFrom
+     * @param string $ordering
+     * @param array $selections
+     * @param int $repeatTimes
+     * @return array
+     */
     public function play($drawCount, $ticketCount, $previousDrawsToSelectFrom, $ordering, $selections, $repeatTimes){
         $i = 1;
         $results = $this->initializeResults($ordering, $selections);

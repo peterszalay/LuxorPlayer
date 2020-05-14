@@ -103,7 +103,7 @@ $playMenu =
             playLuxorManually();
             break;
         case 2:
-            print 'Play with parameters given in configuration file...' . PHP_EOL;
+            playFromConfig();
             break;
         case 3:
             main();
@@ -246,6 +246,22 @@ function playLuxorManually()
      }
      print PHP_EOL;
      main();
+}
+
+function playFromConfig()
+{
+    global $luxorPlayer;
+    
+    $results = $luxorPlayer->playFromConfig();  
+    $i = 1;
+    foreach($results as $key => $value){
+        print $i  . '. ' . $key . ' reached a total of: ' . number_format((intval($value['total']) * 1000), 0, ',', ' ') . ' Ft' . PHP_EOL;
+        print 'jackpot: ' . $value['jackpot'] . ', luxor: ' . $value['luxor'] . ', first frame: ' . $value['first_frame'] . ', first picture: ' . $value['first_picture'] . ', frames: ' . $value['frames'] .
+        ', pictures: ' . $value['pictures'] . PHP_EOL . PHP_EOL;
+        $i++;
+    }
+    print PHP_EOL;
+    main();
 }
 
 function generateNumbers(){

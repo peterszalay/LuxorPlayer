@@ -197,6 +197,9 @@ class LuxorPlayer {
             $results['SAME_RANDOM']['first_frame'] += $drawResult['first_frame'];
             $results['SAME_RANDOM']['luxor'] += $drawResult['luxor'];
             $results['SAME_RANDOM']['jackpot'] += $drawResult['jackpot'];
+            $results['SAME_RANDOM']['luxor_dates'] += $drawResult['luxor_dates'];
+            $results['SAME_RANDOM']['first_frame_dates'] += $drawResult['first_frame_dates'];
+            $results['SAME_RANDOM']['first_picture_dates'] += $drawResult['first_picture_dates'];
             
             $drawResult = [];
             $drawResult = $this->playWithRandomNumbers(true);
@@ -207,6 +210,9 @@ class LuxorPlayer {
             $results['REGENERATED_RANDOM']['first_frame'] += $drawResult['first_frame'];
             $results['REGENERATED_RANDOM']['luxor'] += $drawResult['luxor'];
             $results['REGENERATED_RANDOM']['jackpot'] += $drawResult['jackpot'];
+            $results['REGENERATED_RANDOM']['luxor_dates'] += $drawResult['luxor_dates'];
+            $results['REGENERATED_RANDOM']['first_frame_dates'] += $drawResult['first_frame_dates'];
+            $results['REGENERATED_RANDOM']['first_picture_dates'] += $drawResult['first_picture_dates'];
             
 
             $drawResult = [];
@@ -243,6 +249,9 @@ class LuxorPlayer {
             $results[$key]['first_frame'] += $drawResult['first_frame'];
             $results[$key]['luxor'] += $drawResult['luxor'];
             $results[$key]['jackpot'] += $drawResult['jackpot'];
+            $results[$key]['luxor_dates'] += $drawResult['luxor_dates'];
+            $results[$key]['first_frame_dates'] += $drawResult['first_frame_dates'];
+            $results[$key]['first_picture_dates'] += $drawResult['first_picture_dates'];
             
             $i++;
         }
@@ -347,7 +356,17 @@ class LuxorPlayer {
     {
         $this->ticketCount = $ticketCount;
     }
-
+    
+    /**
+     * Generate numbers for strategy
+     * 
+     * @param int $previousDrawsToSelectFrom
+     * @param int $firstSelection
+     * @param string $strategy
+     * @param int $secondSelection
+     * @param int $thirdSelection
+     * @return array
+     */
     public function generateNumbers($previousDrawsToSelectFrom, $firstSelection, $strategy = "MOST_DRAWN", $secondSelection = 0, $thirdSelection = 0){
         $this->fileProcessor->readFileIntoArray($previousDrawsToSelectFrom);
         $draws = $this->fileProcessor->getDrawResults();

@@ -241,7 +241,17 @@ function playLuxorManually()
     foreach($results as $key => $value){
         print $i  . '. ' . $key . ' reached a total of: ' . number_format((intval($value['total']) * 1000), 0, ',', ' ') . ' Ft' . PHP_EOL;
         print 'jackpot: ' . $value['jackpot'] . ', luxor: ' . $value['luxor'] . ', first frame: ' . $value['first_frame'] . ', first picture: ' . $value['first_picture'] . ', frames: ' . $value['frames'] .
-        ', pictures: ' . $value['pictures'] . PHP_EOL . PHP_EOL;
+        ', pictures: ' . $value['pictures'] . PHP_EOL;
+        if($value['luxor'] > 0){
+            print 'Luxor dates: ' . implode(', ', $value['luxor_dates']) . PHP_EOL;
+        }
+        if($value['first_frame'] > 0){
+            print 'First frame dates: ' . implode(', ', $value['first_frame_dates']) . PHP_EOL;
+        }
+        if($value['first_picture'] > 0){
+            print 'First picture dates: ' . implode(', ', $value['first_picture_dates']) . PHP_EOL;
+        }
+        print PHP_EOL;
         $i++;
      }
      print PHP_EOL;
@@ -254,6 +264,7 @@ function playFromConfig()
     
     $results = $luxorPlayer->playFromConfig();  
     $i = 1;
+    print PHP_EOL;
     foreach($results as $key => $value){
         if($i <= 50 || $key == "SAME_RANDOM" || $key == "REGENERATED_RANDOM"){
             print $i  . '. ' . $key . ' reached a total of: ' . number_format((intval($value['total']) * 1000), 0, ',', ' ') . ' Ft' . PHP_EOL;

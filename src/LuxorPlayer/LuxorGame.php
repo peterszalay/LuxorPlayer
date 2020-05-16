@@ -80,7 +80,7 @@ class LuxorGame {
                 $key = array_search($number, $ticketCopy->picture);
                 unset($ticketCopy->picture[$key]);
                 if(empty($ticketCopy->picture)){
-                    if($drawNumber <= $draw[0]['first_picture']){
+                    if($drawNumber <= $draw[0]['first_picture'] && !in_array($draw[0]['date'], $this->results['first_picture_dates'])){
                         $this->results['first_picture']++;
                         $this->results['first_picture_dates'][] = $draw[0]['date'];
                     }
@@ -91,7 +91,7 @@ class LuxorGame {
                 $key = array_search($number, $ticketCopy->frame);
                 unset($ticketCopy->frame[$key]);
                 if(empty($ticketCopy->frame)){
-                    if($drawNumber <= $draw[0]['first_frame']){
+                    if($drawNumber <= $draw[0]['first_frame'] && !in_array($draw[0]['date'], $this->results['first_frame_dates'])){
                         $this->results['first_frame']++;
                         $this->results['first_frame_dates'][] = $draw[0]['date'];
                     }

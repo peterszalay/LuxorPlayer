@@ -60,6 +60,9 @@ class LuxorPlayer {
                     $results['SAME_RANDOM']['first_frame'] += $drawResult['first_frame'];
                     $results['SAME_RANDOM']['luxor'] += $drawResult['luxor'];
                     $results['SAME_RANDOM']['jackpot'] += $drawResult['jackpot'];
+                    $results['SAME_RANDOM']['luxor_dates'] += $drawResult['luxor_dates'];
+                    $results['SAME_RANDOM']['first_frame_dates'] += $drawResult['first_frame_dates'];
+                    $results['SAME_RANDOM']['first_picture_dates'] += $drawResult['first_picture_dates'];
                     
                     $drawResult = [];
                     $drawResult = $this->playWithRandomNumbers(true);
@@ -70,6 +73,9 @@ class LuxorPlayer {
                     $results['REGENERATED_RANDOM']['first_frame'] += $drawResult['first_frame'];
                     $results['REGENERATED_RANDOM']['luxor'] += $drawResult['luxor'];
                     $results['REGENERATED_RANDOM']['jackpot'] += $drawResult['jackpot'];
+                    $results['REGENERATED_RANDOM']['luxor_dates'] += $drawResult['luxor_dates'];
+                    $results['REGENERATED_RANDOM']['first_frame_dates'] += $drawResult['first_frame_dates'];
+                    $results['REGENERATED_RANDOM']['first_picture_dates'] += $drawResult['first_picture_dates'];
                     
                    
                     foreach($previousDraws as $previousDraw){
@@ -93,6 +99,10 @@ class LuxorPlayer {
                                     $results[$key]['first_frame'] += $drawResult['first_frame'];
                                     $results[$key]['luxor'] += $drawResult['luxor'];
                                     $results[$key]['jackpot'] += $drawResult['jackpot'];
+                                    $results[$key]['luxor_dates'] += $drawResult['luxor_dates'];
+                                    $results[$key]['first_frame_dates'] += $drawResult['first_frame_dates'];
+                                    $results[$key]['first_picture_dates'] += $drawResult['first_picture_dates'];
+                                    
                                 }
                             } elseif(in_array($strategy, ["LEAST_DRAWN_AND_RANDOM", "MOST_DRAWN_AND_RANDOM", "LEAST_AND_MOST_DRAWN"])){
                                 foreach($selections[1]['first'] as $firstSelection){
@@ -119,6 +129,9 @@ class LuxorPlayer {
                                         $results[$key]['first_frame'] += $drawResult['first_frame'];
                                         $results[$key]['luxor'] += $drawResult['luxor'];
                                         $results[$key]['jackpot'] += $drawResult['jackpot'];
+                                        $results[$key]['luxor_dates'] += $drawResult['luxor_dates'];
+                                        $results[$key]['first_frame_dates'] += $drawResult['first_frame_dates'];
+                                        $results[$key]['first_picture_dates'] += $drawResult['first_picture_dates'];
                                     }
                                 }
                             } elseif($strategy == "MOST_LEAST_AND_RANDOM"){
@@ -136,6 +149,9 @@ class LuxorPlayer {
                                             $results[$key]['first_frame'] += $drawResult['first_frame'];
                                             $results[$key]['luxor'] += $drawResult['luxor'];
                                             $results[$key]['jackpot'] += $drawResult['jackpot'];
+                                            $results[$key]['luxor_dates'] += $drawResult['luxor_dates'];
+                                            $results[$key]['first_frame_dates'] += $drawResult['first_frame_dates'];
+                                            $results[$key]['first_picture_dates'] += $drawResult['first_picture_dates'];
                                         }
                                     }
                                 }
@@ -149,8 +165,8 @@ class LuxorPlayer {
         } catch(\Exception $ex){
         }
         uasort($results, [$this, 'orderByTotal']);
-        $resultSlice = array_slice($results, 0, 30);
-        return $resultSlice;
+        //$resultSlice = array_slice($results, 0, 100);
+        return $results;
     }
     
     /**
@@ -191,6 +207,7 @@ class LuxorPlayer {
             $results['REGENERATED_RANDOM']['first_frame'] += $drawResult['first_frame'];
             $results['REGENERATED_RANDOM']['luxor'] += $drawResult['luxor'];
             $results['REGENERATED_RANDOM']['jackpot'] += $drawResult['jackpot'];
+            
 
             $drawResult = [];
             switch($strategy){
@@ -240,15 +257,18 @@ class LuxorPlayer {
      */
     public function playWithRandomNumbers($regenerateTicketsBeforeEveryDraw = false){
         $this->game = new LuxorGame();
+        $this->fileProcessor = new FileProcessor();
         $this->fileProcessor->readFileIntoArray($this->drawCount);
         $draws = $this->fileProcessor->getDrawResults();
         if($regenerateTicketsBeforeEveryDraw){
+            //print PHP_EOL . 'REGENERATED RANDOM DRAW COUNT: ' . sizeof($draws) . ' THIS DRAWCOUNT: ' . $this->drawCount . PHP_EOL;
             foreach($draws as $draw){
                 $this->ticketGenerator->generateTicketsWithRandomNumbers($this->ticketCount);
                 $this->game->processTicketsForADraw($this->ticketGenerator->getTickets(), $draw);
             }
             return $this->game->getResults();
         } else {
+            //print PHP_EOL .'RANDOM DRAW COUNT: ' . sizeof($draws) . ' THIS DRAWCOUNT: ' . $this->drawCount . PHP_EOL;
             $this->ticketGenerator->generateTicketsWithRandomNumbers($this->ticketCount);
             $results = $this->game->processTicketsForDraws($this->ticketGenerator->getTickets(), $draws);
             return $results;
@@ -266,8 +286,10 @@ class LuxorPlayer {
      */
     public function playWithSelectedNumbers($previousDrawsToSelectFrom, $firstSelection, $strategy = "MOST_DRAWN", $secondSelection = 0, $thirdSelection = 0){
         $this->game = new LuxorGame();
+        $this->fileProcessor = new FileProcessor();
         $this->fileProcessor->readFileIntoArray($this->drawCount + $previousDrawsToSelectFrom);
         $draws = array_reverse($this->fileProcessor->getDrawResults());
+        //print PHP_EOL . $strategy . ' DRAW COUNT: ' . $this->drawCount . PHP_EOL;
         for($i = 0; $i < $this->drawCount; $i++){
             $lastDraw = array_pop($draws);
             $previousDraws = array_slice($draws, -($previousDrawsToSelectFrom), $previousDrawsToSelectFrom, true);
@@ -302,6 +324,10 @@ class LuxorPlayer {
             }
             $this->ticketGenerator->generateTicketsWithRandomNumbersFromSelection($this->ticketCount, $selection);
             $this->game->processTicketsForADraw($this->ticketGenerator->getTickets(), $lastDraw);
+        }
+        $results = $this->game->getResults();
+        if($results['luxor'] >= 1){
+            print $strategy . ' ' . $previousDrawsToSelectFrom . ' ' . $firstSelection . ' ' . $secondSelection . ' ' . $thirdSelection . PHP_EOL;
         }
         return $this->game->getResults();
     }
@@ -367,7 +393,7 @@ class LuxorPlayer {
      */
     private function initializeResults($strategy, $selections){
         $results = [];
-        $startValue = ['total' => 0, 'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0];
+        $startValue = ['total' => 0, 'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0, 'luxor_dates' => [], 'first_picture_dates' => [], 'first_frame_dates' => []];
         $firstSelection = isset($selections['first']) ? intval($selections['first']) : 0;
         $secondSelection = isset($selections['second']) ? intval($selections['second']) : 0;
         $thirdSelection = isset($selections['third']) ? intval($selections['third']) : 0;
@@ -407,7 +433,7 @@ class LuxorPlayer {
      */
     private function initializeResultsFromConfig($strategies, $previousDraws, $selections){
         $results = [];
-        $startValue = ['total' => 0, 'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0];
+        $startValue = ['total' => 0, 'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0, 'luxor_dates' => [], 'first_picture_dates' => [], 'first_frame_dates' => []];
         
         $results["SAME_RANDOM"] = $startValue;
         $results["REGENERATED_RANDOM"] = $startValue;

@@ -15,6 +15,9 @@ class LuxorGame {
         $this->results['first_picture'] = 0; 
         $this->results['frames'] = 0; 
         $this->results['pictures'] = 0;
+        $this->results['luxor_dates'] = [];
+        $this->results['first_frame_dates'] = [];
+        $this->results['first_picture_dates'] = [];   
     }
     
     /**
@@ -47,6 +50,15 @@ class LuxorGame {
      * @param array $draw
      */
     public function processTicketsForADraw($tickets, $draw){
+        
+        /*print $draw[0]['date'];
+        print ' DRAW: ';
+        foreach($draw[1] as $key => $value){
+            if($value > 0){
+                print $key . ' ';
+            }
+        }
+        print PHP_EOL;*/
         foreach($tickets as $ticket){
             $this->processTicket($ticket, $draw);    
         }
@@ -61,6 +73,7 @@ class LuxorGame {
     public function processTicket($ticket, $draw){
         $drawNumber = 1;
         $ticketCopy = clone $ticket; //cloned because ticket could be used in more than one draw
+        //print 'TICKET: picture: ' . implode(' ',$ticketCopy->picture) . ' frame: ' . implode(' ', $ticketCopy->frame) . PHP_EOL;
         while($draw[0]['luxor'] >= $drawNumber){
             $number = array_search($drawNumber, $draw[1]);
             if(in_array($number, $ticketCopy->picture)){
@@ -69,6 +82,7 @@ class LuxorGame {
                 if(empty($ticketCopy->picture)){
                     if($drawNumber <= $draw[0]['first_picture']){
                         $this->results['first_picture']++;
+                        $this->results['first_picture_dates'][] = $draw[0]['date'];
                     }
                     $this->results['pictures']++;
                 }
@@ -79,18 +93,21 @@ class LuxorGame {
                 if(empty($ticketCopy->frame)){
                     if($drawNumber <= $draw[0]['first_frame']){
                         $this->results['first_frame']++;
+                        $this->results['first_frame_dates'][] = $draw[0]['date'];
                     }
                     $this->results['frames']++;
                 }
             }
             if(empty($ticketCopy->frame) && empty($ticketCopy->picture)){
                 if($drawNumber <= $draw[0]['jackpot_limit']){
-                    //print $draw[0]['date'] . ' jackpot' . PHP_EOL;
+                    print $draw[0]['date'] . ' jackpot' . PHP_EOL;
+                    $this->results['luxor_dates'][] = $draw[0]['date'];
                     $this->results['jackpot']++;
                     $this->results['luxor']++;
                     break;
                 } else {
-                    //print $draw[0]['date'] . ' luxor' . PHP_EOL;
+                    print $draw[0]['date'] . ' luxor' . PHP_EOL;
+                    $this->results['luxor_dates'][] = $draw[0]['date'];
                     $this->results['luxor']++;
                     break;
                 }

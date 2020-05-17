@@ -15,10 +15,11 @@ return [
           */
         'game_variables' => 
                         [
-                          'draws' => 522,
-                          'tickets' => 10,
-                          'repeat' => 1,
-                          'max_selection' => 30,
+                          'draws' => 3,
+                          'tickets' => 20,
+                          'repeat' => 10,
+                          'min_selection' => 25,
+                          'max_selection' => 35,
                           'previous_draws' => [2,3,4,5,6,7,8,9,10,11,12,14,21,30],
                            /* "LEAST_DRAWN","MOST_DRAWN","LEAST_DRAWN_AND_RANDOM","MOST_DRAWN_AND_RANDOM" */
                           'strategies' => ["LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],

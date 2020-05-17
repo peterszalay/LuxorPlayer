@@ -47,7 +47,7 @@ class LuxorPlayer {
                 $selections[1] = (isset($file['game_variables']['two_selections']) && is_array($file['game_variables']['two_selections'])) ? $file['game_variables']['two_selections'] : [];
                 $selections[2] = (isset($file['game_variables']['three_selections']) && is_array($file['game_variables']['three_selections'])) ? $file['game_variables']['three_selections'] : [];
                 
-                $results = $this->initializeResultsFromConfig($strategies, $previousDraws, $selections);
+                $results = $this->initializeResultsFromConfig($strategies, $previousDraws, $selections, $minSelection, $maxSelection);
                 //print_r($results);
                 $this->setDrawCount($drawCount);
                 $this->setTicketCount($ticketCount);
@@ -66,6 +66,9 @@ class LuxorPlayer {
                         foreach($strategies as $strategy){
                             if(in_array($strategy, ["LEAST_DRAWN", "MOST_DRAWN"])){
                                 foreach($selections[0] as $selection){
+                                    if(($selection < $minSelection) || ($selection > $maxSelection)){
+                                        continue;
+                                    }
                                     $drawResult = [];
                                     $key = $strategy . '_' . $previousDraw . '_' . $selection;
                                     switch($strategy){
@@ -382,9 +385,11 @@ class LuxorPlayer {
      * @param string $strategy
      * @param array $previousDraws
      * @param array $selections
+     * @param int $minSelection
+     * @param int $maxSelection
      * @return array
      */
-    private function initializeResultsFromConfig($strategies, $previousDraws, $selections){
+    private function initializeResultsFromConfig($strategies, $previousDraws, $selections, $minSelection = 20, $maxSelection = 70){
         $results = [];
         $startValue = ['total' => 0, 'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0, 'luxor_dates' => [], 'first_picture_dates' => [], 'first_frame_dates' => []];
         
@@ -394,6 +399,9 @@ class LuxorPlayer {
             foreach($strategies as $strategy){
                 if(in_array($strategy, ["LEAST_DRAWN", "MOST_DRAWN"])){
                     foreach($selections[0] as $selection){
+                        if(($selection < $minSelection) || ($selection > $maxSelection)){
+                            continue;
+                        }
                         switch($strategy){
                             case "LEAST_DRAWN":
                                 $results[$strategy . '_' . $previousDraw . '_' . $selection] = $startValue;
@@ -406,6 +414,9 @@ class LuxorPlayer {
                 } elseif(in_array($strategy, ["LEAST_DRAWN_AND_RANDOM", "MOST_DRAWN_AND_RANDOM", "LEAST_AND_MOST_DRAWN"])){
                     foreach($selections[1]['first'] as $firstSelection){
                         foreach($selections[1]['second'] as $secondSelection){
+                            if(($firstSelection + $secondSelection < $minSelection) || ($firstSelection + $secondSelection > $maxSelection)){
+                                continue;
+                            }
                             switch($strategy){
                                 case "LEAST_DRAWN_AND_RANDOM":
                                     $results[$strategy . '_' . $previousDraw . '_L' . $firstSelection . '_R' . $secondSelection] = $startValue;
@@ -423,6 +434,9 @@ class LuxorPlayer {
                     foreach($selections[2]['first'] as $firstSelection){
                         foreach($selections[2]['second'] as $secondSelection){
                             foreach($selections[2]['third'] as $thirdSelection){
+                                if(($firstSelection + $secondSelection + $thirdSelection < $minSelection) || ($firstSelection + $secondSelection + $thirdSelection > $maxSelection)){
+                                    continue;
+                                }
                                 $results[$strategy .  '_' . $previousDraw . '_M' . $firstSelection . '_L' . $secondSelection . '_R' . $thirdSelection] =  $startValue;
                             }
                         }

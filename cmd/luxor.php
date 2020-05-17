@@ -266,7 +266,10 @@ function playFromConfig()
     $i = 1;
     print PHP_EOL;
     foreach($results as $key => $value){
-        if($i <= 50 || $key == "SAME_RANDOM" || $key == "REGENERATED_RANDOM"){
+        if($i == 51 || $i == (sizeof($results) - 10)){
+            print '...' . PHP_EOL;
+        }
+        if($i <= 50 || $key == "SAME_RANDOM" || $key == "REGENERATED_RANDOM" || ($i >= sizeof($results) - 10)) {
             print $i  . '. ' . $key . ' reached a total of: ' . number_format((intval($value['total']) * 1000), 0, ',', ' ') . ' Ft' . PHP_EOL;
             print 'jackpot: ' . $value['jackpot'] . ', luxor: ' . $value['luxor'] . ', first frame: ' . $value['first_frame'] . ', first picture: ' . $value['first_picture'] . ', frames: ' . $value['frames'] .
             ', pictures: ' . $value['pictures'] . PHP_EOL;

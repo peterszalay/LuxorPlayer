@@ -185,8 +185,8 @@ class LuxorTicketGenerator {
         $thirdRange = [];
         $fourthRange = [];
         $fifthRange = [];
-        if($size <= 5){
-            $size = 5;
+        if($size < 5){
+            $size = 0;
         }
         if($size >= 40){
             $size = 40;

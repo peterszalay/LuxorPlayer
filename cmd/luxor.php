@@ -3,6 +3,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $luxorPlayer = new LuxorPlayer\LuxorPlayer;
 $luxorPlayer->init();
+$ticketGenerator = new LuxorPlayer\LuxorTicketGenerator;
 
 print
 ' 
@@ -310,7 +311,7 @@ function playFromConfig()
 
 function generateNumbers(){
     
-    global $handle, $luxorPlayer;
+    global $handle, $luxorPlayer, $ticketGenerator;
     
     print PHP_EOL . "Choose your strategy:" . PHP_EOL;
     
@@ -340,20 +341,20 @@ function generateNumbers(){
     switch($strategyId){
         case 2:
             $strategy = "LEAST_DRAWN";
-            print "How many least selected numbers should be selected? (5-70) ";
+            print "How many least selected numbers should be included? (5-70) ";
             $selection['first'] = intval(trim(fgets($handle)));
             break;
         case 3:
             $strategy = "LEAST_AND_MOST_DRAWN";
-            print "How many least selected numbers should be selected? (5-70) ";
+            print "How many least selected numbers should be included? (5-70) ";
             $selection['first'] = intval(trim(fgets($handle)));
             print PHP_EOL;
-            print "How many most selected numbers should be selected? (5-70) ";
+            print "How many most selected numbers should be included? (5-70) ";
             $selection['second'] = intval(trim(fgets($handle)));
             break;
         case 4:
             $strategy = "MOST_DRAWN_AND_RANDOM";
-            print "How many most selected numbers should be selected? (5-70) ";
+            print "How many most selected numbers should be included? (5-70) ";
             $selection['first'] = intval(trim(fgets($handle)));
             print PHP_EOL;
             print "How many random numbers should be selected? (5-70) ";
@@ -361,7 +362,7 @@ function generateNumbers(){
             break;
         case 5:
             $strategy = "LEAST_DRAWN_AND_RANDOM";
-            print "How many least selected numbers should be selected? (5-70) ";
+            print "How many least selected numbers should be included? (5-70) ";
             $selection['first'] = intval(trim(fgets($handle)));
             print PHP_EOL;
             print "How many random numbers should be selected? (5-70) ";
@@ -369,13 +370,13 @@ function generateNumbers(){
             break;
         case 6:
             $strategy = "MOST_LEAST_AND_RANDOM";
-            print "How many most selected numbers should be selected? (5-70) ";
+            print "How many most selected numbers should be included? (5-70) ";
             $selection['first'] = intval(trim(fgets($handle)));
             print PHP_EOL;
-            print "How many least selected numbers should be selected? (5-70) ";
+            print "How many least selected numbers should be included? (5-70) ";
             $selection['second'] = intval(trim(fgets($handle)));
             print PHP_EOL;
-            print "How many random numbers should be selected? (5-70) ";
+            print "How many random numbers should be included? (5-70) ";
             $selection['third'] = intval(trim(fgets($handle)));
             break;
         case 1: default:
@@ -384,14 +385,32 @@ function generateNumbers(){
             $selection['first'] = intval(trim(fgets($handle)));
     }
     
+    print PHP_EOL;
+    print "How many tickets do you want to generate? ";
+    $numberOfTickets = intval(trim(fgets($handle)));
     print PHP_EOL . PHP_EOL;
     $results = $luxorPlayer->generateNumbers($previousDrawsToSelectFrom, $selection['first'], $strategy, $selection['second'], $selection['third']);
-    print '1. range: ' . implode(' ', $results['first_range']) . PHP_EOL;
-    print '2. range: ' . implode(' ', $results['second_range']) . PHP_EOL;
-    print '3. range: ' . implode(' ', $results['third_range']) . PHP_EOL;
-    print '4. range: ' . implode(' ', $results['fourth_range']) . PHP_EOL;
-    print '5. range: ' . implode(' ', $results['fifth_range']) . PHP_EOL;
+    sort($results['first_range']);
+    sort($results['second_range']);
+    sort($results['third_range']);
+    sort($results['fourth_range']);
+    sort($results['fifth_range']);
+    print "1. range: " . implode(' ', $results['first_range']) . PHP_EOL;
+    print "2. range: " . implode(' ', $results['second_range']) . PHP_EOL;
+    print "3. range: " . implode(' ', $results['third_range']) . PHP_EOL;
+    print "4. range: " . implode(' ', $results['fourth_range']) . PHP_EOL;
+    print "5. range: " . implode(' ', $results['fifth_range']) . PHP_EOL;
     print PHP_EOL;
+    $ticketGenerator->generateTicketsWithRandomNumbersFromSelection($numberOfTickets, $results);
+    $tickets = $ticketGenerator->getTickets();
+    $i = 1;
+    foreach($tickets as $ticket) {
+        sort($ticket->picture);
+        sort($ticket->frame);
+        print $i . '.  picture: ' . implode(' ', $ticket->picture) . ' frame: ' . implode(' ', $ticket->frame) . PHP_EOL;
+        $i++;
+    }
+    print PHP_EOL . PHP_EOL;
     main();
 }
 

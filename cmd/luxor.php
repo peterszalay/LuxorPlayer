@@ -241,7 +241,10 @@ function playLuxorManually()
     foreach($results as $key => $value){
         print $i  . '. ' . $key . ' reached a total of: ' . number_format((intval($value['total']) * 1000), 0, ',', ' ') . ' Ft' . PHP_EOL;
         print 'jackpot: ' . $value['jackpot'] . ', luxor: ' . $value['luxor'] . ', first frame: ' . $value['first_frame'] . ', first picture: ' . $value['first_picture'] . ', frames: ' . $value['frames'] .
-        ', pictures: ' . $value['pictures'] . PHP_EOL;
+        ', pictures: ' . $value['pictures'] . PHP_EOL . PHP_EOL;
+        if($value['jackpot'] > 0){
+            print 'jackpot dates: ' . implode(', ', $value['jackpot_dates']) . PHP_EOL;
+        }
         if($value['luxor'] > 0){
             print 'Luxor dates: ' . implode(', ', $value['luxor_dates']) . PHP_EOL;
         }
@@ -250,6 +253,12 @@ function playLuxorManually()
         }
         if($value['first_picture'] > 0){
             print 'First picture dates: ' . implode(', ', $value['first_picture_dates']) . PHP_EOL;
+        }
+        if($value['frames'] > 0){
+            print 'Frame dates: ' . implode(', ', $value['frame_dates']) . PHP_EOL;
+        }
+        if($value['pictures'] > 0){
+            print 'Picture dates: ' . implode(', ', $value['picture_dates']) . PHP_EOL;
         }
         print PHP_EOL;
         $i++;
@@ -272,7 +281,10 @@ function playFromConfig()
         if($i <= 50 || $key == "SAME_RANDOM" || $key == "REGENERATED_RANDOM" || ($i >= sizeof($results) - 10)) {
             print $i  . '. ' . $key . ' reached a total of: ' . number_format((intval($value['total']) * 1000), 0, ',', ' ') . ' Ft' . PHP_EOL;
             print 'jackpot: ' . $value['jackpot'] . ', luxor: ' . $value['luxor'] . ', first frame: ' . $value['first_frame'] . ', first picture: ' . $value['first_picture'] . ', frames: ' . $value['frames'] .
-            ', pictures: ' . $value['pictures'] . PHP_EOL;
+            ', pictures: ' . $value['pictures'] . PHP_EOL . PHP_EOL;
+            if($value['jackpot'] > 0){
+                print 'jackpot dates: ' . implode(', ', $value['jackpot_dates']) . PHP_EOL;
+            }
             if($value['luxor'] > 0){
                 print 'Luxor dates: ' . implode(', ', $value['luxor_dates']) . PHP_EOL;    
             }
@@ -281,6 +293,12 @@ function playFromConfig()
             }
             if($value['first_picture'] > 0){
                 print 'First picture dates: ' . implode(', ', $value['first_picture_dates']) . PHP_EOL;
+            }
+            if($value['frames'] > 0){
+                print 'Frame dates: ' . implode(', ', $value['frame_dates']) . PHP_EOL;
+            }
+            if($value['pictures'] > 0){
+                print 'Picture dates: ' . implode(', ', $value['picture_dates']) . PHP_EOL;
             }
             print PHP_EOL;
         }

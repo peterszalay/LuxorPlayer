@@ -349,7 +349,8 @@ class LuxorPlayer {
      */
     private function initializeResults($strategy, $selections){
         $results = [];
-        $startValue = ['total' => 0, 'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0, 'luxor_dates' => [], 'first_picture_dates' => [], 'first_frame_dates' => []];
+        $startValue = ['total' => 0, 'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0, 'jackpot_dates' => [],
+                       'luxor_dates' => [], 'first_picture_dates' => [], 'first_frame_dates' => [], 'picture_dates' => [], 'frame_dates' => []];
         $firstSelection = isset($selections['first']) ? intval($selections['first']) : 0;
         $secondSelection = isset($selections['second']) ? intval($selections['second']) : 0;
         $thirdSelection = isset($selections['third']) ? intval($selections['third']) : 0;
@@ -391,7 +392,8 @@ class LuxorPlayer {
      */
     private function initializeResultsFromConfig($strategies, $previousDraws, $selections, $minSelection = 20, $maxSelection = 70){
         $results = [];
-        $startValue = ['total' => 0, 'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0, 'luxor_dates' => [], 'first_picture_dates' => [], 'first_frame_dates' => []];
+        $startValue = ['total' => 0, 'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0, 'jackpot_dates' => [], 
+                       'luxor_dates' => [], 'first_picture_dates' => [], 'first_frame_dates' => [], 'picture_dates' => [], 'frame_dates' => []];
         
         $results["SAME_RANDOM"] = $startValue;
         $results["REGENERATED_RANDOM"] = $startValue;
@@ -464,9 +466,12 @@ class LuxorPlayer {
         $results[$key]['first_frame'] += $drawResult['first_frame'];
         $results[$key]['luxor'] += $drawResult['luxor'];
         $results[$key]['jackpot'] += $drawResult['jackpot'];
+        $results[$key]['jackpot_dates'] += $drawResult['jackpot_dates'];
         $results[$key]['luxor_dates'] += $drawResult['luxor_dates'];
         $results[$key]['first_frame_dates'] += $drawResult['first_frame_dates'];
         $results[$key]['first_picture_dates'] += $drawResult['first_picture_dates'];
+        $results[$key]['frame_dates'] += $drawResult['frame_dates'];
+        $results[$key]['picture_dates'] += $drawResult['picture_dates'];
     }
     
     /**

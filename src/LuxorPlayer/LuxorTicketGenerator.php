@@ -39,6 +39,7 @@ class LuxorTicketGenerator {
      * @param int $numberOfTickets
      */
     public function generateTicketsWithRandomNumbers($numberOfTickets){
+        $this->tickets = [];
         for($i = 0; $i < $numberOfTickets; $i++){
             $this->tickets[$i] = $this->generateTicketWithRandomNumbers();     
         }
@@ -51,6 +52,7 @@ class LuxorTicketGenerator {
      * @param array $selection
      */
     public function generateTicketsWithRandomNumbersFromSelection($numberOfTickets, $selection){
+        $this->tickets = [];
         for($i = 0; $i < $numberOfTickets; $i++){
             $this->tickets[$i] = $this->generateTicketWithRandomNumbersFromSelection($selection);
         }

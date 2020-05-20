@@ -69,7 +69,8 @@ class DrawProcessor {
         $thirdRange = $this->createSimplifiedOrderedSlice($results, 31, $numberOfDrawnPerSlice, $ordering);
         $fourthRange = $this->createSimplifiedOrderedSlice($results, 46, $numberOfDrawnPerSlice, $ordering);
         $fifthRange = $this->createSimplifiedOrderedSlice($results, 61, $numberOfDrawnPerSlice, $ordering);
-        
+        print_r($draws);
+        print_r($results);
         return ['first_range' => $firstRange, 'second_range' => $secondRange, 'third_range' => $thirdRange, 'fourth_range' => $fourthRange, 'fifth_range' => $fifthRange];
     }
     

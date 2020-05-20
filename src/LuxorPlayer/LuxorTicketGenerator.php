@@ -175,7 +175,7 @@ class LuxorTicketGenerator {
     }
     
     /**
-     * Helper function that returns a selection of random numbers of size (rounded so it is minimum 5, maximum 40 and dividable by 5) 
+     * Helper function that returns a selection of random numbers of size (rounded so it is minimum 0, maximum 40 and dividable by 5) 
      * 
      * @param int $size
      * @return array

@@ -153,13 +153,13 @@ class LuxorTicketGeneratorTest extends TestCase
     
     public function testGenerateRandomSelectionReturnsCorrectSizeArrayWithCorrectSizeRanges()
     {
-        $selection = $this->luxorTicketGenerator->generateRandomSelection(-10); //min: 5
+        $selection = $this->luxorTicketGenerator->generateRandomSelection(-10); //min: 0
         
-        $this->assertEquals(sizeof($selection['first_range']), 1);
-        $this->assertEquals(sizeof($selection['second_range']), 1);
-        $this->assertEquals(sizeof($selection['third_range']), 1);
-        $this->assertEquals(sizeof($selection['fourth_range']), 1);
-        $this->assertEquals(sizeof($selection['fifth_range']), 1);
+        $this->assertEquals(sizeof($selection['first_range']), 0);
+        $this->assertEquals(sizeof($selection['second_range']), 0);
+        $this->assertEquals(sizeof($selection['third_range']), 0);
+        $this->assertEquals(sizeof($selection['fourth_range']), 0);
+        $this->assertEquals(sizeof($selection['fifth_range']), 0);
         
         $selection = $this->luxorTicketGenerator->generateRandomSelection(20);
         

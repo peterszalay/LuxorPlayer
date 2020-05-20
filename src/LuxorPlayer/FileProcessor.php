@@ -20,8 +20,8 @@ class FileProcessor {
      */
     public function readFileIntoArray($drawCount = 0){
         $file = include  __DIR__ . '/../../config/luxor.php';
-        if($drawCount == 0 && isset($file['game_variables']['load_draws']) && is_int($file['game_variables']['load_draws'])){
-            $drawCount = $file['game_variables']['load_draws'];
+        if($drawCount == 0 && isset($file['game_variables']['draws']) && is_int($file['game_variables']['draws'])){
+            $drawCount = $file['game_variables']['draws'];
         }
         if($drawCount > 0){
             if (file_exists($file['file_paths']['local_path']) && ($handle = fopen($file['file_paths']['local_path'], "r")) !== FALSE) {

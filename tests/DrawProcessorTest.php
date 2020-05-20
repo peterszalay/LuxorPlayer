@@ -86,7 +86,7 @@ class DrawProcessorTest extends TestCase
         $this->assertEquals($result, 25);
         
         $result = $method->invokeArgs($this->drawProcessor, [-100]);
-        $this->assertEquals($result, 5);
+        $this->assertEquals($result, 0);
         
         $result = $method->invokeArgs($this->drawProcessor, [79]);
         $this->assertEquals($result, 70);

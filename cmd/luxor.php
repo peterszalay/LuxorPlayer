@@ -407,7 +407,9 @@ function generateNumbers(){
     foreach($tickets as $ticket) {
         sort($ticket->picture);
         sort($ticket->frame);
-        print $i . '.  picture: ' . implode(' ', $ticket->picture) . ' frame: ' . implode(' ', $ticket->frame) . PHP_EOL;
+        $allInOne = array_merge($ticket->picture, $ticket->frame);
+        sort($allInOne);
+        print $i . '.  picture: ' . implode(' ', $ticket->picture) . ' frame: ' . implode(' ', $ticket->frame) . PHP_EOL . '    all in one: ' . implode(' ', $allInOne) . PHP_EOL . PHP_EOL;
         $i++;
     }
     print PHP_EOL . PHP_EOL;

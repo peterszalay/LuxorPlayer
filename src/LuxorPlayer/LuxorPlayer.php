@@ -125,7 +125,6 @@ class LuxorPlayer {
                     }
                     $i++;
                 }                   
-            } else {
             }
         } catch(\Exception $ex){
         }
@@ -272,9 +271,9 @@ class LuxorPlayer {
             $this->game->processTicketsForADraw($this->ticketGenerator->getTickets(), $lastDraw);
         }
         $results = $this->game->getResults();
-        if($results['luxor'] >= 1){
+       /* if($results['luxor'] >= 1){
             print $strategy . ' ' . $previousDrawsToSelectFrom . ' ' . $firstSelection . ' ' . $secondSelection . ' ' . $thirdSelection . PHP_EOL;
-        }
+        }*/
         return $this->game->getResults();
     }
 

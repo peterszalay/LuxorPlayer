@@ -270,8 +270,8 @@ class LuxorPlayer {
             $this->ticketGenerator->generateTicketsWithRandomNumbersFromSelection($this->ticketCount, $selection);
             $this->game->processTicketsForADraw($this->ticketGenerator->getTickets(), $lastDraw);
         }
-        $results = $this->game->getResults();
-       /* if($results['luxor'] >= 1){
+        /*$results = $this->game->getResults();
+        if($results['luxor'] >= 1){
             print $strategy . ' ' . $previousDrawsToSelectFrom . ' ' . $firstSelection . ' ' . $secondSelection . ' ' . $thirdSelection . PHP_EOL;
         }*/
         return $this->game->getResults();

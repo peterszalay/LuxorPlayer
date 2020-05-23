@@ -33,19 +33,19 @@ class LuxorPlayer {
     public function playFromConfig(){
         try {
             $file = include  __DIR__ . '/../../config/luxor.php';
-            if(isset($file['game_variables'])){
+            if(isset($file['manual_player'])){
                 $i = 1;
-                $drawCount = (isset($file['game_variables']['draws']) && is_int($file['game_variables']['draws']) && $file['game_variables']['draws'] > 1) ? $file['game_variables']['draws'] : 1;
-                $ticketCount = (isset($file['game_variables']['tickets']) && is_int($file['game_variables']['tickets']) && $file['game_variables']['tickets'] > 1) ? $file['game_variables']['tickets'] : 1;
-                $repeatTimes = (isset($file['game_variables']['repeat']) && is_int($file['game_variables']['repeat']) && $file['game_variables']['repeat'] > 1) ? $file['game_variables']['repeat'] : 1;
-                $minSelection = (isset($file['game_variables']['min_selection']) && is_int($file['game_variables']['min_selection']) && $file['game_variables']['min_selection'] > 20) ? $file['game_variables']['min_selection'] : 20;
-                $maxSelection = (isset($file['game_variables']['max_selection']) && is_int($file['game_variables']['max_selection']) && $file['game_variables']['max_selection'] > 20) ? $file['game_variables']['max_selection'] : 70;
-                $strategies = (isset($file['game_variables']['strategies']) && is_array($file['game_variables']['strategies'])) ? $file['game_variables']['strategies'] : [];
-                $previousDraws = (isset($file['game_variables']['previous_draws']) && is_array($file['game_variables']['previous_draws'])) ? $file['game_variables']['previous_draws'] : [];
+                $drawCount = (isset($file['manual_player']['draws']) && is_int($file['manual_player']['draws']) && $file['manual_player']['draws'] > 1) ? $file['manual_player']['draws'] : 1;
+                $ticketCount = (isset($file['manual_player']['tickets']) && is_int($file['manual_player']['tickets']) && $file['manual_player']['tickets'] > 1) ? $file['manual_player']['tickets'] : 1;
+                $repeatTimes = (isset($file['manual_player']['repeat']) && is_int($file['manual_player']['repeat']) && $file['manual_player']['repeat'] > 1) ? $file['manual_player']['repeat'] : 1;
+                $minSelection = (isset($file['manual_player']['min_selection']) && is_int($file['manual_player']['min_selection']) && $file['manual_player']['min_selection'] > 20) ? $file['manual_player']['min_selection'] : 20;
+                $maxSelection = (isset($file['manual_player']['max_selection']) && is_int($file['manual_player']['max_selection']) && $file['manual_player']['max_selection'] > 20) ? $file['manual_player']['max_selection'] : 70;
+                $strategies = (isset($file['manual_player']['strategies']) && is_array($file['manual_player']['strategies'])) ? $file['manual_player']['strategies'] : [];
+                $previousDraws = (isset($file['manual_player']['previous_draws']) && is_array($file['manual_player']['previous_draws'])) ? $file['manual_player']['previous_draws'] : [];
                 $selections = [];
-                $selections[0] = (isset($file['game_variables']['one_selection']) && is_array($file['game_variables']['one_selection'])) ? $file['game_variables']['one_selection'] : [];
-                $selections[1] = (isset($file['game_variables']['two_selections']) && is_array($file['game_variables']['two_selections'])) ? $file['game_variables']['two_selections'] : [];
-                $selections[2] = (isset($file['game_variables']['three_selections']) && is_array($file['game_variables']['three_selections'])) ? $file['game_variables']['three_selections'] : [];
+                $selections[0] = (isset($file['manual_player']['one_selection']) && is_array($file['manual_player']['one_selection'])) ? $file['manual_player']['one_selection'] : [];
+                $selections[1] = (isset($file['manual_player']['two_selections']) && is_array($file['manual_player']['two_selections'])) ? $file['manual_player']['two_selections'] : [];
+                $selections[2] = (isset($file['manual_player']['three_selections']) && is_array($file['manual_player']['three_selections'])) ? $file['manual_player']['three_selections'] : [];
                 
                 $results = $this->initializeResultsFromConfig($strategies, $previousDraws, $selections, $minSelection, $maxSelection);
                 //print_r($results);

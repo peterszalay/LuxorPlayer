@@ -36,7 +36,7 @@ class AutoPlay {
                                 $newPlayer->setRegenerated(true);
                             } 
                             $this->players[] = $newPlayer;
-                            $this->initializePlayerResults($player['name']);
+                            $this->initializePlayerResults($newPlayer->getName());
                         }
                     }
                 }
@@ -53,19 +53,24 @@ class AutoPlay {
     /**
      * Add player to $results array with starting values 
      * 
-     * @param array $player
+     * @param String $playerName
      */
-    private function initializePlayerResults($player)
+    private function initializePlayerResults($playerName)
     {
         $startValue = ['total' => 0, 'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0, 'jackpot_dates' => [],
             'luxor_dates' => [], 'first_picture_dates' => [], 'first_frame_dates' => [], 'picture_dates' => [], 'frame_dates' => []];
-        $this->results[$player['name']] = $startValue;
+        $this->results[$playerName] = $startValue;
     }
     
     public function play()
     {
+        $this->createPlayers();
         //loop through the players array and play each player
-        //when a player finishes print out and to file the results with that player
+        foreach($this->players as $player){
+            $player->play();
+            $this->results[$player->getName()] = $player->getResults();
+        }
+        return $this->results;
     }
 
 }

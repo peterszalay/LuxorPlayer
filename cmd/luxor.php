@@ -4,6 +4,7 @@ require __DIR__ . '/../vendor/autoload.php';
 $luxorPlayer = new LuxorPlayer\LuxorPlayer;
 $luxorPlayer->init();
 $ticketGenerator = new LuxorPlayer\LuxorTicketGenerator;
+$autoPlay = new LuxorPlayer\AutoPlay;
 
 print
 ' 
@@ -88,7 +89,8 @@ $playMenu =
 '    
 1. Play with user defined parameters manually
 2. Play with parameters given in configuration file
-3. Go back to main menu
+3. Autoplay
+4. Go back to main menu
 ' . PHP_EOL;
     
     print $playMenu;
@@ -107,6 +109,9 @@ $playMenu =
             playFromConfig();
             break;
         case 3:
+            autoPlay();
+            break;
+        case 4:
             main();
             break;       
         default:
@@ -413,6 +418,41 @@ function generateNumbers(){
         $i++;
     }
     print PHP_EOL . PHP_EOL;
+    main();
+}
+
+function autoPlay(){
+    global $autoPlay;
+    
+    $results = $autoPlay->play();
+    $i = 1;
+    print PHP_EOL;
+    foreach($results as $key => $value){
+        print $i  . '. ' . $key . PHP_EOL;
+        print 'jackpot: ' . $value['jackpot'] . ', luxor: ' . $value['luxor'] . ', first frame: ' . $value['first_frame'] . ', first picture: ' . $value['first_picture'] . ', frames: ' . $value['frames'] .
+        ', pictures: ' . $value['pictures'] . PHP_EOL . PHP_EOL;
+        if($value['jackpot'] > 0){
+            print 'jackpot dates: ' . implode(', ', $value['jackpot_dates']) . PHP_EOL;
+        }
+        if($value['luxor'] > 0){
+            print 'Luxor dates: ' . implode(', ', $value['luxor_dates']) . PHP_EOL;
+        }
+        if($value['first_frame'] > 0){
+            print 'First frame dates: ' . implode(', ', $value['first_frame_dates']) . PHP_EOL;
+        }
+        if($value['first_picture'] > 0){
+            print 'First picture dates: ' . implode(', ', $value['first_picture_dates']) . PHP_EOL;
+        }
+        if($value['frames'] > 0){
+            print 'Frame dates: ' . implode(', ', $value['frame_dates']) . PHP_EOL;
+        }
+        if($value['pictures'] > 0){
+            print 'Picture dates: ' . implode(', ', $value['picture_dates']) . PHP_EOL;
+        }
+        print PHP_EOL;
+        $i++;
+    }
+    print PHP_EOL;
     main();
 }
 

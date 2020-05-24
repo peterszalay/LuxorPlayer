@@ -169,4 +169,32 @@ class AutoPlayer {
     {
         return $this->results;
     }
+    
+    /**
+     * @return String name
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+    
+    /**
+     * Each player plays according to its settings
+     * 
+     */
+    public function play(){
+        if($this->most == false && $this->least == false && $this->random == true){
+            $luxorPlayer = new LuxorPlayer;
+            $luxorPlayer->init();
+            $luxorPlayer->setDrawCount($this->drawCount);
+            $luxorPlayer->setTicketCount($this->ticketCount);
+            if($this->regenerated == true){
+                $this->results = $luxorPlayer->playWithRandomNumbers(true);
+            } else {
+                $this->results = $luxorPlayer->playWithRandomNumbers();
+            }
+        } else {
+            
+        }
+    }
 }

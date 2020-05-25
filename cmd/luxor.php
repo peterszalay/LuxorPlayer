@@ -286,6 +286,8 @@ function playFromConfig()
         }
         if($i <= 50 || $key == "SAME_RANDOM" || $key == "REGENERATED_RANDOM" || ($i >= sizeof($results) - 10)) {
             print $i  . '. ' . $key . ' reached a total of: ' . number_format((intval($value['total']) * 1000), 0, ',', ' ') . ' Ft' . PHP_EOL;
+            //print 'prev draws: ' . $value['prev_draws'] . ', random: ' . $value['random'] . ', most: ' . $value['most'] . ', least: ' . $value['least']  . ', mixed: ' . $value['mixed'] . PHP_EOL;
+            //print 'first selection: ' . $value['first_selection'] . ', second selection: ' . $value['second_selection'] . ', third selection: ' . $value['third_selection'] . PHP_EOL;
             print 'jackpot: ' . $value['jackpot'] . ', luxor: ' . $value['luxor'] . ', first frame: ' . $value['first_frame'] . ', first picture: ' . $value['first_picture'] . ', frames: ' . $value['frames'] .
             ', pictures: ' . $value['pictures'] . PHP_EOL . PHP_EOL;
             if($value['jackpot'] > 0){

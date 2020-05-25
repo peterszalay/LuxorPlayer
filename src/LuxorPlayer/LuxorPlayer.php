@@ -391,23 +391,45 @@ class LuxorPlayer {
      */
     private function initializeResultsFromConfig($strategies, $previousDraws, $selections, $minSelection = 20, $maxSelection = 70){
         $results = [];
-        $startValue = ['total' => 0, 'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0, 'jackpot_dates' => [], 
-                       'luxor_dates' => [], 'first_picture_dates' => [], 'first_frame_dates' => [], 'picture_dates' => [], 'frame_dates' => []];
+        $startValue = ['random' => false, 'most' => false, 'least' => false, 'mixed' => false, 'prev_draws' => 0, 
+                       'first_selection' => 0, 'second_selection' => 0, 'third_selection' => 0, 'total' => 0, 
+                       'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0, 
+                       'jackpot_dates' => [], 'luxor_dates' => [], 'first_picture_dates' => [], 'first_frame_dates' => [], 
+                       'picture_dates' => [], 'frame_dates' => []];
         
         $results["SAME_RANDOM"] = $startValue;
+        $results["SAME_RANDOM"]['random'] = true;
         $results["REGENERATED_RANDOM"] = $startValue;
+        $results["REGENERATED_RANDOM"]['random'] = true;
         foreach($previousDraws as $previousDraw){
+            $startValue['prev_draws'] = $previousDraw;
+            $startValue['first_selection'] = 0;
+            $startValue['second_selection'] = 0;
+            $startValue['third_selection'] = 0;
+            $startValue['least'] = false;
+            $startValue['most'] = false;
+            $startValue['random'] = false;
+            $startValue['mixed'] = false;
             foreach($strategies as $strategy){
                 if(in_array($strategy, ["LEAST_DRAWN", "MOST_DRAWN"])){
                     foreach($selections[0] as $selection){
                         if(($selection < $minSelection) || ($selection > $maxSelection)){
                             continue;
                         }
+                        $startValue['first_selection'] = $selection;
                         switch($strategy){
                             case "LEAST_DRAWN":
+                                $startValue['least'] = true;
+                                $startValue['most'] = false;
+                                $startValue['random'] = false;
+                                $startValue['mixed'] = false;
                                 $results[$strategy . '_' . $previousDraw . '_' . $selection] = $startValue;
                                 break;
                             case "MOST_DRAWN":
+                                $startValue['most'] = true;
+                                $startValue['least'] = false;
+                                $startValue['random'] = false;
+                                $startValue['mixed'] = false;
                                 $results[$strategy . '_' . $previousDraw . '_' . $selection] = $startValue;
                                 break;
                         }
@@ -418,14 +440,28 @@ class LuxorPlayer {
                             if(($firstSelection + $secondSelection < $minSelection) || ($firstSelection + $secondSelection > $maxSelection)){
                                 continue;
                             }
+                            $startValue['first_selection'] = $firstSelection;
+                            $startValue['second_selection'] = $secondSelection;
                             switch($strategy){
                                 case "LEAST_DRAWN_AND_RANDOM":
+                                    $startValue['least'] = true;
+                                    $startValue['random'] = true;
+                                    $startValue['mixed'] = true;
+                                    $startValue['most'] = false;
                                     $results[$strategy . '_' . $previousDraw . '_L' . $firstSelection . '_R' . $secondSelection] = $startValue;
                                     break;
                                 case "MOST_DRAWN_AND_RANDOM":
+                                    $startValue['most'] = true;
+                                    $startValue['random'] = true;
+                                    $startValue['mixed'] = true;
+                                    $startValue['least'] = false;
                                     $results[$strategy . '_' . $previousDraw . '_M' . $firstSelection . '_R' . $secondSelection] = $startValue;
                                     break;
                                 case "LEAST_AND_MOST_DRAWN":
+                                    $startValue['least'] = true;
+                                    $startValue['most'] = true;
+                                    $startValue['mixed'] = true;
+                                    $startValue['random'] = false;
                                     $results[$strategy . '_' . $previousDraw . '_L' . $firstSelection . '_M' . $secondSelection] = $startValue;
                                     break;
                             }
@@ -438,6 +474,13 @@ class LuxorPlayer {
                                 if(($firstSelection + $secondSelection + $thirdSelection < $minSelection) || ($firstSelection + $secondSelection + $thirdSelection > $maxSelection)){
                                     continue;
                                 }
+                                $startValue['first_selection'] = $firstSelection;
+                                $startValue['second_selection'] = $secondSelection;
+                                $startValue['third_selection'] = $thirdSelection;
+                                $startValue['least'] = true;
+                                $startValue['most'] = true;
+                                $startValue['random'] = true;
+                                $startValue['mixed'] = true;
                                 $results[$strategy .  '_' . $previousDraw . '_M' . $firstSelection . '_L' . $secondSelection . '_R' . $thirdSelection] =  $startValue;
                             }
                         }
@@ -458,7 +501,12 @@ class LuxorPlayer {
      * @param array $drawResult
      */
     private function addToResults($key, &$results, $drawResult){
-        $results[$key]['total'] += $drawResult['pictures'] + (30 * $drawResult['frames']) + (100 * $drawResult['first_picture']) + (1000 * $drawResult['first_frame']) + (7000 * $drawResult['luxor']) + (40000 * $drawResult['jackpot']);
+        $results[$key]['total'] += $drawResult['pictures'] 
+                                + (20 * $drawResult['frames']) 
+                                + (50 * $drawResult['first_picture']) 
+                                + (1000 * $drawResult['first_frame']) 
+                                + (6000 * $drawResult['luxor']) 
+                                + (30000 * $drawResult['jackpot']);
         $results[$key]['pictures'] += $drawResult['pictures'];
         $results[$key]['frames'] += $drawResult['frames'];
         $results[$key]['first_picture'] += $drawResult['first_picture'];

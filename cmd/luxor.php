@@ -6,6 +6,7 @@ $luxorPlayer->init();
 $ticketGenerator = new LuxorPlayer\LuxorTicketGenerator;
 $autoPlay = new LuxorPlayer\AutoPlay;
 
+
 print
 ' 
 
@@ -275,7 +276,41 @@ function playLuxorManually()
 
 function playFromConfig()
 {
-    global $luxorPlayer;
+    global $handle, $luxorPlayer;
+    
+    print "Do you want to save results to excel? (Y = yes N = no) ";
+    $toExcel = strtoupper(trim(fgets($handle)));
+    $spreadsheet;
+    $sheet;
+    if($toExcel == 'Y'){
+        $spreadsheet = new PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1', 'strategy');
+        $sheet->setCellValue('B1', 'previous draws');
+        $sheet->setCellValue('C1', 'random');
+        $sheet->setCellValue('D1', 'most');
+        $sheet->setCellValue('E1', 'least');
+        $sheet->setCellValue('F1', 'mixed');
+        $sheet->setCellValue('G1', 'first selection');
+        $sheet->setCellValue('H1', 'second selection');
+        $sheet->setCellValue('I1', 'third selection');
+        $sheet->setCellValue('J1', 'jackpot');
+        $sheet->setCellValue('K1', 'luxor');
+        $sheet->setCellValue('L1', 'first frame');
+        $sheet->setCellValue('M1', 'first picture');
+        $sheet->setCellValue('N1', 'frames');
+        $sheet->setCellValue('O1', 'pictures');
+        $sheet->setCellValue('P1', 'jackpot dates');
+        $sheet->setCellValue('Q1', 'luxor dates');
+        $sheet->setCellValue('R1', 'first frame dates');
+        $sheet->setCellValue('S1', 'first picture dates');
+        $sheet->setCellValue('T1', 'frame dates');
+        $sheet->setCellValue('U1', 'picture dates');
+        
+    }
+    
+    print PHP_EOL;
+    
     
     $results = $luxorPlayer->playFromConfig();  
     $i = 1;
@@ -310,7 +345,40 @@ function playFromConfig()
             }
             print PHP_EOL;
         }
+        if($toExcel == 'Y'){
+            $sheet->setCellValue('A' . ($i+1), $key);
+            $sheet->setCellValue('B' . ($i+1), $value['prev_draws']);
+            $sheet->setCellValue('C' . ($i+1), $value['random']);
+            $sheet->setCellValue('D' . ($i+1), $value['most']);
+            $sheet->setCellValue('E' . ($i+1), $value['least']);
+            $sheet->setCellValue('F' . ($i+1), $value['mixed']);
+            $sheet->setCellValue('G' . ($i+1), $value['first_selection']);
+            $sheet->setCellValue('H' . ($i+1), $value['second_selection']);
+            $sheet->setCellValue('I' . ($i+1), $value['third_selection']);
+            $sheet->setCellValue('J' . ($i+1), $value['jackpot']);
+            $sheet->setCellValue('K' . ($i+1), $value['luxor']);
+            $sheet->setCellValue('L' . ($i+1), $value['first_frame']);
+            $sheet->setCellValue('M' . ($i+1), $value['first_picture']);
+            $sheet->setCellValue('N' . ($i+1), $value['frames']);
+            $sheet->setCellValue('O' . ($i+1), $value['pictures']);
+            $sheet->setCellValue('P' . ($i+1), implode(', ', $value['jackpot_dates']));
+            $sheet->setCellValue('Q' . ($i+1), implode(', ', $value['luxor_dates']));
+            $sheet->setCellValue('R' . ($i+1), implode(', ', $value['first_frame_dates']));
+            $sheet->setCellValue('S' . ($i+1), implode(', ', $value['first_picture_dates']));
+            $sheet->setCellValue('T' . ($i+1), implode(', ', $value['frame_dates']));
+            $sheet->setCellValue('U' . ($i+1), implode(', ', $value['picture_dates']));
+        }
         $i++;
+    }
+    if($toExcel == 'Y'){
+        $spreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('Q')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('R')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('S')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('T')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('U')->setAutoSize(true);
+        $writer = new PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer->save('files/results/luxor_' . date("Y_m_d_H_i_s") .  '.xlsx');
     }
     print PHP_EOL;
     main();

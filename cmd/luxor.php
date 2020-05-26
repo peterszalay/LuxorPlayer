@@ -285,27 +285,32 @@ function playFromConfig()
     if($toExcel == 'Y'){
         $spreadsheet = new PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A1', 'strategy');
-        $sheet->setCellValue('B1', 'previous draws');
-        $sheet->setCellValue('C1', 'random');
-        $sheet->setCellValue('D1', 'most');
-        $sheet->setCellValue('E1', 'least');
-        $sheet->setCellValue('F1', 'mixed');
-        $sheet->setCellValue('G1', 'first selection');
-        $sheet->setCellValue('H1', 'second selection');
-        $sheet->setCellValue('I1', 'third selection');
-        $sheet->setCellValue('J1', 'jackpot');
-        $sheet->setCellValue('K1', 'luxor');
-        $sheet->setCellValue('L1', 'first frame');
-        $sheet->setCellValue('M1', 'first picture');
-        $sheet->setCellValue('N1', 'frames');
-        $sheet->setCellValue('O1', 'pictures');
-        $sheet->setCellValue('P1', 'jackpot dates');
-        $sheet->setCellValue('Q1', 'luxor dates');
-        $sheet->setCellValue('R1', 'first frame dates');
-        $sheet->setCellValue('S1', 'first picture dates');
-        $sheet->setCellValue('T1', 'frame dates');
-        $sheet->setCellValue('U1', 'picture dates');
+        $sheet->setCellValue('A1', 'ranking');
+        $sheet->setCellValue('B1', 'strategy');
+        $sheet->setCellValue('C1', 'previous draws');
+        $sheet->setCellValue('D1', 'random');
+        $sheet->setCellValue('E1', 'most');
+        $sheet->setCellValue('F1', 'least');
+        $sheet->setCellValue('G1', 'mixed');
+        $sheet->setCellValue('H1', 'first selection');
+        $sheet->setCellValue('I1', 'second selection');
+        $sheet->setCellValue('J1', 'third selection');
+        $sheet->setCellValue('K1', 'total');
+        $sheet->setCellValue('L1', 'jackpot');
+        $sheet->setCellValue('M1', 'luxor');
+        $sheet->setCellValue('N1', 'first frame');
+        $sheet->setCellValue('O1', 'first picture');
+        $sheet->setCellValue('P1', 'frames');
+        $sheet->setCellValue('Q1', 'pictures');
+        $sheet->setCellValue('R1', 'jackpot dates');
+        $sheet->setCellValue('S1', 'luxor dates');
+        $sheet->setCellValue('T1', 'first frame dates');
+        $sheet->setCellValue('U1', 'first picture dates');
+        $sheet->setCellValue('V1', 'frame dates');
+        $sheet->setCellValue('W1', 'picture dates');
+        $spreadsheet->getActiveSheet()->getStyle('A1:W1')->getFill()
+        ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+        ->getStartColor()->setARGB('00FFFF');
         
     }
     
@@ -346,37 +351,48 @@ function playFromConfig()
             print PHP_EOL;
         }
         if($toExcel == 'Y'){
-            $sheet->setCellValue('A' . ($i+1), $key);
-            $sheet->setCellValue('B' . ($i+1), $value['prev_draws']);
-            $sheet->setCellValue('C' . ($i+1), $value['random']);
-            $sheet->setCellValue('D' . ($i+1), $value['most']);
-            $sheet->setCellValue('E' . ($i+1), $value['least']);
-            $sheet->setCellValue('F' . ($i+1), $value['mixed']);
-            $sheet->setCellValue('G' . ($i+1), $value['first_selection']);
-            $sheet->setCellValue('H' . ($i+1), $value['second_selection']);
-            $sheet->setCellValue('I' . ($i+1), $value['third_selection']);
-            $sheet->setCellValue('J' . ($i+1), $value['jackpot']);
-            $sheet->setCellValue('K' . ($i+1), $value['luxor']);
-            $sheet->setCellValue('L' . ($i+1), $value['first_frame']);
-            $sheet->setCellValue('M' . ($i+1), $value['first_picture']);
-            $sheet->setCellValue('N' . ($i+1), $value['frames']);
-            $sheet->setCellValue('O' . ($i+1), $value['pictures']);
-            $sheet->setCellValue('P' . ($i+1), implode(', ', $value['jackpot_dates']));
-            $sheet->setCellValue('Q' . ($i+1), implode(', ', $value['luxor_dates']));
-            $sheet->setCellValue('R' . ($i+1), implode(', ', $value['first_frame_dates']));
-            $sheet->setCellValue('S' . ($i+1), implode(', ', $value['first_picture_dates']));
-            $sheet->setCellValue('T' . ($i+1), implode(', ', $value['frame_dates']));
-            $sheet->setCellValue('U' . ($i+1), implode(', ', $value['picture_dates']));
+            $sheet->setCellValue('A' . ($i+1), $i);
+            $sheet->setCellValue('B' . ($i+1), $key);
+            $sheet->setCellValue('C' . ($i+1), $value['prev_draws']);
+            $sheet->setCellValue('D' . ($i+1), $value['random']);
+            $sheet->setCellValue('E' . ($i+1), $value['most']);
+            $sheet->setCellValue('F' . ($i+1), $value['least']);
+            $sheet->setCellValue('G' . ($i+1), $value['mixed']);
+            $sheet->setCellValue('H' . ($i+1), $value['first_selection']);
+            $sheet->setCellValue('I' . ($i+1), $value['second_selection']);
+            $sheet->setCellValue('J' . ($i+1), $value['third_selection']);
+            $sheet->setCellValue('K' . ($i+1), $value['total']);
+            $sheet->setCellValue('L' . ($i+1), $value['jackpot']);
+            $sheet->setCellValue('M' . ($i+1), $value['luxor']);
+            $sheet->setCellValue('N' . ($i+1), $value['first_frame']);
+            $sheet->setCellValue('O' . ($i+1), $value['first_picture']);
+            $sheet->setCellValue('P' . ($i+1), $value['frames']);
+            $sheet->setCellValue('Q' . ($i+1), $value['pictures']);
+            $sheet->setCellValue('R' . ($i+1), implode(', ', $value['jackpot_dates']));
+            $sheet->setCellValue('S' . ($i+1), implode(', ', $value['luxor_dates']));
+            $sheet->setCellValue('T' . ($i+1), implode(', ', $value['first_frame_dates']));
+            $sheet->setCellValue('U' . ($i+1), implode(', ', $value['first_picture_dates']));
+            $sheet->setCellValue('V' . ($i+1), implode(', ', $value['frame_dates']));
+            $sheet->setCellValue('W' . ($i+1), implode(', ', $value['picture_dates']));
         }
         $i++;
     }
     if($toExcel == 'Y'){
         $spreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
-        $spreadsheet->getActiveSheet()->getColumnDimension('Q')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('H')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('I')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('J')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('N')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('O')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('R')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('S')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('T')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('U')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('V')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('W')->setAutoSize(true);
+        //$spreadsheet->getActiveSheet()->setAutoFilter('A1:W1000');
         $writer = new PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $writer->save('files/results/luxor_' . date("Y_m_d_H_i_s") .  '.xlsx');
     }

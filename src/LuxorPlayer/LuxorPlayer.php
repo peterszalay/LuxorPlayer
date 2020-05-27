@@ -132,6 +132,96 @@ class LuxorPlayer {
         return $results;
     }
     
+    /*
+     * Autoplayer uses this to load its config
+     * 
+     * @param array $draws
+     * @param int $previousDaraws
+     * @param int $ticketCount
+     * @param int $repeatTimes
+     * @param int $minSelection
+     * @param int $maxSelection
+     * @param array $strategies
+     * $param array $selections
+     * @return array
+     * 
+     */
+    public function autoAnalyzeStrategies($draws, $previousDraws, $ticketCount, $repeatTimes, $minSelection, $maxSelection, $strategies, $selections){
+        try {
+            $i = 1;          
+            $results = $this->initializeResultsFromConfig($strategies, $previousDraws, $selections, $minSelection, $maxSelection);
+            //print_r($results);
+            $this->setTicketCount($ticketCount);           
+            while($i <= $repeatTimes){         
+                foreach($previousDraws as $previousDraw){
+                    foreach($strategies as $strategy){
+                        if(in_array($strategy, ["LEAST_DRAWN", "MOST_DRAWN"])){
+                            foreach($selections[0] as $selection){
+                                if(($selection < $minSelection) || ($selection > $maxSelection)){
+                                    continue;
+                                }
+                                $drawResult = [];
+                                $key = $strategy . '_' . $previousDraw . '_' . $selection;
+                                switch($strategy){
+                                    case "LEAST_DRAWN":
+                                        $drawResult = $this->autoPlayWithSelectedNumbers($draws, $previousDraw, $selection, "LEAST_DRAWN");
+                                        break;
+                                    case "MOST_DRAWN":
+                                        $drawResult = $this->autoPlayWithSelectedNumbers($draws, $previousDraw, $selection, "MOST_DRAWN");
+                                        break;
+                                }
+                                $this->addToResults($key, $results, $drawResult);
+                                
+                            }
+                        } elseif(in_array($strategy, ["LEAST_DRAWN_AND_RANDOM", "MOST_DRAWN_AND_RANDOM", "LEAST_AND_MOST_DRAWN"])){
+                            foreach($selections[1]['first'] as $firstSelection){
+                                foreach($selections[1]['second'] as $secondSelection){
+                                    if(($firstSelection + $secondSelection < $minSelection) || ($firstSelection + $secondSelection > $maxSelection)){
+                                        continue;
+                                    }
+                                    $drawResult = [];
+                                    switch($strategy){
+                                        case "LEAST_DRAWN_AND_RANDOM":
+                                            $key = $strategy . '_' . $previousDraw . '_L' . $firstSelection . '_R' . $secondSelection;
+                                            $drawResult = $this->autoPlayWithSelectedNumbers($draws, $previousDraw, $firstSelection, "LEAST_DRAWN_AND_RANDOM", $secondSelection);
+                                            break;
+                                        case "MOST_DRAWN_AND_RANDOM":
+                                            $key = $strategy . '_' . $previousDraw . '_M' . $firstSelection . '_R' . $secondSelection;
+                                            $drawResult = $this->autoPlayWithSelectedNumbers($draws, $previousDraw, $firstSelection, "MOST_DRAWN_AND_RANDOM", $secondSelection);
+                                            break;
+                                        case "LEAST_AND_MOST_DRAWN":
+                                            $key = $strategy . '_' . $previousDraw . '_L' . $firstSelection . '_M' . $secondSelection;
+                                            $drawResult = $this->autoPlayWithSelectedNumbers($draws, $previousDraw, $firstSelection, "LEAST_AND_MOST_DRAWN", $secondSelection);
+                                            break;
+                                    }
+                                    $this->addToResults($key, $results, $drawResult);
+                                }
+                            }
+                        } elseif($strategy == "MOST_LEAST_AND_RANDOM"){
+                            foreach($selections[2]['first'] as $firstSelection){
+                                foreach($selections[2]['second'] as $secondSelection){
+                                    foreach($selections[2]['third'] as $thirdSelection){
+                                        if(($firstSelection + $secondSelection + $thirdSelection < $minSelection) || ($firstSelection + $secondSelection + $thirdSelection > $maxSelection)){
+                                            continue;
+                                        }
+                                        $drawResult = [];
+                                        $key = $strategy .  '_' . $previousDraw . '_M' . $firstSelection . '_L' . $secondSelection . '_R' . $thirdSelection;
+                                        $drawResult = $this->autoPlayWithSelectedNumbers($draws, $previousDraw, $firstSelection, "MOST_LEAST_AND_RANDOM", $secondSelection, $thirdSelection);
+                                        $this->addToResults($key, $results, $drawResult);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                $i++;
+            }
+        } catch(\Exception $ex){
+        }
+        uasort($results, [$this, 'orderByTotal']);
+        return $results;
+    }
+    
     /**
      * Play luxor with manually given parameters
      * 
@@ -274,6 +364,61 @@ class LuxorPlayer {
         if($results['luxor'] >= 1){
             print $strategy . ' ' . $previousDrawsToSelectFrom . ' ' . $firstSelection . ' ' . $secondSelection . ' ' . $thirdSelection . PHP_EOL;
         }*/
+        return $this->game->getResults();
+    }
+    
+    /**
+     * PAuto play with selected numbers
+     *
+     * @param array $draws
+     * @param int $previousDraw
+     * @param int $firstSelection
+     * @param string $strategy
+     * @param int $secondSelection
+     * @return array
+     */
+    public function autoPlayWithSelectedNumbers($draws, $previousDraw, $firstSelection, $strategy = "MOST_DRAWN", $secondSelection = 0, $thirdSelection = 0){
+        $this->game = new LuxorGame();
+        $draws = array_reverse($draws);
+        for($i = 0; $i < (sizeof($draws) - $previousDraw); $i++){
+            $lastDraw = array_pop($draws);
+            $previousDraws = array_slice($draws, -($previousDraw), $previousDraw, true);
+            switch($strategy){
+                case "LEAST_DRAWN":
+                    $selection = $this->drawProcessor->getLeastDrawnNumbers($previousDraws, $firstSelection);
+                    break;
+                case "LEAST_AND_MOST_DRAWN":
+                    $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($previousDraws, $firstSelection);
+                    $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $secondSelection);
+                    $selection = $this->ticketGenerator->mergeTwofSelections($leastDrawnSelection, $mostDrawnSelection);
+                    break;
+                case "LEAST_DRAWN_AND_RANDOM":
+                    $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($previousDraws, $firstSelection);
+                    $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
+                    $selection = $this->ticketGenerator->mergeTwofSelections($leastDrawnSelection, $randomSelection);
+                    break;
+                case "MOST_DRAWN_AND_RANDOM":
+                    $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);
+                    $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
+                    $selection = $this->ticketGenerator->mergeTwofSelections($mostDrawnSelection, $randomSelection);
+                    break;
+                case "MOST_LEAST_AND_RANDOM":
+                    $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);
+                    $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($previousDraws, $secondSelection);
+                    $randomSelection = $this->ticketGenerator->generateRandomSelection($thirdSelection);
+                    $selection1 = $this->ticketGenerator->mergeTwofSelections($mostDrawnSelection, $leastDrawnSelection);
+                    $selection = $this->ticketGenerator->mergeTwofSelections($selection1, $randomSelection);
+                    break;
+                case "MOST_DRAWN": default:
+                    $selection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);
+            }
+            $this->ticketGenerator->generateTicketsWithRandomNumbersFromSelection($this->ticketCount, $selection);
+            $this->game->processTicketsForADraw($this->ticketGenerator->getTickets(), $lastDraw);
+        }
+        /*$results = $this->game->getResults();
+         if($results['luxor'] >= 1){
+         print $strategy . ' ' . $previousDrawsToSelectFrom . ' ' . $firstSelection . ' ' . $secondSelection . ' ' . $thirdSelection . PHP_EOL;
+         }*/
         return $this->game->getResults();
     }
 

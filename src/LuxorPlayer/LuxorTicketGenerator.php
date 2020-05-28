@@ -38,10 +38,10 @@ class LuxorTicketGenerator {
      * 
      * @param int $numberOfTickets
      */
-    public function generateTicketsWithRandomNumbers($numberOfTickets){
+    public function generateTicketsWithRandomNumbers($numberOfTickets, $enforceOddEvenRatio = false){
         $this->tickets = [];
         for($i = 0; $i < $numberOfTickets; $i++){
-            $this->tickets[$i] = $this->generateTicketWithRandomNumbers();     
+            $this->tickets[$i] = $this->generateTicketWithRandomNumbers($enforceOddEvenRatio);     
         }
     }
     
@@ -65,9 +65,13 @@ class LuxorTicketGenerator {
      * 
      * @return \LuxorPlayer\LuxorTicket
      */
-    public function generateTicketWithRandomNumbers(){
+    public function generateTicketWithRandomNumbers($enforceOddEvenRatio = false){
         $this->fillRanges();
-        return $this->generateTicketWithRandomNumberUsingRanges();
+        if($enforceOddEvenRatio){
+            return $this->generateTicketWithRandomNumberUsingRangesEnforceProportions(true);
+        } else {
+            return $this->generateTicketWithRandomNumberUsingRanges();
+        }
     }
     
     /**
@@ -118,6 +122,141 @@ class LuxorTicketGenerator {
             } else {
                 shuffle($this->fifthRange);
                 $frame[] = array_pop($this->fifthRange);
+            }
+            $i++;
+        }
+        return LuxorTicket::create($picture, $frame);
+    }
+    
+    /**
+     * Generates ticket with random numbers using the five ranges
+     *
+     * @return \LuxorPlayer\LuxorTicket
+     */
+    private function generateTicketWithRandomNumberUsingRangesEnforceProportions($oddEven = false){
+        $frame = [];
+        $picture = [];
+        $i = 1;
+        $oddCount = 0;
+        $evenCount = 0;
+        while($i <= 20){
+            if($i <= 4){
+                shuffle($this->firstRange);
+                if($oddEven){
+                    if($oddCount == 3){
+                        while($this->firstRange[sizeof($this->firstRange)-1] % 2 != 0){
+                            shuffle($this->firstRange);
+                        }
+                    }
+                    if($evenCount == 3){
+                        while($this->firstRange[sizeof($this->firstRange)-1] % 2 == 0){
+                            shuffle($this->firstRange);
+                        }
+                    }
+                }
+                $number = array_pop($this->firstRange);
+                if($number % 2 != 0){
+                    $oddCount++;
+                } else {
+                    $evenCount++;
+                }
+                $frame[] = $number;
+            } elseif ($i <= 8){
+                shuffle($this->secondRange);
+                if($oddEven){
+                    if($oddCount == 5){
+                        while($this->secondRange[sizeof($this->secondRange)-1] % 2 != 0){
+                            shuffle($this->secondRange);
+                        }
+                    }
+                    if($evenCount == 5){
+                        while($this->secondRange[sizeof($this->secondRange)-1] % 2 == 0){
+                            shuffle($this->secondRange);
+                        }
+                    }
+                }
+                $number = array_pop($this->secondRange);
+                if($number % 2 != 0){
+                    $oddCount++;
+                } else {
+                    $evenCount++;
+                }
+                if($i <= 6){
+                    $frame[] = $number;
+                } else {
+                    $picture[] = $number;
+                }
+            } elseif($i <= 12){
+                shuffle($this->thirdRange);
+                if($oddEven){
+                    if($oddCount == 7){
+                        while($this->thirdRange[sizeof($this->thirdRange)-1] % 2 != 0){
+                            shuffle($this->thirdRange);
+                        }
+                    }
+                    if($evenCount == 7){
+                        while($this->thirdRange[sizeof($this->thirdRange)-1] % 2 == 0){
+                            shuffle($this->thirdRange);
+                        }
+                    }
+                }
+                $number = array_pop($this->thirdRange);
+                if($number % 2 != 0){
+                    $oddCount++;
+                } else {
+                    $evenCount++;
+                }
+                if($i <= 10){
+                    $frame[] = $number;
+                } else {
+                    $picture[] = $number;
+                }
+            } elseif($i <= 16){
+                shuffle($this->fourthRange);
+                if($oddEven){
+                    if($oddCount == 9){
+                        while($this->fourthRange[sizeof($this->fourthRange)-1] % 2 != 0){
+                            shuffle($this->fourthRange);
+                        }
+                    }
+                    if($evenCount == 9){
+                        while($this->fourthRange[sizeof($this->fourthRange)-1] % 2 == 0){
+                            shuffle($this->fourthRange);
+                        }
+                    }
+                }
+                $number = array_pop($this->fourthRange);
+                if($number % 2 != 0){
+                    $oddCount++;
+                } else {
+                    $evenCount++;
+                }
+                if($i <= 14){
+                    $frame[] = $number;
+                } else {
+                    $picture[] = $number;
+                }
+            } else {
+                shuffle($this->fifthRange);
+                if($oddEven){
+                    if($oddCount == 11){
+                        while($this->fifthRange[sizeof($this->fifthRange)-1] % 2 != 0){
+                            shuffle($this->fifthRange);
+                        }
+                    }
+                    if($evenCount == 11){
+                        while($this->fifthRange[sizeof($this->fifthRange)-1] % 2 == 0){
+                            shuffle($this->fifthRange);
+                        }
+                    }
+                    $number = array_pop($this->fifthRange);
+                    if($number % 2 != 0){
+                        $oddCount++;
+                    } else {
+                        $evenCount++;
+                    }
+                }
+                $frame[] = $number;
             }
             $i++;
         }

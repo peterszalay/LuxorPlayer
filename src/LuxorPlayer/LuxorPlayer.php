@@ -61,6 +61,14 @@ class LuxorPlayer {
                     $drawResult = $this->playWithRandomNumbers(true);
                     $this->addToResults('REGENERATED_RANDOM', $results, $drawResult);
                     
+                    $drawResult = [];
+                    $drawResult = $this->playWithRandomNumbers(false, true);
+                    $this->addToResults('SAME_RANDOM_ENFORCED_PROPORTIONS', $results, $drawResult);
+                    
+                    $drawResult = [];
+                    $drawResult = $this->playWithRandomNumbers(true, true);
+                    $this->addToResults('REGENERATED_RANDOM_ENFORCED_PROPORTIONS', $results, $drawResult);
+                    
                    
                     foreach($previousDraws as $previousDraw){
                         foreach($strategies as $strategy){
@@ -246,8 +254,16 @@ class LuxorPlayer {
             $this->addToResults('SAME_RANDOM', $results, $drawResult);
             
             $drawResult = [];
+            $drawResult = $this->playWithRandomNumbers(false, true);
+            $this->addToResults('SAME_RANDOM_ENFORCED_PROPORTIONS', $results, $drawResult);
+            
+            $drawResult = [];
             $drawResult = $this->playWithRandomNumbers(true);
             $this->addToResults('REGENERATED_RANDOM', $results, $drawResult);
+            
+            $drawResult = [];
+            $drawResult = $this->playWithRandomNumbers(true, true);
+            $this->addToResults('REGENERATED_RANDOM_ENFORCED_PROPORTIONS', $results, $drawResult);
             
 
             $drawResult = [];
@@ -289,8 +305,9 @@ class LuxorPlayer {
      * Play with random numbers
      * 
      * @param boolean $regenerateTicketsBeforeEveryDraw
+     * @param boolean $enforceOddEvenRatio
      */
-    public function playWithRandomNumbers($regenerateTicketsBeforeEveryDraw = false){
+    public function playWithRandomNumbers($regenerateTicketsBeforeEveryDraw = false, $enforceOddEvenRatio = false){
         $this->game = new LuxorGame();
         $this->fileProcessor = new FileProcessor();
         $this->fileProcessor->readFileIntoArray($this->drawCount);
@@ -298,13 +315,13 @@ class LuxorPlayer {
         if($regenerateTicketsBeforeEveryDraw){
             //print PHP_EOL . 'REGENERATED RANDOM DRAW COUNT: ' . sizeof($draws) . ' THIS DRAWCOUNT: ' . $this->drawCount . PHP_EOL;
             foreach($draws as $draw){
-                $this->ticketGenerator->generateTicketsWithRandomNumbers($this->ticketCount);
+                $this->ticketGenerator->generateTicketsWithRandomNumbers($this->ticketCount, $enforceOddEvenRatio);
                 $this->game->processTicketsForADraw($this->ticketGenerator->getTickets(), $draw);
             }
             return $this->game->getResults();
         } else {
             //print PHP_EOL .'RANDOM DRAW COUNT: ' . sizeof($draws) . ' THIS DRAWCOUNT: ' . $this->drawCount . PHP_EOL;
-            $this->ticketGenerator->generateTicketsWithRandomNumbers($this->ticketCount);
+            $this->ticketGenerator->generateTicketsWithRandomNumbers($this->ticketCount, $enforceOddEvenRatio);
             $results = $this->game->processTicketsForDraws($this->ticketGenerator->getTickets(), $draws);
             return $results;
         }
@@ -501,6 +518,8 @@ class LuxorPlayer {
         
         $results["SAME_RANDOM"] = $startValue;
         $results["REGENERATED_RANDOM"] = $startValue;
+        $results["SAME_RANDOM_ENFORCED_PROPORTIONS"] = $startValue;
+        $results["REGENERATED_RANDOM_ENFORCED_PROPORTIONS"] = $startValue;
         switch($strategy){
             case "LEAST_DRAWN":
                 $results[$strategy . '_' . $firstSelection] = $startValue;
@@ -546,6 +565,10 @@ class LuxorPlayer {
         $results["SAME_RANDOM"]['random'] = true;
         $results["REGENERATED_RANDOM"] = $startValue;
         $results["REGENERATED_RANDOM"]['random'] = true;
+        $results["SAME_RANDOM_ENFORCED_PROPORTIONS"] = $startValue;
+        $results["SAME_RANDOM_ENFORCED_PROPORTIONS"]['random'] = true;
+        $results["REGENERATED_RANDOM_ENFORCED_PROPORTIONS"] = $startValue;
+        $results["REGENERATED_RANDOM_ENFORCED_PROPORTIONS"]['random'] = true;
         foreach($previousDraws as $previousDraw){
             $startValue['prev_draws'] = $previousDraw;
             $startValue['first_selection'] = 0;

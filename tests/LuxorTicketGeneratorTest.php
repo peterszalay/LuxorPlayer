@@ -177,4 +177,26 @@ class LuxorTicketGeneratorTest extends TestCase
         $this->assertEquals(sizeof($selection['fourth_range']), 8);
         $this->assertEquals(sizeof($selection['fifth_range']), 8);
     }
+    
+    public function testGenerateTicketWithRandomNumberUsingRangesEnforceProportionsReturnsCorrectOddEvenProportions()
+    {
+        $reflector = new ReflectionClass(LuxorTicketGenerator::class);
+        $method1 = $reflector->getMethod('fillRanges');
+        $method2 = $reflector->getMethod('generateTicketWithRandomNumberUsingRangesEnforceProportions');
+        $method1->setAccessible(true);
+        $method2->setAccessible(true);
+        
+        $method1->invokeArgs($this->luxorTicketGenerator, []);
+        $result = $method2->invokeArgs($this->luxorTicketGenerator, [true]);
+        $allNumbers = array_merge($result->picture, $result->frame);
+        
+        $this->assertEquals(sizeof($allNumbers), 20);
+        $evenCount = 0;
+        foreach($allNumbers as $number){
+            if($number % 2 == 0){
+                $evenCount++;
+            }
+        }
+        $this->assertTrue($evenCount <= 11 && $evenCount >= 9);
+    }
 }

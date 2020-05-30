@@ -331,26 +331,38 @@ function playFromConfig()
             print 'jackpot: ' . $value['jackpot'] . ', luxor: ' . $value['luxor'] . ', first frame: ' . $value['first_frame'] . ', first picture: ' . $value['first_picture'] . ', frames: ' . $value['frames'] .
             ', pictures: ' . $value['pictures'] . PHP_EOL . PHP_EOL;
             if($value['jackpot'] > 0){
-                print 'jackpot dates: ' . implode(', ', $value['jackpot_dates']) . PHP_EOL;
+                $uniqueJackpotDates = array_unique($value['jackpot_dates']);
+                print 'jackpot dates: ' . implode(', ', $uniqueJackpotDates) . PHP_EOL;
             }
             if($value['luxor'] > 0){
-                print 'Luxor dates: ' . implode(', ', $value['luxor_dates']) . PHP_EOL;    
+                $uniqueLuxorDates = array_unique($value['luxor_dates']);
+                print 'Luxor dates: ' . implode(', ', $uniqueLuxorDates) . PHP_EOL;    
             }
             if($value['first_frame'] > 0){
-                print 'First frame dates: ' . implode(', ', $value['first_frame_dates']) . PHP_EOL;
+                $uniqueFirstFrameDates = array_unique($value['first_frame_dates']);
+                print 'First frame dates: ' . implode(', ', $uniqueFirstFrameDates) . PHP_EOL;
             }
             if($value['first_picture'] > 0){
-                print 'First picture dates: ' . implode(', ', $value['first_picture_dates']) . PHP_EOL;
+                $uniqueFirstPictureDates = array_unique($value['first_picture_dates']);
+                print 'First picture dates: ' . implode(', ', $uniqueFirstPictureDates) . PHP_EOL;
             }
             if($value['frames'] > 0){
-                print 'Frame dates: ' . implode(', ', $value['frame_dates']) . PHP_EOL;
+                $uniqueFrameDates = array_unique($value['frame_dates']);
+                print 'Frame dates: ' . implode(', ', $uniqueFrameDates) . PHP_EOL;
             }
             if($value['pictures'] > 0){
-                print 'Picture dates: ' . implode(', ', $value['picture_dates']) . PHP_EOL;
+                $uniquePictureDates = array_unique($value['picture_dates']);
+                print 'Picture dates: ' . implode(', ', $uniquePictureDates) . PHP_EOL;
             }
             print PHP_EOL;
         }
         if($toExcel == 'Y'){
+            $uniqueJackpotDates = array_unique($value['jackpot_dates']);
+            $uniqueLuxorDates = array_unique($value['luxor_dates']);
+            $uniqueFirstFrameDates = array_unique($value['first_frame_dates']);
+            $uniqueFirstPictureDates = array_unique($value['first_picture_dates']);
+            $uniqueFrameDates = array_unique($value['frame_dates']);
+            $uniquePictureDates = array_unique($value['picture_dates']);
             $sheet->setCellValue('A' . ($i+1), $i);
             $sheet->setCellValue('B' . ($i+1), $key);
             $sheet->setCellValue('C' . ($i+1), $value['prev_draws']);
@@ -368,12 +380,12 @@ function playFromConfig()
             $sheet->setCellValue('O' . ($i+1), $value['first_picture']);
             $sheet->setCellValue('P' . ($i+1), $value['frames']);
             $sheet->setCellValue('Q' . ($i+1), $value['pictures']);
-            $sheet->setCellValue('R' . ($i+1), implode(', ', $value['jackpot_dates']));
-            $sheet->setCellValue('S' . ($i+1), implode(', ', $value['luxor_dates']));
-            $sheet->setCellValue('T' . ($i+1), implode(', ', $value['first_frame_dates']));
-            $sheet->setCellValue('U' . ($i+1), implode(', ', $value['first_picture_dates']));
-            $sheet->setCellValue('V' . ($i+1), implode(', ', $value['frame_dates']));
-            $sheet->setCellValue('W' . ($i+1), implode(', ', $value['picture_dates']));
+            $sheet->setCellValue('R' . ($i+1), implode(', ', $uniqueJackpotDates));
+            $sheet->setCellValue('S' . ($i+1), implode(', ', $uniqueLuxorDates));
+            $sheet->setCellValue('T' . ($i+1), implode(', ', $uniqueFirstFrameDates));
+            $sheet->setCellValue('U' . ($i+1), implode(', ', $uniqueFirstPictureDates));
+            $sheet->setCellValue('V' . ($i+1), implode(', ', $uniqueFrameDates));
+            $sheet->setCellValue('W' . ($i+1), implode(', ', $uniquePictureDates));
         }
         $i++;
     }

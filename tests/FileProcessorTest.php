@@ -18,13 +18,6 @@ class FileProcessorTest extends TestCase
 
     }
     
-    public function testGetDrawResultsIsNotEmptyWhenFileIsReadIn()
-    {
-        $this->fileProcessor->readFileIntoArray();
-        
-        $this->assertNotEmpty($this->fileProcessor->getDrawResults());
-    }
-    
     public function testGetDrawResultsReturnCorrectSizeArray()
     {
         $this->fileProcessor->readFileIntoArray(50);

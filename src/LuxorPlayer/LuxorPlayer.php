@@ -137,6 +137,7 @@ class LuxorPlayer {
         } catch(\Exception $ex){
         }
         uasort($results, [$this, 'orderByTotal']);
+        $this->cleanResultDates($results);
         return $results;
     }
     
@@ -227,6 +228,7 @@ class LuxorPlayer {
         } catch(\Exception $ex){
         }
         uasort($results, [$this, 'orderByTotal']);
+        $this->cleanResultDates($results);
         return $results;
     }
     
@@ -298,6 +300,7 @@ class LuxorPlayer {
             $i++;
         }
         uasort($results, [$this, 'orderByTotal']);
+        $this->cleanResultDates($results);
         return $results;
     }
     
@@ -703,5 +706,34 @@ class LuxorPlayer {
             return -1;
         }
         return 0;
+    }
+    
+    /**
+     * Helper function that cleans result dates
+     * 
+     * @param array $results
+     */
+    private function cleanResultDates(&$results){
+        foreach ($results as $key => $result){
+            $jackpotDates = array_unique($result['jackpot_dates']);
+            $luxorDates = array_unique($result['luxor_dates']);
+            $firstFrameDates = array_unique($result['first_frame_dates']);
+            $firstPictureDates = array_unique($result['first_picture_dates']);
+            $frameDates = array_unique($result['frame_dates']);
+            $pictureDates = array_unique($result['picture_dates']);
+            
+            $results[$key]['jackpot_dates'] = $jackpotDates;
+            $results[$key]['luxor_dates'] = $luxorDates;
+            $results[$key]['first_frame_dates'] = $firstFrameDates;
+            $results[$key]['first_picture_dates'] = $firstPictureDates;
+            $results[$key]['frame_dates'] = $frameDates;
+            $results[$key]['picture_dates'] = $pictureDates;
+            
+            rsort($results[$key]['luxor_dates']);
+            rsort($results[$key]['first_frame_dates']);
+            rsort($results[$key]['first_picture_dates']);
+            rsort($results[$key]['frame_dates']);
+            rsort($results[$key]['picture_dates']);
+        }
     }
 }

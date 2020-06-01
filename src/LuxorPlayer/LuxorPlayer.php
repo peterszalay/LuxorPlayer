@@ -514,7 +514,8 @@ class LuxorPlayer {
     private function initializeResults($strategy, $selections){
         $results = [];
         $startValue = ['total' => 0, 'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0, 'jackpot_dates' => [],
-                       'luxor_dates' => [], 'first_picture_dates' => [], 'first_frame_dates' => [], 'picture_dates' => [], 'frame_dates' => []];
+                       'luxor_dates' => [], 'first_picture_dates' => [], 'first_frame_dates' => [], 'picture_dates' => [], 'frame_dates' => [], 'unique_jackpot' => 0, 'unique_luxor' => 0, 
+                        'unique_first_picture' => 0, 'unique_first_frame' => 0, 'unique_frame' => 0, 'unique_picture' => 0];
         $firstSelection = isset($selections['first']) ? intval($selections['first']) : 0;
         $secondSelection = isset($selections['second']) ? intval($selections['second']) : 0;
         $thirdSelection = isset($selections['third']) ? intval($selections['third']) : 0;
@@ -562,7 +563,9 @@ class LuxorPlayer {
                        'first_selection' => 0, 'second_selection' => 0, 'third_selection' => 0, 'total' => 0, 
                        'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0, 
                        'jackpot_dates' => [], 'luxor_dates' => [], 'first_picture_dates' => [], 'first_frame_dates' => [], 
-                       'picture_dates' => [], 'frame_dates' => []];
+                       'picture_dates' => [], 'frame_dates' => [], 'unique_jackpot' => 0, 'unique_luxor' => 0, 'unique_first_picture' => 0,
+                       'unique_first_frame' => 0, 'unique_frame' => 0, 'unique_picture' => 0
+                      ];
         
         $results["SAME_RANDOM"] = $startValue;
         $results["SAME_RANDOM"]['random'] = true;
@@ -728,6 +731,13 @@ class LuxorPlayer {
             $results[$key]['first_picture_dates'] = $firstPictureDates;
             $results[$key]['frame_dates'] = $frameDates;
             $results[$key]['picture_dates'] = $pictureDates;
+            
+            $results[$key]['unique_jackpot'] = sizeof($jackpotDates);
+            $results[$key]['unique_luxor'] = sizeof($luxorDates);
+            $results[$key]['unique_first_frame'] = sizeof($firstFrameDates);
+            $results[$key]['unique_first_picture'] = sizeof($firstPictureDates);
+            $results[$key]['unique_frame'] = sizeof($frameDates);
+            $results[$key]['unique_picture'] = sizeof($pictureDates);
             
             rsort($results[$key]['luxor_dates']);
             rsort($results[$key]['first_frame_dates']);

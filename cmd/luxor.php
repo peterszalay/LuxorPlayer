@@ -302,12 +302,18 @@ function playFromConfig()
         $sheet->setCellValue('O1', 'first picture');
         $sheet->setCellValue('P1', 'frames');
         $sheet->setCellValue('Q1', 'pictures');
-        $sheet->setCellValue('R1', 'jackpot dates');
-        $sheet->setCellValue('S1', 'luxor dates');
-        $sheet->setCellValue('T1', 'first frame dates');
-        $sheet->setCellValue('U1', 'first picture dates');
-        $sheet->setCellValue('V1', 'frame dates');
-        $sheet->setCellValue('W1', 'picture dates');
+        $sheet->setCellValue('R1', 'unique jackpot');
+        $sheet->setCellValue('S1', 'unique luxor');
+        $sheet->setCellValue('T1', 'unique first frame');
+        $sheet->setCellValue('U1', 'unique first picture');
+        $sheet->setCellValue('V1', 'unique frames');
+        $sheet->setCellValue('W1', 'unique pictures');
+        $sheet->setCellValue('X1', 'jackpot dates');
+        $sheet->setCellValue('Y1', 'luxor dates');
+        $sheet->setCellValue('Z1', 'first frame dates');
+        $sheet->setCellValue('AA1', 'first picture dates');
+        $sheet->setCellValue('AB1', 'frame dates');
+        $sheet->setCellValue('AC1', 'picture dates');
         $spreadsheet->getActiveSheet()->getStyle('A1:W1')->getFill()
         ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
         ->getStartColor()->setARGB('00FFFF');
@@ -368,12 +374,18 @@ function playFromConfig()
             $sheet->setCellValue('O' . ($i+1), $value['first_picture']);
             $sheet->setCellValue('P' . ($i+1), $value['frames']);
             $sheet->setCellValue('Q' . ($i+1), $value['pictures']);
-            $sheet->setCellValue('R' . ($i+1), implode(', ', $value['jackpot_dates']));
-            $sheet->setCellValue('S' . ($i+1), implode(', ', $value['luxor_dates']));
-            $sheet->setCellValue('T' . ($i+1), implode(', ', $value['first_frame_dates']));
-            $sheet->setCellValue('U' . ($i+1), implode(', ', $value['first_picture_dates']));
-            $sheet->setCellValue('V' . ($i+1), implode(', ', $value['frame_dates']));
-            $sheet->setCellValue('W' . ($i+1), implode(', ', $value['picture_dates']));
+            $sheet->setCellValue('R' . ($i+1), $value['unique_jackpot']);
+            $sheet->setCellValue('S' . ($i+1), $value['unique_luxor']);
+            $sheet->setCellValue('T' . ($i+1), $value['unique_first_frame']);
+            $sheet->setCellValue('U' . ($i+1), $value['unique_first_picture']);
+            $sheet->setCellValue('V' . ($i+1), $value['unique_frame']);
+            $sheet->setCellValue('W' . ($i+1), $value['unique_picture']);
+            $sheet->setCellValue('X' . ($i+1), implode(', ', $value['jackpot_dates']));
+            $sheet->setCellValue('Y' . ($i+1), implode(', ', $value['luxor_dates']));
+            $sheet->setCellValue('Z' . ($i+1), implode(', ', $value['first_frame_dates']));
+            $sheet->setCellValue('AA' . ($i+1), implode(', ', $value['first_picture_dates']));
+            $sheet->setCellValue('AB' . ($i+1), implode(', ', $value['frame_dates']));
+            $sheet->setCellValue('AC' . ($i+1), implode(', ', $value['picture_dates']));
         }
         $i++;
     }

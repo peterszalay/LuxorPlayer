@@ -133,6 +133,9 @@ class LuxorTicketGeneratorTest extends TestCase
                 break;
             }
         }
+        /*if(!$pictureFrameOnlyContainsDifferentNumbers){
+            print_r($tickets);
+        }*/
         $this->assertTrue($pictureFrameOnlyContainsDifferentNumbers);
     }
     
@@ -182,7 +185,7 @@ class LuxorTicketGeneratorTest extends TestCase
     {
         $reflector = new ReflectionClass(LuxorTicketGenerator::class);
         $method1 = $reflector->getMethod('fillRanges');
-        $method2 = $reflector->getMethod('generateTicketWithRandomNumberUsingRangesEnforceProportions');
+        $method2 = $reflector->getMethod('generateTicketWithRandomNumberUsingRanges');
         $method1->setAccessible(true);
         $method2->setAccessible(true);
         

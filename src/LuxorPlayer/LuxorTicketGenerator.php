@@ -67,11 +67,7 @@ class LuxorTicketGenerator {
      */
     public function generateTicketWithRandomNumbers($enforceOddEvenRatio = false){
         $this->fillRanges();
-        if($enforceOddEvenRatio){
-            return $this->generateTicketWithRandomNumberUsingRangesEnforceProportions(true);
-        } else {
-            return $this->generateTicketWithRandomNumberUsingRanges();
-        }
+        return $this->generateTicketWithRandomNumberUsingRanges($enforceOddEvenRatio);
     }
     
     /**
@@ -87,53 +83,10 @@ class LuxorTicketGenerator {
     
     /**
      * Generates ticket with random numbers using the five ranges
-     * 
-     * @return \LuxorPlayer\LuxorTicket
-     */
-    private function generateTicketWithRandomNumberUsingRanges(){
-        $frame = [];
-        $picture = [];
-        $i = 1;
-        while($i <= 20){
-            if($i <= 4){
-                shuffle($this->firstRange);
-                $frame[] = array_pop($this->firstRange);
-            } elseif ($i <= 8){
-                shuffle($this->secondRange);
-                if($i <= 6){
-                    $frame[] = array_pop($this->secondRange);
-                } else {
-                    $picture[] = array_pop($this->secondRange);
-                }
-            } elseif($i <= 12){
-                shuffle($this->thirdRange);
-                if($i <= 10){
-                    $frame[] = array_pop($this->thirdRange);
-                } else {
-                    $picture[] = array_pop($this->thirdRange);
-                }
-            } elseif($i <= 16){
-                shuffle($this->fourthRange);
-                if($i <= 14){
-                    $frame[] = array_pop($this->fourthRange);
-                } else {
-                    $picture[] = array_pop($this->fourthRange);
-                }
-            } else {
-                shuffle($this->fifthRange);
-                $frame[] = array_pop($this->fifthRange);
-            }
-            $i++;
-        }
-        return LuxorTicket::create($picture, $frame);
-    }
-    
-    /**
-     * Generates ticket with random numbers using the five ranges
      *
      * @return \LuxorPlayer\LuxorTicket
      */
-    private function generateTicketWithRandomNumberUsingRangesEnforceProportions($oddEven = false){
+    private function generateTicketWithRandomNumberUsingRanges($oddEven = false){
         $frame = [];
         $picture = [];
         $i = 1;
@@ -249,12 +202,12 @@ class LuxorTicketGenerator {
                             shuffle($this->fifthRange);
                         }
                     }
-                    $number = array_pop($this->fifthRange);
-                    if($number % 2 != 0){
-                        $oddCount++;
-                    } else {
-                        $evenCount++;
-                    }
+                }
+                $number = array_pop($this->fifthRange);
+                if($number % 2 != 0){
+                    $oddCount++;
+                } else {
+                    $evenCount++;
                 }
                 $frame[] = $number;
             }

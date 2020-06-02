@@ -136,8 +136,8 @@ class LuxorPlayer {
             }
         } catch(\Exception $ex){
         }
-        uasort($results, [$this, 'orderByTotal']);
         $this->cleanResultDates($results);
+        uasort($results, [$this, 'orderByTotal']);
         return $results;
     }
     
@@ -227,8 +227,8 @@ class LuxorPlayer {
             }
         } catch(\Exception $ex){
         }
-        uasort($results, [$this, 'orderByTotal']);
         $this->cleanResultDates($results);
+        uasort($results, [$this, 'orderByTotal']);
         return $results;
     }
     
@@ -299,8 +299,8 @@ class LuxorPlayer {
             
             $i++;
         }
-        uasort($results, [$this, 'orderByTotal']);
         $this->cleanResultDates($results);
+        uasort($results, [$this, 'orderByTotal']);
         return $results;
     }
     
@@ -703,9 +703,11 @@ class LuxorPlayer {
      * @return number
      */
     private function orderByTotal($a, $b){
-        if($a['total'] < $b['total']){
+        $aTotal = ($a['unique_jackpot'] * 30000) + ($a['unique_luxor'] * 6000) + ($a['unique_first_frame'] * 1000) + ($a['unique_first_picture'] * 50) + ($a['unique_frame'] * 20) + $a['unique_picture'];
+        $bTotal = ($b['unique_jackpot'] * 30000) + ($b['unique_luxor'] * 6000) + ($b['unique_first_frame'] * 1000) + ($b['unique_first_picture'] * 200) + ($b['unique_frame'] * 20) + $b['unique_picture'];
+        if($aTotal < $bTotal){
             return 1;
-        }else if($a['total'] > $b['total']){
+        }else if($aTotal > $bTotal){
             return -1;
         }
         return 0;

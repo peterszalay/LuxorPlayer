@@ -314,7 +314,7 @@ function playFromConfig()
         $sheet->setCellValue('AA1', 'first picture dates');
         $sheet->setCellValue('AB1', 'frame dates');
         $sheet->setCellValue('AC1', 'picture dates');
-        $spreadsheet->getActiveSheet()->getStyle('A1:W1')->getFill()
+        $spreadsheet->getActiveSheet()->getStyle('A1:AC1')->getFill()
         ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
         ->getStartColor()->setARGB('00FFFF');
         
@@ -404,7 +404,13 @@ function playFromConfig()
         $spreadsheet->getActiveSheet()->getColumnDimension('U')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('V')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('W')->setAutoSize(true);
-        //$spreadsheet->getActiveSheet()->setAutoFilter('A1:W1000');
+        $spreadsheet->getActiveSheet()->getColumnDimension('X')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('Y')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('Z')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('AA')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('AB')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('AC')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->setAutoFilter('A1:AC'.$i);
         $writer = new PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $writer->save('files/results/luxor_' . date("Y_m_d_H_i_s") .  '.xlsx');
     }

@@ -309,13 +309,14 @@ function playFromConfig()
         $sheet->setCellValue('V1', 'unique frames');
         $sheet->setCellValue('W1', 'unique pictures');
         $sheet->setCellValue('X1', 'last win date');
-        $sheet->setCellValue('Y1', 'jackpot dates');
-        $sheet->setCellValue('Z1', 'luxor dates');
-        $sheet->setCellValue('AA1', 'first frame dates');
-        $sheet->setCellValue('AB1', 'first picture dates');
-        $sheet->setCellValue('AC1', 'frame dates');
-        $sheet->setCellValue('AD1', 'picture dates');
-        $spreadsheet->getActiveSheet()->getStyle('A1:AD1')->getFill()
+        $sheet->setCellValue('Y1', 'win dates');
+        $sheet->setCellValue('Z1', 'jackpot dates');
+        $sheet->setCellValue('AA1', 'luxor dates');
+        $sheet->setCellValue('AB1', 'first frame dates');
+        $sheet->setCellValue('AC1', 'first picture dates');
+        $sheet->setCellValue('AD1', 'frame dates');
+        $sheet->setCellValue('AE1', 'picture dates');
+        $spreadsheet->getActiveSheet()->getStyle('A1:AE1')->getFill()
         ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
         ->getStartColor()->setARGB('00FFFF');
         
@@ -382,12 +383,13 @@ function playFromConfig()
             $sheet->setCellValue('V' . ($i+1), $value['unique_frame']);
             $sheet->setCellValue('W' . ($i+1), $value['unique_picture']);
             $sheet->setCellValue('X' . ($i+1), $value['last_win_date']);
-            $sheet->setCellValue('Y' . ($i+1), implode(', ', $value['jackpot_dates']));
-            $sheet->setCellValue('Z' . ($i+1), implode(', ', $value['luxor_dates']));
-            $sheet->setCellValue('AA' . ($i+1), implode(', ', $value['first_frame_dates']));
-            $sheet->setCellValue('AB' . ($i+1), implode(', ', $value['first_picture_dates']));
-            $sheet->setCellValue('AC' . ($i+1), implode(', ', $value['frame_dates']));
-            $sheet->setCellValue('AD' . ($i+1), implode(', ', $value['picture_dates']));
+            $sheet->setCellValue('Y' . ($i+1), $value['win_dates']);
+            $sheet->setCellValue('Z' . ($i+1), implode(', ', $value['jackpot_dates']));
+            $sheet->setCellValue('AA' . ($i+1), implode(', ', $value['luxor_dates']));
+            $sheet->setCellValue('AB' . ($i+1), implode(', ', $value['first_frame_dates']));
+            $sheet->setCellValue('AC' . ($i+1), implode(', ', $value['first_picture_dates']));
+            $sheet->setCellValue('AD' . ($i+1), implode(', ', $value['frame_dates']));
+            $sheet->setCellValue('AE' . ($i+1), implode(', ', $value['picture_dates']));
         }
         $i++;
     }
@@ -413,7 +415,8 @@ function playFromConfig()
         $spreadsheet->getActiveSheet()->getColumnDimension('AB')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('AC')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('AD')->setAutoSize(true);
-        $spreadsheet->getActiveSheet()->setAutoFilter('A1:AD'.$i);
+        $spreadsheet->getActiveSheet()->getColumnDimension('AE')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->setAutoFilter('A1:AE'.$i);
         $writer = new PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $writer->save('files/results/luxor_' . date("Y_m_d_H_i_s") .  '.xlsx');
     }

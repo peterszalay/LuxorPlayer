@@ -513,7 +513,7 @@ class LuxorPlayer {
      */
     private function initializeResults($strategy, $selections){
         $results = [];
-        $startValue = ['total' => 0, 'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0, 'jackpot_dates' => [],
+        $startValue = ['total' => 0, 'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0,  'last_win_date' => '', 'jackpot_dates' => [],
                        'luxor_dates' => [], 'first_picture_dates' => [], 'first_frame_dates' => [], 'picture_dates' => [], 'frame_dates' => [], 'unique_jackpot' => 0, 'unique_luxor' => 0, 
                         'unique_first_picture' => 0, 'unique_first_frame' => 0, 'unique_frame' => 0, 'unique_picture' => 0];
         $firstSelection = isset($selections['first']) ? intval($selections['first']) : 0;
@@ -561,7 +561,7 @@ class LuxorPlayer {
         $results = [];
         $startValue = ['random' => false, 'most' => false, 'least' => false, 'mixed' => false, 'prev_draws' => 0, 
                        'first_selection' => 0, 'second_selection' => 0, 'third_selection' => 0, 'total' => 0, 
-                       'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0, 
+                       'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0, 'last_win_date' => '',
                        'jackpot_dates' => [], 'luxor_dates' => [], 'first_picture_dates' => [], 'first_frame_dates' => [], 
                        'picture_dates' => [], 'frame_dates' => [], 'unique_jackpot' => 0, 'unique_luxor' => 0, 'unique_first_picture' => 0,
                        'unique_first_frame' => 0, 'unique_frame' => 0, 'unique_picture' => 0
@@ -726,7 +726,8 @@ class LuxorPlayer {
             $firstPictureDates = array_unique($result['first_picture_dates']);
             $frameDates = array_unique($result['frame_dates']);
             $pictureDates = array_unique($result['picture_dates']);
-            
+            $allDates = $pictureDates + $frameDates + $luxorDates;
+            $results[$key]['last_win_date'] = (!empty($allDates)) ? max($allDates) : '';
             $results[$key]['jackpot_dates'] = $jackpotDates;
             $results[$key]['luxor_dates'] = $luxorDates;
             $results[$key]['first_frame_dates'] = $firstFrameDates;

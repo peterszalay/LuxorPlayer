@@ -22,6 +22,14 @@ class AutoPlay {
                 $drawCount = (isset($file['auto_player']['draws']) && is_int($file['auto_player']['draws']) && $file['auto_player']['draws'] > 1) ? $file['auto_player']['draws'] : 0;
                 $ticketCount = (isset($file['auto_player']['tickets_per_player']) && is_int($file['auto_player']['tickets_per_player']) && $file['auto_player']['tickets_per_player'] > 1) ? $file['auto_player']['tickets_per_player'] : 0;
                 $repeatTimes = (isset($file['auto_player']['repeat']) && is_int($file['auto_player']['repeat']) && $file['auto_player']['repeat'] > 1) ? $file['auto_player']['repeat'] : 0;
+                $minSelection = (isset($file['auto_player']['min_selection']) && is_int($file['auto_player']['min_selection']) && $file['auto_player']['min_selection'] > 20) ? $file['auto_player']['min_selection'] : 20;
+                $maxSelection = (isset($file['auto_player']['max_selection']) && is_int($file['auto_player']['max_selection']) && $file['auto_player']['max_selection'] > 20) ? $file['auto_player']['max_selection'] : 70;
+                $strategies = (isset($file['auto_player']['strategies']) && is_array($file['auto_player']['strategies'])) ? $file['auto_player']['strategies'] : [];
+                $previousDraws = (isset($file['auto_player']['previous_draws']) && is_array($file['auto_player']['previous_draws'])) ? $file['auto_player']['previous_draws'] : [];
+                $selections = [];
+                $selections[0] = (isset($file['auto_player']['one_selection']) && is_array($file['auto_player']['one_selection'])) ? $file['auto_player']['one_selection'] : [];
+                $selections[1] = (isset($file['auto_player']['two_selections']) && is_array($file['auto_player']['two_selections'])) ? $file['auto_player']['two_selections'] : [];
+                $selections[2] = (isset($file['auto_player']['three_selections']) && is_array($file['auto_player']['three_selections'])) ? $file['auto_player']['three_selections'] : [];
                 if(isset($file['auto_player']['players']) && is_array($file['auto_player']['players'])){
                     foreach ($file['auto_player']['players'] as $player){
                         if(isset($player['name'])){
@@ -29,12 +37,9 @@ class AutoPlay {
                             $newPlayer->setDrawCount($drawCount);
                             $newPlayer->setTicketCount($ticketCount);
                             $newPlayer->setRepeat($repeatTimes);
-                            if(isset($player['random']) && $player['random'] == true){
-                                $newPlayer->setRandom(true);
+                            if(isset($player['strategies'])){
+                                $newPlayer->setStrategies($player['strategies']);
                             }
-                            if(isset($player['regenerated']) && $player['regenerated'] == true){
-                                $newPlayer->setRegenerated(true);
-                            } 
                             $this->players[] = $newPlayer;
                             $this->initializePlayerResults($newPlayer->getName());
                         }

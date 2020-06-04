@@ -5,13 +5,9 @@ namespace LuxorPlayer;
 class AutoPlayer {
     
     private $name = '';
-    private $drawCount = 0;
-    private $ticketCount = 0;
-    private $random = false;
-    private $regenerated = false;
-    private $most = false;
-    private $least = false;
-    private $mixed = false;
+    private static $drawCount = 0;
+    private static $ticketCount = 0;
+    private static $strategies;
     private $previousDraws = 0;
     private $weeksAnalyzed = 0;
     private $strategiesPlayed = 0;
@@ -37,58 +33,19 @@ class AutoPlayer {
     /**
      * @param int $drawCount
      */
-    public function setDrawCount($drawCount)
+    public static function setDrawCount($drawCount)
     {
-        $this->drawCount = $drawCount;
+        self::$drawCount = $drawCount;
     }
 
     /**
      * @param int $ticketCount
      */
-    public function setTicketCount($ticketCount)
+    public static function setTicketCount($ticketCount)
     {
-        $this->ticketCount = $ticketCount;
+        self::$ticketCount = $ticketCount;
     }
 
-    /**
-     * @param boolean $random
-     */
-    public function setRandom($random)
-    {
-        $this->random = $random;
-    }
-
-    /**
-     * @param boolean $regenerated
-     */
-    public function setRegenerated($regenerated)
-    {
-        $this->regenerated = $regenerated;
-    }
-
-    /**
-     * @param boolean $most
-     */
-    public function setMost($most)
-    {
-        $this->most = $most;
-    }
-
-    /**
-     * @param boolean $least
-     */
-    public function setLeast($least)
-    {
-        $this->least = $least;
-    }
-
-    /**
-     * @param boolean $mixed
-     */
-    public function setMixed($mixed)
-    {
-        $this->mixed = $mixed;
-    }
 
     /**
      * @param array $previousDraws
@@ -104,6 +61,14 @@ class AutoPlayer {
     public function setWeeksAnalyzed($weeksAnalyzed)
     {
         $this->weeksAnalyzed = $weeksAnalyzed;
+    }
+    
+    /**
+     * @param int $strategies
+     */
+    public function setStrategies($strategies)
+    {
+        $this->strategies = $strategies;
     }
 
     /**
@@ -183,14 +148,14 @@ class AutoPlayer {
      * 
      */
     public function play(){
-        if($this->most == false && $this->least == false && $this->random == true){
+        if(!is_array($this->strategies)){
             $luxorPlayer = new LuxorPlayer;
             $luxorPlayer->init();
             $luxorPlayer->setDrawCount($this->drawCount);
             $luxorPlayer->setTicketCount($this->ticketCount);
-            if($this->regenerated == true){
+            if($this->strategies == "REGENERATED_RANDOM"){
                 $this->results = $luxorPlayer->playWithRandomNumbers(true);
-            } else {
+            } elseif($this->strategies == "RANDOM") {
                 $this->results = $luxorPlayer->playWithRandomNumbers();
             }
         } else {

@@ -15,34 +15,44 @@ return [
           */
         'manual_player' => 
                         [
-                          'draws' => 52,
+                          'draws' => 522,
                           'tickets' => 10,
-                          'repeat' => 10,
+                          'repeat' => 1,
                           'min_selection' => 25,
-                          'max_selection' => 35,
-                          'previous_draws' => [11,12,13,14],
+                          'max_selection' => 50,
+                          'previous_draws' => [1,2,3,4,5,6,7,8,9,10,11,12,13,14],
                           'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_DRAWN_AND_RANDOM","MOST_DRAWN_AND_RANDOM","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
-                          'one_selection' => [25,30,35],
-                          'two_selections' => ['first' => [5,10,15,20,25], 'second' => [5,10,15,20,25]],
-                          'three_selections' => ['first' => [5,10,15,20], 'second' => [5,10,15,20], 'third' => [5,10]],
+                          'one_selection' => [25,30,35,40,45],
+                          'two_selections' => ['first' => [5,10,15,20,25,30,35,40], 'second' => [5,10,15,20,25,30,35,40]],
+                          'three_selections' => ['first' => [5,10,15,20,25,30,35], 'second' => [5,10,15,20,25,30], 'third' => [5,10,15,20]],
                         ],
         /**
          * auto players are individual players playing their own strategy
          */
         'auto_player' =>
                         [
-                            'draws' => 522,
-                            'max_previous_draws' => 104,
-                            'repeat' => 1,
+                            'draws_played' => 52,
+                            'max_previous_draws' => 120,
                             'tickets_per_player' => 50,
+                            'repeat' => 1,
+                            'min_selection' => 25,
+                            'max_selection' => 40,
+                            'previous_draws' => [1,2,3,4,5,6,7,8,9,10,11,12,13,14],
+                            'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_DRAWN_AND_RANDOM","MOST_DRAWN_AND_RANDOM","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
+                            'weeks_analyzed' => [3,7,13,26,52,104],
+                            'one_selection' => [25,30,35],
+                            'two_selections' => ['first' => [5,10,15,20,25], 'second' => [5,10,15,20,25]],
+                            'three_selections' => ['first' => [5,10,15,20], 'second' => [5,10,15,20], 'third' => [5,10]],
                             'players' => [
                                             0 => [
                                                     'name' => 'Sam Random',
+                                                    'strategies' => 'RANDOM',
                                                     'random' => true,
                                                     'regenerated' => false
                                                  ],
                                             1 => [
                                                     'name' => 'Reginald Random',
+                                                    'strategies' => 'REGENERATED_RANDOM',
                                                     'random' => true,
                                                     'regenerated' => true
                                                  ],
@@ -50,18 +60,9 @@ return [
                                                     'name' => 'Bess Van Jahr',
                                                     'description' => '', 
                                                     'previous_draws' => [1,2,3,4,5], 
-                                                    'random' => true,
-                                                    'least' => true,
-                                                    'most' => true,
-                                                    'mixed' => false,
+                                                    'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_DRAWN_AND_RANDOM","MOST_DRAWN_AND_RANDOM","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
                                                     'strategies_played' => 1,
-                                                    'weeks_analyzed' => 52,
-                                                    'repeat_analysis' => 1,
-                                                    'min_selection' => 25,
-                                                    'max_selection' => 40,
-                                                    'one_selection' => [25,30,35],
-                                                    'two_selections' => ['first' => [5,10,15,20,25], 'second' => [5,10,15,20,25]],
-                                                    'three_selections' => ['first' => [5,10,15,20], 'second' => [5,10,15,20], 'third' => [5,10]]
+                                                    'weeks_analyzed' => 52,    
                                                  ]*/
                                          ]   
                         ]

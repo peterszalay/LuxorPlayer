@@ -9,6 +9,7 @@ class AutoPlay {
     
     private $players = [];
     private $results = [];
+    private $fileProcessor;
     
     /**
      * Creates players according to setting in luxor config under auto_player and initializes results arra which stores final results
@@ -19,27 +20,37 @@ class AutoPlay {
             $file = include  __DIR__ . '/../../config/luxor.php';
             if(isset($file['auto_player'])){
                 //load players from luxor config file
-                $drawCount = (isset($file['auto_player']['draws']) && is_int($file['auto_player']['draws']) && $file['auto_player']['draws'] > 1) ? $file['auto_player']['draws'] : 0;
+                $drawCount = (isset($file['auto_player']['draws_played']) && is_int($file['auto_player']['draws_played']) && $file['auto_player']['draws_played'] > 1) ? $file['auto_player']['draws_played'] : 0;
+                AutoPlayer::setDrawCount($drawCount);
+                $weeksAnalyzed = (isset($file['auto_player']['weeks_analyzed']) && is_int($file['auto_player']['weeks_analyzed']) && $file['auto_player']['weeks_analyzed'] > 1) ? $file['auto_player']['weeks_analyzed'] : 0;
+                AutoPlayer::setWeeksAnalyzed($weeksAnalyzed);
+                $this->fileProcessor  = new FileProcessor();
+                $this->fileProcessor->readFileIntoArray($drawCount + $weeksAnalyzed);
+                $draws = $this->fileProcessor->getDrawResults();
+                AutoPlayer::setDraws($draws);               
                 $ticketCount = (isset($file['auto_player']['tickets_per_player']) && is_int($file['auto_player']['tickets_per_player']) && $file['auto_player']['tickets_per_player'] > 1) ? $file['auto_player']['tickets_per_player'] : 0;
+                AutoPlayer::setTicketCount($ticketCount);
                 $repeatTimes = (isset($file['auto_player']['repeat']) && is_int($file['auto_player']['repeat']) && $file['auto_player']['repeat'] > 1) ? $file['auto_player']['repeat'] : 0;
+                AutoPlayer::setRepeat($repeatTimes);
                 $minSelection = (isset($file['auto_player']['min_selection']) && is_int($file['auto_player']['min_selection']) && $file['auto_player']['min_selection'] > 20) ? $file['auto_player']['min_selection'] : 20;
+                AutoPlayer::setMinSelection($minSelection);
                 $maxSelection = (isset($file['auto_player']['max_selection']) && is_int($file['auto_player']['max_selection']) && $file['auto_player']['max_selection'] > 20) ? $file['auto_player']['max_selection'] : 70;
+                AutoPlayer::setMaxSelection($maxSelection);
                 $strategies = (isset($file['auto_player']['strategies']) && is_array($file['auto_player']['strategies'])) ? $file['auto_player']['strategies'] : [];
+                AutoPlayer::setStrategies($strategies);
                 $previousDraws = (isset($file['auto_player']['previous_draws']) && is_array($file['auto_player']['previous_draws'])) ? $file['auto_player']['previous_draws'] : [];
-                $selections = [];
-                $selections[0] = (isset($file['auto_player']['one_selection']) && is_array($file['auto_player']['one_selection'])) ? $file['auto_player']['one_selection'] : [];
-                $selections[1] = (isset($file['auto_player']['two_selections']) && is_array($file['auto_player']['two_selections'])) ? $file['auto_player']['two_selections'] : [];
-                $selections[2] = (isset($file['auto_player']['three_selections']) && is_array($file['auto_player']['three_selections'])) ? $file['auto_player']['three_selections'] : [];
+                AutoPlayer::setPreviousDraws($previousDraws);
+                $firstSelections = (isset($file['auto_player']['one_selection']) && is_array($file['auto_player']['one_selection'])) ? $file['auto_player']['one_selection'] : [];
+                AutoPlayer::setFirstSelection($firstSelections);
+                $secondSelections = (isset($file['auto_player']['two_selections']) && is_array($file['auto_player']['two_selections'])) ? $file['auto_player']['two_selections'] : [];
+                AutoPlayer::setSecondSelection($secondSelections);
+                $thirdSelections = (isset($file['auto_player']['three_selections']) && is_array($file['auto_player']['three_selections'])) ? $file['auto_player']['three_selections'] : [];
+                AutoPlayer::setThirdSelection($thirdSelections);
+                
                 if(isset($file['auto_player']['players']) && is_array($file['auto_player']['players'])){
                     foreach ($file['auto_player']['players'] as $player){
                         if(isset($player['name'])){
                             $newPlayer = AutoPlayer::create($player['name']);
-                            $newPlayer->setDrawCount($drawCount);
-                            $newPlayer->setTicketCount($ticketCount);
-                            $newPlayer->setRepeat($repeatTimes);
-                            if(isset($player['strategies'])){
-                                $newPlayer->setStrategies($player['strategies']);
-                            }
                             $this->players[] = $newPlayer;
                             $this->initializePlayerResults($newPlayer->getName());
                         }
@@ -67,6 +78,11 @@ class AutoPlay {
         $this->results[$playerName] = $startValue;
     }
     
+    /**
+     * Play with players on by one
+     * 
+     * @return array $results
+     */
     public function play()
     {
         $this->createPlayers();

@@ -32,37 +32,30 @@ return [
         'auto_player' =>
                         [
                             'draws_played' => 52,
-                            'max_previous_draws' => 120,
+                            'weeks_analyzed' => 52,
                             'tickets_per_player' => 50,
                             'repeat' => 1,
                             'min_selection' => 25,
                             'max_selection' => 40,
                             'previous_draws' => [1,2,3,4,5,6,7,8,9,10,11,12,13,14],
                             'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_DRAWN_AND_RANDOM","MOST_DRAWN_AND_RANDOM","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
-                            'weeks_analyzed' => [3,7,13,26,52,104],
                             'one_selection' => [25,30,35],
                             'two_selections' => ['first' => [5,10,15,20,25], 'second' => [5,10,15,20,25]],
                             'three_selections' => ['first' => [5,10,15,20], 'second' => [5,10,15,20], 'third' => [5,10]],
                             'players' => [
                                             0 => [
                                                     'name' => 'Sam Random',
-                                                    'strategies' => 'RANDOM',
-                                                    'random' => true,
-                                                    'regenerated' => false
+                                                    'strategies' => 'RANDOM'
                                                  ],
                                             1 => [
                                                     'name' => 'Reginald Random',
-                                                    'strategies' => 'REGENERATED_RANDOM',
-                                                    'random' => true,
-                                                    'regenerated' => true
+                                                    'strategies' => 'REGENERATED_RANDOM'
                                                  ],
                                             /*2 => [
                                                     'name' => 'Bess Van Jahr',
-                                                    'description' => '', 
-                                                    'previous_draws' => [1,2,3,4,5], 
+                                                    'description' => '',  
                                                     'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_DRAWN_AND_RANDOM","MOST_DRAWN_AND_RANDOM","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
                                                     'strategies_played' => 1,
-                                                    'weeks_analyzed' => 52,    
                                                  ]*/
                                          ]   
                         ]

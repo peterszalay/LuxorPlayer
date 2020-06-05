@@ -5,18 +5,19 @@ namespace LuxorPlayer;
 class AutoPlayer {
     
     private $name = '';
+    private static $draws = [];
     private static $drawCount = 0;
     private static $ticketCount = 0;
     private static $strategies;
-    private $previousDraws = 0;
-    private $weeksAnalyzed = 0;
+    private static $previousDraws = [];
+    private static $weeksAnalyzed = 0;
+    private static $repeat = 0;
+    private static $minSelection = 0;
+    private static $maxSelection = 0;
+    private static $firstSelection = [];
+    private static $secondSelection = [];
+    private static $thirdSelection = [];
     private $strategiesPlayed = 0;
-    private $repeat = 0;
-    private $minSelection = 0;
-    private $maxSelection = 0;
-    private $firstSelection = [];
-    private $secondselection = [];
-    private $thirdSelection = [];
     private $results = [];
     
     
@@ -28,6 +29,14 @@ class AutoPlayer {
     public static function create($name)
     {
         return new AutoPlayer($name);
+    }
+    
+    /**
+     * @param array $draws
+     */
+    public static function setDraws($draws)
+    {
+        self::$draws = $draws;
     }
 
     /**
@@ -45,86 +54,86 @@ class AutoPlayer {
     {
         self::$ticketCount = $ticketCount;
     }
+    
+    /**
+     * @param array $strategies
+     */
+    public static function setStrategies($strategies)
+    {
+        self::$strategies = $strategies;
+    }
 
 
     /**
      * @param array $previousDraws
      */
-    public function setPreviousDraws($previousDraws)
+    public static function setPreviousDraws($previousDraws)
     {
-        $this->previousDraws = $previousDraws;
+        self::$previousDraws = $previousDraws;
     }
 
     /**
      * @param int $weeksAnalyzed
      */
-    public function setWeeksAnalyzed($weeksAnalyzed)
+    public static function setWeeksAnalyzed($weeksAnalyzed)
     {
-        $this->weeksAnalyzed = $weeksAnalyzed;
-    }
-    
-    /**
-     * @param int $strategies
-     */
-    public function setStrategies($strategies)
-    {
-        $this->strategies = $strategies;
+        self::$weeksAnalyzed = $weeksAnalyzed;
     }
 
+    /**
+     * @param int $repeat
+     */
+    public static function setRepeat($repeat)
+    {
+        self::$repeat = $repeat;
+    }
+
+    /**
+     * @param int $minSelection
+     */
+    public static function setMinSelection($minSelection)
+    {
+        self::$minSelection = $minSelection;
+    }
+
+    /**
+     * @param int $maxSelection
+     */
+    public static function setMaxSelection($maxSelection)
+    {
+        self::$maxSelection = $maxSelection;
+    }
+
+    /**
+     * @param array $firstSelection
+     */
+    public static function setFirstSelection($firstSelection)
+    {
+        self::$firstSelection = $firstSelection;
+    }
+
+    /**
+     * @param array $secondselection
+     */
+    public static function setSecondSelection($secondSelection)
+    {
+        self::$secondSelection = $secondSelection;
+    }
+
+    /**
+     * @param array $thirdSelection
+     */
+    public static function setThirdSelection($thirdSelection)
+    {
+        self::$thirdSelection = $thirdSelection;
+    }
+    
     /**
      * @param int $strategiesPlayed
      */
     public function setStrategiesPlayed($strategiesPlayed)
     {
         $this->strategiesPlayed = $strategiesPlayed;
-    }
-
-    /**
-     * @param int $repeat
-     */
-    public function setRepeat($repeat)
-    {
-        $this->repeat = $repeat;
-    }
-
-    /**
-     * @param int $minSelection
-     */
-    public function setMinSelection($minSelection)
-    {
-        $this->minSelection = $minSelection;
-    }
-
-    /**
-     * @param int $maxSelection
-     */
-    public function setMaxSelection($maxSelection)
-    {
-        $this->maxSelection = $maxSelection;
-    }
-
-    /**
-     * @param array $firstSelection
-     */
-    public function setFirstSelection($firstSelection)
-    {
-        $this->firstSelection = $firstSelection;
-    }
-
-    /**
-     * @param array $secondselection
-     */
-    public function setSecondselection($secondselection)
-    {
-        $this->secondselection = $secondselection;
-    }
-
-    /**
-     * @param array $thirdSelection
-     */
-    public function setThirdSelection($thirdSelection)
-    {
-        $this->thirdSelection = $thirdSelection;
     }
 
     /**

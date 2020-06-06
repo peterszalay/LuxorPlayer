@@ -4,11 +4,10 @@ namespace LuxorPlayer;
 
 class AutoPlayer {
     
-    private $name = '';
     private static $draws = [];
     private static $drawCount = 0;
     private static $ticketCount = 0;
-    private static $strategies;
+    private static $strategies = [];
     private static $previousDraws = [];
     private static $weeksAnalyzed = 0;
     private static $repeat = 0;
@@ -17,13 +16,26 @@ class AutoPlayer {
     private static $firstSelection = [];
     private static $secondSelection = [];
     private static $thirdSelection = [];
-    private $strategiesPlayed = 0;
-    private $results = [];
+    private static $orderBy = '';
+    
+    private $playerName = '';
+    private $playerStrategies = [];
+    private $playerPreviousDraws = [];
+    private $playerWeeksAnalyzed = 0;
+    private $playerRepeat = 0;
+    private $playerMinSelection = 0;
+    private $playerMaxSelection = 0;
+    private $playerFirstSelection = [];
+    private $playerSecondSelection = [];
+    private $playerThirdSelection = [];
+    private $playerStrategiesPlayed = 0;
+    private $playerOrderBy = '';
+    private $playerResults = [];
     
     
     public function __construct($name)
     {
-        $this->name = $name;
+        $this->playerName = $name;
     }
     
     public static function create($name)
@@ -129,6 +141,14 @@ class AutoPlayer {
     }
     
     /**
+     * @param string $orderBy
+     */
+    public static function setOrderBy($orderBy)
+    {
+        AutoPlayer::$orderBy = $orderBy;
+    }
+
+    /**
      * @param int $strategiesPlayed
      */
     public function setStrategiesPlayed($strategiesPlayed)
@@ -137,38 +157,210 @@ class AutoPlayer {
     }
 
     /**
-     * @return array $results
+     * @return array $playerResults
      */
     public function getResults()
     {
-        return $this->results;
+        return $this->playerResults;
     }
     
     /**
-     * @return String name
+     * @return String playeRane
      */
     public function getName()
     {
-        return $this->name;
+        return $this->playerName;
     }
     
+    /**
+     * @param multitype: $playerStrategies
+     */
+    public function setPlayerStrategies($playerStrategies)
+    {
+        $this->playerStrategies = $playerStrategies;
+    }
+
+    /**
+     * @param multitype: $playerPreviousDraws
+     */
+    public function setPlayerPreviousDraws($playerPreviousDraws)
+    {
+        $this->playerPreviousDraws = $playerPreviousDraws;
+    }
+
+    /**
+     * @param number $playerWeeksAnalyzed
+     */
+    public function setPlayerWeeksAnalyzed($playerWeeksAnalyzed)
+    {
+        $this->playerWeeksAnalyzed = $playerWeeksAnalyzed;
+    }
+
+    /**
+     * @param number $playerRepeat
+     */
+    public function setPlayerRepeat($playerRepeat)
+    {
+        $this->playerRepeat = $playerRepeat;
+    }
+
+    /**
+     * @param multitype: $playerFirstSelection
+     */
+    public function setPlayerFirstSelection($playerFirstSelection)
+    {
+        $this->playerFirstSelection = $playerFirstSelection;
+    }
+
+    /**
+     * @param multitype: $playerSecondSelection
+     */
+    public function setPlayerSecondSelection($playerSecondSelection)
+    {
+        $this->playerSecondSelection = $playerSecondSelection;
+    }
+
+    /**
+     * @param multitype: $playerThirdSelection
+     */
+    public function setPlayerThirdSelection($playerThirdSelection)
+    {
+        $this->playerThirdSelection = $playerThirdSelection;
+    }
+
+    /**
+     * @param number $playerStrategiesPlayed
+     */
+    public function setPlayerStrategiesPlayed($playerStrategiesPlayed)
+    {
+        $this->playerStrategiesPlayed = $playerStrategiesPlayed;
+    }
+
+    /**
+     * @param number $playerMinSelection
+     */
+    public function setPlayerMinSelection($playerMinSelection)
+    {
+        $this->playerMinSelection = $playerMinSelection;
+    }
+
+    /**
+     * @param number $playerMaxSelection
+     */
+    public function setPlayerMaxSelection($playerMaxSelection)
+    {
+        $this->playerMaxSelection = $playerMaxSelection;
+    }
+    
+    /**
+     * @param string $playerOrderBy
+     */
+    public function setPlayerOrderBy($playerOrderBy)
+    {
+        $this->playerOrderBy = $playerOrderBy;
+    }
+
     /**
      * Each player plays according to its settings
      * 
      */
     public function play(){
-        if(!is_array($this->strategies)){
+        if(isset($this->playerStrategies) && !is_array($this->playerStrategies)){
             $luxorPlayer = new LuxorPlayer;
             $luxorPlayer->init();
-            $luxorPlayer->setDrawCount($this->drawCount);
-            $luxorPlayer->setTicketCount($this->ticketCount);
-            if($this->strategies == "REGENERATED_RANDOM"){
-                $this->results = $luxorPlayer->playWithRandomNumbers(true);
-            } elseif($this->strategies == "RANDOM") {
-                $this->results = $luxorPlayer->playWithRandomNumbers();
+            $luxorPlayer->setDrawCount(self::$drawCount);
+            $luxorPlayer->setTicketCount(self::$ticketCount);
+            if($this->playerStrategies == "REGENERATED_RANDOM"){
+                $this->playerResults = $luxorPlayer->playWithRandomNumbers(true);
+            } elseif($this->playerStrategies == "RANDOM") {
+                $this->playerResults = $luxorPlayer->playWithRandomNumbers();
             }
         } else {
+            if(!empty($this->playerStrategies)){
+                $strategies = $this->playerStrategies;
+            } else {
+                $strategies = self::$strategies;
+            }
+            if(!empty($this->playerPreviousDraws)){
+                $previousDraws = $this->playerPreviousDraws;
+            } else {
+                $previousDraws = self::$previousDraws;
+            }
+            if(isset($this->playerRepeat) && $this->playerRepeat != 0){
+                $repeatTimes = $this->playerRepeat;
+            } else {
+                $repeatTimes = self::$repeat;
+            }
+            if(isset($this->playerWeeksAnalyzed) && $this->playerWeeksAnalyzed != 0){
+                $weeksAnalyzed = $this->playerWeeksAnalyzed;
+            } else {
+                $weeksAnalyzed = self::$weeksAnalyzed;
+            }
+            if(isset($this->playerMinSelection) && $this->playerMinSelection != 0){
+                $minSelection = $this->playerMinSelection;
+            } else {
+                $minSelection = self::$minSelection;
+            }
+            if(isset($this->playerMaxSelection) && $this->playerMaxSelection != 0){
+                $maxSelection = $this->playerMaxSelection;
+            } else {
+                $maxSelection = self::$maxSelection;
+            }
+            if(!empty($this->playerFirstSelection)){
+                $firstSelection = $this->playerFirstSelection;
+            } else {
+                $firstSelection = self::$firstSelection;
+            }
+            if(!empty($this->playerSecondSelection)){
+                $secondSelection = $this->playerSecondSelection;
+            } else {
+                $secondSelection = self::$secondSelection;
+            }
+            if(!empty($this->playerThirdSelection)){
+                $thirdSelection = $this->playerThirdSelection;
+            } else {
+                $thirdSelection = self::$thirdSelection;
+            }
+            if(!empty($this->playerOrderBy)){
+                $orderBy = $this->playerOrderBy;
+            } else {
+                $orderBy = self::$orderBy;
+            }
+            $selections = [];
+            $selections[0] = $firstSelection;
+            $selections[1] = $secondSelection;
+            $selections[2] = $thirdSelection;
             
+            for($i = (self::$drawCount-1); $i > 0; $i--){
+                $draws = array_slice(self::$draws, self::$drawCount, ($weeksAnalyzed+1));
+                $luxorPlayer = new LuxorPlayer;
+                $ticketGenerator = new LuxorTicketGenerator;
+                $game = new LuxorGame;
+                if(isset($this->playerStrategiesPlayed) && $this->playerStrategiesPlayed > 1){
+                    $ticketCount = self::$ticketCount / $this->playerStrategiesPlayed;
+                } else {
+                    $ticketCount = self::$ticketCount;
+                }
+                $analysisResults =  $luxorPlayer->autoAnalyzeStrategies($draws, $previousDraws, $ticketCount, $repeatTimes, $minSelection, $maxSelection, $strategies, $selections, $orderBy);
+                $selection = [];
+                $tickets = [];
+                if(isset($this->playerStrategiesPlayed) && $this->playerStrategiesPlayed > 1){
+                    $bestStrategies = array_slice($analysisResults, 0, $this->playerStrategiesPlayed);                    
+                    foreach($bestStrategies as $bestStrategy){
+                        $selection += $luxorPlayer->autoGenerateNumbers($draws, $bestStrategy['prev_draws'], $bestStrategy['first_selection'], $bestStrategy['strategy'], $bestStrategy['second_selection'], $bestStrategy['third_selection']);
+                        $ticketGenerator->generateTicketsWithRandomNumbersFromSelection($ticketCount, $selection);
+                        $tickets += $ticketGenerator->getTickets();
+                    }
+                } else {
+                    $bestStrategy = array_slice($analysisResults, 0, 1);
+                    $selection = $luxorPlayer->autoGenerateNumbers($draws, $bestStrategy['prev_draws'], $bestStrategy['first_selection'], $bestStrategy['strategy'], $bestStrategy['second_selection'], $bestStrategy['third_selection']);
+                    $ticketGenerator->generateTicketsWithRandomNumbersFromSelection($ticketCount, $selection);
+                    $tickets = $ticketGenerator->getTickets();
+                }
+                $game->processTicketsForADraw($this->ticketGenerator->getTickets(), $lastDraw);
+                
+            }
         }
+        return $this->playerResults;
     }
 }

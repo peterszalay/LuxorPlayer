@@ -31,8 +31,8 @@ return [
          */
         'auto_player' =>
                         [
-                            'draws_played' => 52,
-                            'weeks_analyzed' => 52,
+                            'draws_played' => 3,
+                            'weeks_analyzed' => 14,
                             'tickets_per_player' => 50,
                             'repeat' => 1,
                             'min_selection' => 25,
@@ -51,12 +51,12 @@ return [
                                                     'name' => 'Reginald Random',
                                                     'strategies' => 'REGENERATED_RANDOM'
                                                  ],
-                                            /*2 => [
-                                                    'name' => 'Bess Van Jahr',
+                                            2 => [
+                                                    'name' => 'Nostradamus',
                                                     'description' => '',  
-                                                    'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_DRAWN_AND_RANDOM","MOST_DRAWN_AND_RANDOM","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
-                                                    'strategies_played' => 1,
-                                                 ]*/
+                                                    'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_AND_MOST_DRAWN"],
+                                                    'strategies_played' => 1
+                                                 ]
                                          ]   
                         ]
         ];

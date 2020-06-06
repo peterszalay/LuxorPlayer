@@ -276,7 +276,7 @@ class AutoPlayer {
                 $this->playerResults = $luxorPlayer->playWithRandomNumbers();
             }
         } else {
-            if(!empty($this->playerStrategies)){
+            if(isset($this->playerStrategies)){
                 $strategies = $this->playerStrategies;
             } else {
                 $strategies = self::$strategies;
@@ -330,36 +330,43 @@ class AutoPlayer {
             $selections[0] = $firstSelection;
             $selections[1] = $secondSelection;
             $selections[2] = $thirdSelection;
-            
+            $game = new LuxorGame;
             for($i = (self::$drawCount-1); $i > 0; $i--){
-                $draws = array_slice(self::$draws, self::$drawCount, ($weeksAnalyzed+1));
+                $draws = array_slice(self::$draws, $i+1, ($weeksAnalyzed+1));
+                //print_r($draws);
                 $luxorPlayer = new LuxorPlayer;
-                $ticketGenerator = new LuxorTicketGenerator;
-                $game = new LuxorGame;
+                $luxorPlayer->init();
+                $ticketGenerator = new LuxorTicketGenerator;                
                 if(isset($this->playerStrategiesPlayed) && $this->playerStrategiesPlayed > 1){
                     $ticketCount = self::$ticketCount / $this->playerStrategiesPlayed;
                 } else {
                     $ticketCount = self::$ticketCount;
                 }
                 $analysisResults =  $luxorPlayer->autoAnalyzeStrategies($draws, $previousDraws, $ticketCount, $repeatTimes, $minSelection, $maxSelection, $strategies, $selections, $orderBy);
+                /*print_r(['previous_draws' => $previousDraws, 'ticket_count' => $ticketCount, 'repeat_times' => $repeatTimes, 'min_selection' => $minSelection, 
+                         'max_selection' => $maxSelection, 'strategies' => $strategies, 'selections' => $selections, 'order_by' => $orderBy]);*/
+                
                 $selection = [];
                 $tickets = [];
                 if(isset($this->playerStrategiesPlayed) && $this->playerStrategiesPlayed > 1){
-                    $bestStrategies = array_slice($analysisResults, 0, $this->playerStrategiesPlayed);                    
+                    $bestStrategies = array_slice($analysisResults, 0, $this->playerStrategiesPlayed);     
+                    //print_r($bestStrategies);
                     foreach($bestStrategies as $bestStrategy){
+                        //print_r($bestStrategy);
                         $selection += $luxorPlayer->autoGenerateNumbers($draws, $bestStrategy['prev_draws'], $bestStrategy['first_selection'], $bestStrategy['strategy'], $bestStrategy['second_selection'], $bestStrategy['third_selection']);
                         $ticketGenerator->generateTicketsWithRandomNumbersFromSelection($ticketCount, $selection);
                         $tickets += $ticketGenerator->getTickets();
                     }
                 } else {
                     $bestStrategy = array_slice($analysisResults, 0, 1);
-                    $selection = $luxorPlayer->autoGenerateNumbers($draws, $bestStrategy['prev_draws'], $bestStrategy['first_selection'], $bestStrategy['strategy'], $bestStrategy['second_selection'], $bestStrategy['third_selection']);
+                    //print_r($bestStrategy);
+                    $selection = $luxorPlayer->autoGenerateNumbers($draws, $bestStrategy[key($bestStrategy)]['prev_draws'], $bestStrategy[key($bestStrategy)]['first_selection'], $bestStrategy[key($bestStrategy)]['strategy'], $bestStrategy[key($bestStrategy)]['second_selection'], $bestStrategy[key($bestStrategy)]['third_selection']);
                     $ticketGenerator->generateTicketsWithRandomNumbersFromSelection($ticketCount, $selection);
                     $tickets = $ticketGenerator->getTickets();
                 }
-                $game->processTicketsForADraw($this->ticketGenerator->getTickets(), $lastDraw);
-                
+                $game->processTicketsForADraw($tickets, self::$draws[$i]);
             }
+            $this->playerResults = $game->getResults();  
         }
         return $this->playerResults;
     }

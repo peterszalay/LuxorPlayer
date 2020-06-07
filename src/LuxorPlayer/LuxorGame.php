@@ -105,14 +105,14 @@ class LuxorGame {
             }
             if(empty($ticketCopy->frame) && empty($ticketCopy->picture)){
                 if($drawNumber <= $draw[0]['jackpot_limit'] && !in_array($draw[0]['date'], $this->results['luxor_dates'])){
-                    print $draw[0]['date'] . ' jackpot' . PHP_EOL;
+                    //print $draw[0]['date'] . ' jackpot' . PHP_EOL;
                     $this->results['jackpot_dates'][] = $draw[0]['date'];
                     $this->results['luxor_dates'][] = $draw[0]['date'];
                     $this->results['jackpot']++;
                     $this->results['luxor']++;
                     break;
                 } elseif(!in_array($draw[0]['date'], $this->results['luxor_dates'])) {
-                    print $draw[0]['date'] . ' luxor' . PHP_EOL;
+                    //print $draw[0]['date'] . ' luxor' . PHP_EOL;
                     $this->results['luxor_dates'][] = $draw[0]['date'];
                     $this->results['luxor']++;
                     break;

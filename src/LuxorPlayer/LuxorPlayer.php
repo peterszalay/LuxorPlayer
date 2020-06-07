@@ -754,8 +754,8 @@ class LuxorPlayer {
      * @return number
      */
     private function orderByUniquePicturesAndFrames($a, $b){
-        $aTotal = ($a['unique_frame'] * 20) + $a['unique_picture'];
-        $bTotal = ($b['unique_frame'] * 20) + $b['unique_picture'];
+        $aTotal = ($a['unique_frame'] * 2) + $a['unique_picture'];
+        $bTotal = ($b['unique_frame'] * 2) + $b['unique_picture'];
         if($aTotal < $bTotal){
             return 1;
         }else if($aTotal > $bTotal){

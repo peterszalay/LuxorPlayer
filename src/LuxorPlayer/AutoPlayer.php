@@ -354,10 +354,11 @@ class AutoPlayer {
                     //print_r($bestStrategies);
                     foreach($bestStrategies as $bestStrategy){
                         //print_r($bestStrategy);
-                        $selection += $luxorPlayer->autoGenerateNumbers($draws, $bestStrategy['prev_draws'], $bestStrategy['first_selection'], $bestStrategy['strategy'], 
+                        $selection = $luxorPlayer->autoGenerateNumbers($draws, $bestStrategy['prev_draws'], $bestStrategy['first_selection'], $bestStrategy['strategy'], 
                                                                                 $bestStrategy['second_selection'], $bestStrategy['third_selection']);
                         $ticketGenerator->generateTicketsWithRandomNumbersFromSelection($ticketCount, $selection);
-                        $tickets += $ticketGenerator->getTickets();
+                        $tickets = array_merge($tickets, $ticketGenerator->getTickets());
+                        //print_r($tickets);
                     }
                 } else {
                     $bestStrategy = array_slice($analysisResults, 0, 1);

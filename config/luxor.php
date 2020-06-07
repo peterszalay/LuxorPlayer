@@ -33,7 +33,7 @@ return [
                         [
                             'draws_played' => 52,
                             'weeks_analyzed' => 52,
-                            'tickets_per_player' => 50,
+                            'tickets_per_player' => 100,
                             'repeat' => 1,
                             'min_selection' => 25,
                             'max_selection' => 40,
@@ -55,20 +55,21 @@ return [
                                                     'name' => 'Mostradamus',
                                                     'description' => '',  
                                                     'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_AND_MOST_DRAWN"],
-                                                    'strategies_played' => 1
+                                                    'strategies_played' => 1,
+                                                    'order_by' => 'orderByUniqueTotal' 
                                                  ],
                                             3 => [
                                                     'name' => 'Oscar Okoschka',
                                                     'description' => '',
-                                                    'order_by' => 'orderByUniquePicturesAndFrames', 
-                                                    'strategies_played' => 1
+                                                    'strategies_played' => 1,
+                                                    'order_by' => 'orderByUniquePicturesAndFrames'
                                                  ],
                                             4 => [
                                                     'name' => 'Pablo PickAceO',
                                                     'description' => '',
                                                     'max_selection' => 35,
-                                                    'order_by' => 'orderByUniquePicturesAndFrames',
-                                                    'strategies_played' => 5
+                                                    'strategies_played' => 5,
+                                                    'order_by' => 'orderByUniquePicturesAndFrames'
                                                  ]
                                          ]   
                         ]

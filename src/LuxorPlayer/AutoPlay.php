@@ -113,7 +113,22 @@ class AutoPlay {
         foreach($this->players as $player){           
             $this->results[$player->getName()] = $player->play();
         }
+        uasort($this->results, [$this, 'orderByTotal']);
         return $this->results;
+    }
+    
+    /**
+     * Helper to usort
+     */
+    private function orderByTotal($a, $b){
+        $aTotal = ($a['jackpot'] * 30000) + ($a['luxor'] * 6000) + ($a['first_frame'] * 1000) + ($a['first_picture'] * 50) + ($a['frames'] * 20) + $a['pictures'];
+        $bTotal = ($b['jackpot'] * 30000) + ($b['luxor'] * 6000) + ($b['first_frame'] * 1000) + ($b['first_picture'] * 200) + ($b['frames'] * 20) + $b['pictures'];
+        if($aTotal < $bTotal){
+            return 1;
+        }else if($aTotal > $bTotal){
+            return -1;
+        }
+        return 0;
     }
 
 }

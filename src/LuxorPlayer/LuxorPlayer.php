@@ -747,15 +747,33 @@ class LuxorPlayer {
     }
     
     /**
-     * Helper function that orders array elements by value of total
+     * Helper function that orders array elements by value of unique picture and frame
      * 
      * @param array $a
      * @param array $b
      * @return number
      */
     private function orderByUniquePicturesAndFrames($a, $b){
-        $aTotal = ($a['unique_frame'] * 2) + $a['unique_picture'];
-        $bTotal = ($b['unique_frame'] * 2) + $b['unique_picture'];
+        $aTotal = ($a['unique_frame'] * 5) + $a['unique_picture'];
+        $bTotal = ($b['unique_frame'] * 5) + $b['unique_picture'];
+        if($aTotal < $bTotal){
+            return 1;
+        }else if($aTotal > $bTotal){
+            return -1;
+        }
+        return 0;
+    }
+    
+    /**
+     * Helper function that orders array elements by value of picture and frame
+     *
+     * @param array $a
+     * @param array $b
+     * @return number
+     */
+    private function orderByPicturesAndFrames($a, $b){
+        $aTotal = ($a['frames'] * 5) + $a['pictures'];
+        $bTotal = ($b['frames'] * 5) + $b['pictures'];
         if($aTotal < $bTotal){
             return 1;
         }else if($aTotal > $bTotal){

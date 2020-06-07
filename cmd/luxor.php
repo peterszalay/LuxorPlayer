@@ -551,13 +551,13 @@ function autoPlay(){
             print 'First frame dates: ' . implode(', ', $value['first_frame_dates']) . PHP_EOL;
         }
         if($value['first_picture'] > 0){
-            print 'First picture dates: ' . implode(', ', $value['first_picture_dates']) . PHP_EOL;
+            print 'First picture dates: ' . implode(', ', array_unique($value['first_picture_dates'])) . PHP_EOL;
         }
         if($value['frames'] > 0){
-            print 'Frame dates: ' . implode(', ', $value['frame_dates']) . PHP_EOL;
+            print 'Frame dates: ' . implode(', ', array_unique($value['frame_dates'])) . PHP_EOL;
         }
         if($value['pictures'] > 0){
-            print 'Picture dates: ' . implode(', ', $value['picture_dates']) . PHP_EOL;
+            print 'Picture dates: ' . implode(', ', array_unique($value['picture_dates'])) . PHP_EOL;
         }
         print PHP_EOL;
         $i++;

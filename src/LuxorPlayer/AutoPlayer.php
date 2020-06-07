@@ -276,7 +276,7 @@ class AutoPlayer {
                 $this->playerResults = $luxorPlayer->playWithRandomNumbers();
             }
         } else {
-            if(isset($this->playerStrategies)){
+            if(!empty($this->playerStrategies)){
                 $strategies = $this->playerStrategies;
             } else {
                 $strategies = self::$strategies;
@@ -332,7 +332,8 @@ class AutoPlayer {
             $selections[2] = $thirdSelection;
             $game = new LuxorGame;
             for($i = (self::$drawCount-1); $i > 0; $i--){
-                $draws = array_slice(self::$draws, $i+1, ($weeksAnalyzed+1));
+                $maxPreviousDraws = max($previousDraws);
+                $draws = array_slice(self::$draws, $i+1, ($weeksAnalyzed + $maxPreviousDraws));
                 //print_r($draws);
                 $luxorPlayer = new LuxorPlayer;
                 $luxorPlayer->init();
@@ -342,9 +343,9 @@ class AutoPlayer {
                 } else {
                     $ticketCount = self::$ticketCount;
                 }
-                $analysisResults =  $luxorPlayer->autoAnalyzeStrategies($draws, $previousDraws, $ticketCount, $repeatTimes, $minSelection, $maxSelection, $strategies, $selections, $orderBy);
+                $analysisResults =  $luxorPlayer->autoAnalyzeStrategies($draws, $previousDraws, $ticketCount, $repeatTimes, $minSelection, $maxSelection, $strategies, $selections, $orderBy, $maxPreviousDraws);
                 /*print_r(['previous_draws' => $previousDraws, 'ticket_count' => $ticketCount, 'repeat_times' => $repeatTimes, 'min_selection' => $minSelection, 
-                         'max_selection' => $maxSelection, 'strategies' => $strategies, 'selections' => $selections, 'order_by' => $orderBy]);*/
+                         'max_selection' => $maxSelection, 'strategies' => $strategies, 'selections' => $selections, 'order_by' => $orderBy, 'max_previous' => $maxPreviousDraws]);*/
                 
                 $selection = [];
                 $tickets = [];
@@ -353,14 +354,17 @@ class AutoPlayer {
                     //print_r($bestStrategies);
                     foreach($bestStrategies as $bestStrategy){
                         //print_r($bestStrategy);
-                        $selection += $luxorPlayer->autoGenerateNumbers($draws, $bestStrategy['prev_draws'], $bestStrategy['first_selection'], $bestStrategy['strategy'], $bestStrategy['second_selection'], $bestStrategy['third_selection']);
+                        $selection += $luxorPlayer->autoGenerateNumbers($draws, $bestStrategy['prev_draws'], $bestStrategy['first_selection'], $bestStrategy['strategy'], 
+                                                                                $bestStrategy['second_selection'], $bestStrategy['third_selection']);
                         $ticketGenerator->generateTicketsWithRandomNumbersFromSelection($ticketCount, $selection);
                         $tickets += $ticketGenerator->getTickets();
                     }
                 } else {
                     $bestStrategy = array_slice($analysisResults, 0, 1);
                     //print_r($bestStrategy);
-                    $selection = $luxorPlayer->autoGenerateNumbers($draws, $bestStrategy[key($bestStrategy)]['prev_draws'], $bestStrategy[key($bestStrategy)]['first_selection'], $bestStrategy[key($bestStrategy)]['strategy'], $bestStrategy[key($bestStrategy)]['second_selection'], $bestStrategy[key($bestStrategy)]['third_selection']);
+                    $selection = $luxorPlayer->autoGenerateNumbers($draws, $bestStrategy[key($bestStrategy)]['prev_draws'], $bestStrategy[key($bestStrategy)]['first_selection'], 
+                                                                           $bestStrategy[key($bestStrategy)]['strategy'], $bestStrategy[key($bestStrategy)]['second_selection'], 
+                                                                           $bestStrategy[key($bestStrategy)]['third_selection']);
                     $ticketGenerator->generateTicketsWithRandomNumbersFromSelection($ticketCount, $selection);
                     $tickets = $ticketGenerator->getTickets();
                 }

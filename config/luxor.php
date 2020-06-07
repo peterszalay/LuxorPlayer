@@ -31,8 +31,8 @@ return [
          */
         'auto_player' =>
                         [
-                            'draws_played' => 3,
-                            'weeks_analyzed' => 14,
+                            'draws_played' => 52,
+                            'weeks_analyzed' => 52,
                             'tickets_per_player' => 50,
                             'repeat' => 1,
                             'min_selection' => 25,
@@ -52,10 +52,23 @@ return [
                                                     'strategies' => 'REGENERATED_RANDOM'
                                                  ],
                                             2 => [
-                                                    'name' => 'Nostradamus',
+                                                    'name' => 'Mostradamus',
                                                     'description' => '',  
                                                     'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_AND_MOST_DRAWN"],
                                                     'strategies_played' => 1
+                                                 ],
+                                            3 => [
+                                                    'name' => 'Oscar Okoschka',
+                                                    'description' => '',
+                                                    'order_by' => 'orderByUniquePicturesAndFrames', 
+                                                    'strategies_played' => 1
+                                                 ],
+                                            4 => [
+                                                    'name' => 'Pablo PickAceO',
+                                                    'description' => '',
+                                                    'max_selection' => 35,
+                                                    'order_by' => 'orderByUniquePicturesAndFrames',
+                                                    'strategies_played' => 5
                                                  ]
                                          ]   
                         ]

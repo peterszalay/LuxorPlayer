@@ -23,11 +23,7 @@ class AutoPlay {
                 $drawCount = (isset($file['auto_player']['draws_played']) && is_int($file['auto_player']['draws_played']) && $file['auto_player']['draws_played'] > 1) ? $file['auto_player']['draws_played'] : 0;
                 AutoPlayer::setDrawCount($drawCount);
                 $weeksAnalyzed = (isset($file['auto_player']['weeks_analyzed']) && is_int($file['auto_player']['weeks_analyzed']) && $file['auto_player']['weeks_analyzed'] > 1) ? $file['auto_player']['weeks_analyzed'] : 0;
-                AutoPlayer::setWeeksAnalyzed($weeksAnalyzed);
-                $this->fileProcessor  = new FileProcessor();
-                $this->fileProcessor->readFileIntoArray($drawCount + $weeksAnalyzed);
-                $draws = $this->fileProcessor->getDrawResults();
-                AutoPlayer::setDraws($draws);               
+                AutoPlayer::setWeeksAnalyzed($weeksAnalyzed);                         
                 $ticketCount = (isset($file['auto_player']['tickets_per_player']) && is_int($file['auto_player']['tickets_per_player']) && $file['auto_player']['tickets_per_player'] > 1) ? $file['auto_player']['tickets_per_player'] : 0;
                 AutoPlayer::setTicketCount($ticketCount);
                 $repeatTimes = (isset($file['auto_player']['repeat']) && is_int($file['auto_player']['repeat']) && $file['auto_player']['repeat'] > 1) ? $file['auto_player']['repeat'] : 1;
@@ -46,6 +42,11 @@ class AutoPlay {
                 AutoPlayer::setSecondSelection($secondSelections);
                 $thirdSelections = (isset($file['auto_player']['three_selections']) && is_array($file['auto_player']['three_selections'])) ? $file['auto_player']['three_selections'] : [];
                 AutoPlayer::setThirdSelection($thirdSelections);
+                
+                $this->fileProcessor  = new FileProcessor();
+                $this->fileProcessor->readFileIntoArray($drawCount + $weeksAnalyzed + max($previousDraws));
+                $draws = $this->fileProcessor->getDrawResults();
+                AutoPlayer::setDraws($draws);   
                 
                 if(isset($file['auto_player']['players']) && is_array($file['auto_player']['players'])){
                     foreach ($file['auto_player']['players'] as $player){
@@ -73,7 +74,7 @@ class AutoPlay {
                             $newPlayer->setPlayerThirdSelection($playerThirdSelections);
                             $playerStrategiesPlayed = (isset($player['strategies_played']) && is_int($player['strategies_played']) && $player['strategies_played'] > 1) ? $player['strategies_played'] : 1;
                             $newPlayer->setPlayerStrategiesPlayed($playerStrategiesPlayed);
-                            $playerOrderBy = (isset($player['order_by']) && is_string($player['order_by']) && $player['order_by'] != '') ? $player['order_by'] : 'orderByTotal';
+                            $playerOrderBy = (isset($player['order_by']) && is_string($player['order_by']) && $player['order_by'] != '') ? $player['order_by'] : 'orderByUniqueTotal';
                             $newPlayer->setPlayerOrderBy($playerOrderBy);                           
                         }
                     }

@@ -32,12 +32,12 @@ return [
         'auto_player' =>
                         [
                             'draws_played' => 52,
-                            'weeks_analyzed' => 52,
-                            'tickets_per_player' => 100,
-                            'repeat' => 1,
+                            'weeks_analyzed' => 7,
+                            'tickets_per_player' => 50,
+                            'repeat' => 10,
                             'min_selection' => 25,
                             'max_selection' => 40,
-                            'previous_draws' => [1,2,3,4,5,6,7,9,11,14],
+                            'previous_draws' => [2,3,4,5,6,7,9,11,14],
                             'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_DRAWN_AND_RANDOM","MOST_DRAWN_AND_RANDOM","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
                             'one_selection' => [25,30,35,40],
                             'two_selections' => ['first' => [5,10,15,20,25,30,35], 'second' => [5,10,15,20,25,30,35]],
@@ -65,9 +65,9 @@ return [
                                                     'order_by' => 'orderByUniquePicturesAndFrames'
                                                  ],
                                             4 => [
-                                                    'name' => 'Pablo PickAceO',
+                                                    'name' => 'Joaquin Sorsolla',
                                                     'description' => '',
-                                                    //'max_selection' => 35,
+                                                    'max_selection' => 35,
                                                     'strategies_played' => 5,
                                                     'order_by' => 'orderByUniquePicturesAndFrames'
                                                  ],
@@ -75,18 +75,60 @@ return [
                                                     'name' => 'Gustav Winnt',
                                                     'description' => '',
                                                     'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
-                                                    //'max_selection' => 35,
+                                                    'max_selection' => 35,
                                                     'strategies_played' => 5,
                                                     'order_by' => 'orderByUniquePicturesAndFrames'
                                                 ],
                                             6 => [
-                                                    'name' => 'Salvador Money',
+                                                    'name' => 'Edouard Maney',
                                                     'description' => '',
                                                     'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
-                                                    'max_selection' => 35,
+                                                    'max_selection' => 30,
                                                     'strategies_played' => 10,
                                                     'order_by' => 'orderByPicturesAndFrames'
                                                 ],
+                                            7 => [
+                                                    'name' => 'Claude Money',
+                                                    'description' => '',
+                                                    'max_selection' => 30,
+                                                    'strategies_played' => 10,
+                                                    'order_by' => 'orderByPicturesAndFrames'
+                                                ],
+                                            8 =>[
+                                                    'name' => 'Franz Least',
+                                                    'description' => '',
+                                                    'strategies' => ["LEAST_DRAWN","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
+                                                    'one_selection' => [25,30,35],
+                                                    'two_selections' => ['first' => [25,30], 'second' => [5,10]],
+                                                    'three_selections' => ['first' => [5,10], 'second' => [20,25], 'third' => [5,10]],
+                                                    'max_selection' => 35,
+                                                    'strategies_played' => 5,
+                                                    'order_by' => 'orderByPicturesAndFrames'
+                                                ],
+                                            9 =>[
+                                                    'name' => 'Elon Most',
+                                                    'description' => '',
+                                                    'strategies' => ["MOST_DRAWN","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
+                                                    'one_selection' => [25,30,35],
+                                                    'two_selections' => ['first' => [5,10], 'second' => [25,30]],
+                                                    'three_selections' => ['first' => [20,25], 'second' => [5,10], 'third' => [5,10]],
+                                                    'max_selection' => 35,
+                                                    'strategies_played' => 5,
+                                                    'order_by' => 'orderByPicturesAndFrames'
+                                                ],
+                                            10 =>[
+                                                    'name' => 'Lucy Winmore',
+                                                    'description' => '',
+                                                    'max_selection' => 35,
+                                                    'previous_draws' => [2,3,4],
+                                                    'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
+                                                    'one_selection' => [25,30,35],
+                                                    'two_selections' => ['first' => [5,10], 'second' => [25,30]],
+                                                    'three_selections' => ['first' => [20,25], 'second' => [5,10], 'third' => [5,10]],
+                                                    'strategies_played' => 5,
+                                                    'order_by' => 'orderByPicturesAndFrames'
+                                                 ]
+                                
                                         ]   
                         ]
         ];

@@ -32,7 +32,7 @@ return [
         'auto_player' =>
                         [
                             'draws_played' => 52,
-                            'weeks_analyzed' => 5,
+                            'weeks_analyzed' => 2,
                             'tickets_per_player' => 50,
                             'repeat' => 10,
                             'min_selection' => 25,
@@ -156,8 +156,28 @@ return [
 		                            				'strategies_played' => 2,
 		                            				'order_by' => 'orderByPicturesAndFrames'
 												],
-											
-                                
+                                            14 =>[
+                                                    'name' => 'Everill Think',
+                                                    'description' => '',
+                                                    'min_selection' => 20,
+                                                    'max_selection' => 25,
+                                                    'one_selection' => [20],
+                                                    'two_selections' => ['first' => [5,10,15], 'second' => [5,10,15]],
+                                                    'three_selections' => ['first' => [5,10,15], 'second' => [5,10,15], 'third' => [5,10]],
+                                                    'strategies_played' => 50,
+                                                    'order_by' => 'orderByPicturesAndFrames'
+                                                ],
+                                            15 =>[
+                                                    'name' => 'Everill Think-Uniq',
+                                                    'description' => '',
+                                                    'min_selection' => 20,
+                                                    'max_selection' => 25,
+                                                    'one_selection' => [20],
+                                                    'two_selections' => ['first' => [5,10,15], 'second' => [5,10,15]],
+                                                    'three_selections' => ['first' => [5,10,15], 'second' => [5,10,15], 'third' => [5,10]],
+                                                    'strategies_played' => 50,
+                                                    'order_by' => 'orderByUniquePicturesAndFrames'
+                                                ]
                                         ]   
-                        ]
+                            ]
         ];

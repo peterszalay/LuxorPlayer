@@ -15,7 +15,7 @@ return [
           */
         'manual_player' => 
                         [
-                          'draws' => 5,
+                          'draws' => 3,
                           'tickets' => 50,
                           'repeat' => 50,
                           'min_selection' => 25,
@@ -52,51 +52,51 @@ return [
                                                     'strategies' => 'REGENERATED_RANDOM'
                                                  ],
                                             2 => [
-                                                    'name' => 'Mostradamus',
-                                                    'description' => '',  
+                                                    'name' => 'Ba',
+                                                    'description' => 'A god of fertility',  
                                                     'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_AND_MOST_DRAWN"],
                                                     'strategies_played' => 1,
                                                     'order_by' => 'orderByUniqueTotal' 
                                                  ],
                                             3 => [
-                                                    'name' => 'Oscar Okoschka',
-                                                    'description' => '',
+                                                    'name' => 'Anubis',
+                                                    'description' => 'The god/goddess of embalming and protector of the dead',
                                                     'strategies_played' => 1,
                                                     'order_by' => 'orderByUniquePicturesAndFrames'
                                                  ],
                                             4 => [
-                                                    'name' => 'Joaquin Sorsolla',
-                                                    'description' => '',
+                                                    'name' => 'Geb',
+                                                    'description' => 'An earth god and member of the Ennead[',
                                                     'max_selection' => 35,
                                                     'strategies_played' => 5,
                                                     'order_by' => 'orderByUniquePicturesAndFrames'
                                                  ],
                                             5 => [
-                                                    'name' => 'Gustav Winnt',
-                                                    'description' => '',
+                                                    'name' => 'Anhur',
+                                                    'description' => 'A god of war and hunting',
                                                     'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
                                                     'max_selection' => 35,
                                                     'strategies_played' => 5,
                                                     'order_by' => 'orderByUniquePicturesAndFrames'
                                                 ],
                                             6 => [
-                                                    'name' => 'Edouard Maney',
-                                                    'description' => '',
+                                                    'name' => 'Hesat',
+                                                    'description' => 'A maternal cow goddess',
                                                     'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
                                                     'max_selection' => 35,
                                                     'strategies_played' => 10,
                                                     'order_by' => 'orderByPicturesAndFrames'
                                                 ],
                                             7 => [
-                                                    'name' => 'Claude Money',
-                                                    'description' => '',
+                                                    'name' => 'Heqet',
+                                                    'description' => 'Frog goddess said to protect women in childbirth',
                                                     'max_selection' => 35,
                                                     'strategies_played' => 10,
                                                     'order_by' => 'orderByPicturesAndFrames'
                                                 ],
                                             8 =>[
-                                                    'name' => 'Franz Least',
-                                                    'description' => '',
+                                                    'name' => 'Bat',
+                                                    'description' => 'Cow goddess from early in Egyptian history, eventually absorbed by Hathor',
 													'max_selection' => 35,
                                                     'strategies' => ["LEAST_DRAWN","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
                                                     'one_selection' => [25,30,35],
@@ -106,8 +106,8 @@ return [
                                                     'order_by' => 'orderByPicturesAndFrames'
                                                 ],
                                             9 =>[
-                                                    'name' => 'Elon Most',
-                                                    'description' => '',
+                                                    'name' => 'Ra',
+                                                    'description' => 'The foremost Egyptian sun god, involved in creation and the afterlife. Mythological ruler of the gods, father of every Egyptian king, and the patron god of Heliopolis',
 													'max_selection' => 35,
                                                     'strategies' => ["MOST_DRAWN","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
                                                     'one_selection' => [25,30,35],
@@ -117,8 +117,8 @@ return [
                                                     'order_by' => 'orderByPicturesAndFrames'
                                                 ],
                                             10 =>[
-                                                    'name' => 'Lucy Winmore',
-                                                    'description' => '',
+                                                    'name' => 'Nu',
+                                                    'description' => 'Personification of the formless, watery disorder from which the world emerged at creation and a member of the Ogdoad',
                                                     'max_selection' => 35,
                                                     'previous_draws' => [2,3,4],
                                                     'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
@@ -129,8 +129,8 @@ return [
                                                     'order_by' => 'orderByPicturesAndFrames'
                                                  ],
 		                            		11 =>[
-		                            				'name' => '10 second Tom',
-		                            				'description' => '',
+		                            				'name' => 'Thoth',
+		                            				'description' => 'A moon god, and a god of writing and scribes, and patron deity of Hermopolis',
 		                            				'max_selection' => 35,
 		                            				'previous_draws' => [2,3,4],
 		                            				'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
@@ -141,8 +141,8 @@ return [
 		                            				'order_by' => 'orderByPicturesAndFrames'
 												],
 											12 =>[
-		                            				'name' => 'Ken Nutdesaid',
-		                            				'description' => '',
+		                            				'name' => 'Shu',
+		                            				'description' => ' Embodiment of wind or air, a member of the Ennead',
 		                            				'max_selection' => 30,
 		                            				'one_selection' => [25,30],
 		                            				'two_selections' => ['first' => [5,10,15,20,25], 'second' => [5,10,15,20,25]],
@@ -151,14 +151,14 @@ return [
 		                            				'order_by' => 'orderByPicturesAndFrames'
 												],
 											13 =>[
-		                            				'name' => 'DoubleMagician',
-		                            				'description' => '',
+		                            				'name' => 'Nut',
+		                            				'description' => 'A sky goddess, a member of the Ennead',
 		                            				'strategies_played' => 2,
 		                            				'order_by' => 'orderByPicturesAndFrames'
 												],
                                             14 =>[
-                                                    'name' => 'Everill Think',
-                                                    'description' => '',
+                                                    'name' => 'Heh',
+                                                    'description' => 'Personification of infinity and a member of the Ogdoad',
                                                     'min_selection' => 20,
                                                     'max_selection' => 25,
                                                     'one_selection' => [20],
@@ -168,8 +168,8 @@ return [
                                                     'order_by' => 'orderByPicturesAndFrames'
                                                 ],
                                             15 =>[
-                                                    'name' => 'Everill Think-Uniq',
-                                                    'description' => '',
+                                                    'name' => 'Maat',
+                                                    'description' => 'Goddess who personified truth, justice, and order',
                                                     'min_selection' => 20,
                                                     'max_selection' => 25,
                                                     'one_selection' => [20],
@@ -177,7 +177,49 @@ return [
                                                     'three_selections' => ['first' => [5,10,15], 'second' => [5,10,15], 'third' => [5,10]],
                                                     'strategies_played' => 50,
                                                     'order_by' => 'orderByUniquePicturesAndFrames'
-                                                ]
+                                                ],
+		                            		16 =>[
+		                            				'name' => 'Isis',
+		                            				'description' => 'Wife of Osiris and mother of Horus, linked with funerary rites, motherhood, protection, and magic',
+		                            				'strategies_played' => 1,
+		                            				'order_by' => 'orderByUniqueTotal'
+		                            			],
+		                            		17 =>[
+		                            				'name' => 'Amun',
+		                            				'description' => 'A creator god, patron deity of the city of Thebes, and the preeminent deity in Egypt during the New Kingdom',
+		                            				'max_selection' => 45,
+		                            				'strategies_played' => 2,
+		                            				'order_by' => 'orderByUniqueTotal'
+		                            		],
+		                            		18 =>[
+		                            				'name' => 'Osiris',
+		                            				'description' => 'god of death and resurrection who rules the underworld and enlivens vegetation, the sun god, and deceased souls',
+		                            				'max_selection' => 40,
+		                            				'strategies_played' => 5,
+		                            				'order_by' => 'orderByUniqueTotal'
+		                            		],
+		                            		19 =>[
+		                            				'name' => 'Kek',
+		                            				'description' => 'The god of Chaos and Darkness, as well as being the concept of primordial darkness',
+		                            				'max_selection' => 35,
+		                            				'strategies_played' => 10,
+		                            				'order_by' => 'orderByUniqueTotal'
+		                            		],
+		                            		20 =>[
+		                            				'name' => 'Horus',
+		                            				'description' => 'A major god, usually shown as a falcon or as a human child, linked with the sky, the sun, kingship, protection, and healing',
+		                            				'max_selection' => 30,
+		                            				'strategies_played' => 25,
+		                            				'order_by' => 'orderByUniqueTotal'
+		                            		],
+		                            		21 =>[
+		                            				'name' => 'Hathor',
+		                            				'description' => 'One of the most important goddesses, linked with the sky, the sun, sexuality and motherhood, music and dance, foreign lands and goods, and the afterlife',
+		                            				'max_selection' => 25,
+		                            				'strategies_played' => 50,
+		                            				'order_by' => 'orderByUniqueTotal'
+		                            		],
+                            				
                                         ]   
                             ]
         ];

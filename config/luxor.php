@@ -15,7 +15,7 @@ return [
           */
         'manual_player' => 
                         [
-                          'draws' => 3,
+                          'draws' => 5,
                           'tickets' => 50,
                           'repeat' => 50,
                           'min_selection' => 25,
@@ -32,14 +32,14 @@ return [
         'auto_player' =>
                         [
                             'draws_played' => 52,
-                            'weeks_analyzed' => 5,
+                            'weeks_analyzed' => 3,
                             'tickets_per_player' => 50,
                             'repeat' => 10,
-                            'min_selection' => 20,
-                            'max_selection' => 45,
-                            'previous_draws' => [2,3,4,5,6,7],
+                            'min_selection' => 25,
+                            'max_selection' => 50,
+                            'previous_draws' => [1,2,3,4,5,6,7,8,9,10,11,12,13,14],
                           	'strategies' => ["LEAST_DRAWN","MOST_DRAWN","LEAST_DRAWN_AND_RANDOM","MOST_DRAWN_AND_RANDOM","LEAST_AND_MOST_DRAWN","MOST_LEAST_AND_RANDOM"],
-                          	'one_selection' => [20,25,30,35,40,45,50],
+                          	'one_selection' => [25,30,35,40,45,50],
                           	'two_selections' => ['first' => [5,10,15,20,25,30,35,40,45], 'second' => [5,10,15,20,25,30,35,40,45]],
                           	'three_selections' => ['first' => [5,10,15,20,25,30,35,40], 'second' => [5,10,15,20,25,30,35,40], 'third' => [5,10,15,20,25]],
                             'players' => [
@@ -144,7 +144,7 @@ return [
 		                            				'name' => 'Shu',
 		                            				'description' => ' Embodiment of wind or air, a member of the Ennead',
 		                            				'max_selection' => 30,
-		                            				'one_selection' => [20,25,30],
+		                            				'one_selection' => [25,30],
 		                            				'two_selections' => ['first' => [5,10,15,20,25], 'second' => [5,10,15,20,25]],
 		                            				'three_selections' => ['first' => [10,15,20,25], 'second' => [5,10,15,20], 'third' => [5,10]],
 		                            				'strategies_played' => 25,
@@ -159,9 +159,8 @@ return [
                                             14 =>[
                                                     'name' => 'Heh',
                                                     'description' => 'Personification of infinity and a member of the Ogdoad',
-                                                    'min_selection' => 20,
                                                     'max_selection' => 25,
-                                                    'one_selection' => [20,25],
+                                                    'one_selection' => [25],
                                                     'two_selections' => ['first' => [5,10,15], 'second' => [5,10,15]],
                                                     'three_selections' => ['first' => [5,10,15], 'second' => [5,10,15], 'third' => [5,10]],
                                                     'strategies_played' => 50,
@@ -170,9 +169,8 @@ return [
                                             15 =>[
                                                     'name' => 'Maat',
                                                     'description' => 'Goddess who personified truth, justice, and order',
-                                                    'min_selection' => 20,
                                                     'max_selection' => 25,
-                                                    'one_selection' => [20,25],
+                                                    'one_selection' => [25],
                                                     'two_selections' => ['first' => [5,10,15], 'second' => [5,10,15]],
                                                     'three_selections' => ['first' => [5,10,15], 'second' => [5,10,15], 'third' => [5,10]],
                                                     'strategies_played' => 50,

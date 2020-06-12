@@ -137,7 +137,7 @@ class LuxorPlayer {
         } catch(\Exception $ex){
         }
         $this->cleanResultDates($results);
-        uasort($results, [$this, 'orderByUniqueTotal']);
+        uasort($results, [$this, 'orderByTotal']);
         return $results;
     }
     

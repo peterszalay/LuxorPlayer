@@ -121,8 +121,8 @@ class AutoPlay {
      * Helper to usort
      */
     private function orderByTotal($a, $b){
-        $aTotal = ($a['jackpot'] * 100) + ($a['luxor'] * 50) + ($a['first_frame'] * 20) + ($a['first_picture'] * 10) + ($a['frames'] * 5) + $a['pictures'];
-        $bTotal = ($b['jackpot'] * 100) + ($b['luxor'] * 50) + ($b['first_frame'] * 20) + ($b['first_picture'] * 10) + ($b['frames'] * 5) + $b['pictures'];
+        $aTotal = ($a['jackpot'] * 200) + ($a['luxor'] * 100) + ($a['first_frame'] * 50) + ($a['first_picture'] * 20) + ($a['frames'] * 10) + $a['pictures'];
+        $bTotal = ($b['jackpot'] * 200) + ($b['luxor'] * 100) + ($b['first_frame'] * 50) + ($b['first_picture'] * 20) + ($b['frames'] * 10) + $b['pictures'];
         if($aTotal < $bTotal){
             return 1;
         }else if($aTotal > $bTotal){

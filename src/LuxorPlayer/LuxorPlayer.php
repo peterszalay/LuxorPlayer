@@ -790,8 +790,8 @@ class LuxorPlayer {
      * @return number
      */
     private function orderByTotal($a, $b){
-        $aTotal = ($a['luxor'] * 20) + ($a['frames'] * 5) + $a['pictures'];
-        $bTotal = ($b['luxor'] * 20) + ($b['frames'] * 5) + $b['pictures'];
+        $aTotal = ($a['luxor'] * 100) + ($a['frames'] * 10) + $a['pictures'];
+        $bTotal = ($b['luxor'] * 100) + ($b['frames'] * 10) + $b['pictures'];
         if($aTotal < $bTotal){
             return 1;
         }else if($aTotal > $bTotal){
@@ -808,8 +808,8 @@ class LuxorPlayer {
      * @return number
      */
     private function orderByUniqueTotal($a, $b){
-        $aTotal = ($a['unique_luxor'] * 20) + ($a['unique_frame'] * 5) + $a['unique_picture'];
-        $bTotal = ($b['unique_luxor'] * 20) + ($b['unique_frame'] * 5) + $b['unique_picture'];
+        $aTotal = ($a['unique_luxor'] * 100) + ($a['unique_frame'] * 10) + $a['unique_picture'];
+        $bTotal = ($b['unique_luxor'] * 100) + ($b['unique_frame'] * 10) + $b['unique_picture'];
         if($aTotal < $bTotal){
             return 1;
         }else if($aTotal > $bTotal){

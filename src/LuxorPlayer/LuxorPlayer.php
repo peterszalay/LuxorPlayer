@@ -727,11 +727,11 @@ class LuxorPlayer {
      */
     private function addToResults($key, &$results, $drawResult){
         $results[$key]['total'] += $drawResult['pictures'] 
-                                + (20 * $drawResult['frames']) 
-                                + (50 * $drawResult['first_picture']) 
-                                + (1000 * $drawResult['first_frame']) 
-                                + (6000 * $drawResult['luxor']) 
-                                + (30000 * $drawResult['jackpot']);
+                                + (10 * $drawResult['frames']) 
+                                + (20 * $drawResult['first_picture']) 
+                                + (50 * $drawResult['first_frame']) 
+                                + (100 * $drawResult['luxor']) 
+                                + (300 * $drawResult['jackpot']);
         $results[$key]['pictures'] += $drawResult['pictures'];
         $results[$key]['frames'] += $drawResult['frames'];
         $results[$key]['first_picture'] += $drawResult['first_picture'];
@@ -754,11 +754,29 @@ class LuxorPlayer {
      * @return number
      */
     private function orderByUniquePicturesAndFrames($a, $b){
-        $aTotal = ($a['unique_frame'] * 5) + $a['unique_picture'];
-        $bTotal = ($b['unique_frame'] * 5) + $b['unique_picture'];
+        $aTotal = ($a['unique_frame'] * 10) + $a['unique_picture'];
+        $bTotal = ($b['unique_frame'] * 10) + $b['unique_picture'];
         if($aTotal < $bTotal){
             return 1;
         }else if($aTotal > $bTotal){
+            return -1;
+        }
+        return 0;
+    }
+    
+    /**
+     * Helper function that orders array elements by value of unique picture and frame desc
+     *
+     * @param array $a
+     * @param array $b
+     * @return number
+     */
+    private function orderByUniquePicturesAndFramesDesc($a, $b){
+        $aTotal = ($a['unique_frame'] * 10) + $a['unique_picture'];
+        $bTotal = ($b['unique_frame'] * 10) + $b['unique_picture'];
+        if($aTotal > $bTotal){
+            return 1;
+        }else if($aTotal < $bTotal){
             return -1;
         }
         return 0;
@@ -772,11 +790,29 @@ class LuxorPlayer {
      * @return number
      */
     private function orderByPicturesAndFrames($a, $b){
-        $aTotal = ($a['frames'] * 5) + $a['pictures'];
-        $bTotal = ($b['frames'] * 5) + $b['pictures'];
+        $aTotal = ($a['frames'] * 10) + $a['pictures'];
+        $bTotal = ($b['frames'] * 10) + $b['pictures'];
         if($aTotal < $bTotal){
             return 1;
         }else if($aTotal > $bTotal){
+            return -1;
+        }
+        return 0;
+    }
+    
+    /**
+     * Helper function that orders array elements by value of picture and frame desc
+     *
+     * @param array $a
+     * @param array $b
+     * @return number
+     */
+    private function orderByPicturesAndFramesDesc($a, $b){
+        $aTotal = ($a['frames'] * 10) + $a['pictures'];
+        $bTotal = ($b['frames'] * 10) + $b['pictures'];
+        if($aTotal > $bTotal){
+            return 1;
+        }else if($aTotal < $bTotal){
             return -1;
         }
         return 0;
@@ -790,11 +826,29 @@ class LuxorPlayer {
      * @return number
      */
     private function orderByTotal($a, $b){
-        $aTotal = ($a['luxor'] * 20) + ($a['frames'] * 5) + $a['pictures'];
-        $bTotal = ($b['luxor'] * 20) + ($b['frames'] * 5) + $b['pictures'];
+        $aTotal = ($a['luxor'] * 100) + ($a['frames'] * 10) + $a['pictures'];
+        $bTotal = ($b['luxor'] * 100) + ($b['frames'] * 10) + $b['pictures'];
         if($aTotal < $bTotal){
             return 1;
         }else if($aTotal > $bTotal){
+            return -1;
+        }
+        return 0;
+    }
+    
+    /**
+     * Helper function that orders array elements by value of total desc
+     *
+     * @param array $a
+     * @param array $b
+     * @return number
+     */
+    private function orderByTotalDesc($a, $b){
+        $aTotal = ($a['luxor'] * 100) + ($a['frames'] * 10) + $a['pictures'];
+        $bTotal = ($b['luxor'] * 100) + ($b['frames'] * 10) + $b['pictures'];
+        if($aTotal > $bTotal){
+            return 1;
+        }else if($aTotal < $bTotal){
             return -1;
         }
         return 0;
@@ -808,11 +862,29 @@ class LuxorPlayer {
      * @return number
      */
     private function orderByUniqueTotal($a, $b){
-        $aTotal = ($a['unique_luxor'] * 20) + ($a['unique_frame'] * 5) + $a['unique_picture'];
-        $bTotal = ($b['unique_luxor'] * 20) + ($b['unique_frame'] * 5) + $b['unique_picture'];
+        $aTotal = ($a['unique_luxor'] * 100) + ($a['unique_frame'] * 10) + $a['unique_picture'];
+        $bTotal = ($b['unique_luxor'] * 100) + ($b['unique_frame'] * 10) + $b['unique_picture'];
         if($aTotal < $bTotal){
             return 1;
         }else if($aTotal > $bTotal){
+            return -1;
+        }
+        return 0;
+    }
+    
+    /**
+     * Helper function that orders array elements by value of total desc
+     *
+     * @param array $a
+     * @param array $b
+     * @return number
+     */
+    private function orderByUniqueTotalDesc($a, $b){
+        $aTotal = ($a['unique_luxor'] * 100) + ($a['unique_frame'] * 10) + $a['unique_picture'];
+        $bTotal = ($b['unique_luxor'] * 100) + ($b['unique_frame'] * 10) + $b['unique_picture'];
+        if($aTotal > $bTotal){
+            return 1;
+        }else if($aTotal < $bTotal){
             return -1;
         }
         return 0;

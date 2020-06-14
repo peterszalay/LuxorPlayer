@@ -72,6 +72,21 @@ class LuxorPlayerTest extends TestCase
         $this->assertEquals(implode('',array_keys($this->results)), 'acdbe');
     }
     
+    public function testOrderByUniquePicturesAndFramesDescReturnsCorrectOrder()
+    {
+        uasort($this->results, function($a, $b) {
+            $aTotal = ($a['unique_frame'] * 10) + $a['unique_picture'];
+            $bTotal = ($b['unique_frame'] * 10) + $b['unique_picture'];
+            if($aTotal > $bTotal){
+                return 1;
+            }else if($aTotal < $bTotal){
+                return -1;
+            }
+            return 0; });
+            
+            $this->assertEquals(implode('',array_keys($this->results)), 'ebcda');
+    }
+    
     public function testOrderByPicturesAndFramesReturnsCorrectOrder()
     {
         uasort($this->results, function($a, $b) {
@@ -85,6 +100,81 @@ class LuxorPlayerTest extends TestCase
             return 0; });
             
             $this->assertEquals(implode('',array_keys($this->results)), 'dcaeb');
+    }
+    
+    public function testOrderByPicturesAndFramesDescReturnsCorrectOrder()
+    {
+        uasort($this->results, function($a, $b) {
+            $aTotal = ($a['frames'] * 10) + $a['pictures'];
+            $bTotal = ($b['frames'] * 10) + $b['pictures'];
+            if($aTotal > $bTotal){
+                return 1;
+            }else if($aTotal < $bTotal){
+                return -1;
+            }
+            return 0; });
+            
+            $this->assertEquals(implode('',array_keys($this->results)), 'beacd');
+    }
+    
+    public function testOrderByTotalReturnsCorrectOrder()
+    {
+        uasort($this->results, function($a, $b) {
+            $aTotal = ($a['luxor'] * 100) + ($a['frames'] * 10) + $a['pictures'];
+            $bTotal = ($b['luxor'] * 100) + ($b['frames'] * 10) + $b['pictures'];
+            if($aTotal < $bTotal){
+                return 1;
+            }else if($aTotal > $bTotal){
+                return -1;
+            }
+            return 0; });
+            
+            $this->assertEquals(implode('',array_keys($this->results)), 'ebdca');
+    }
+    
+    public function testOrderByTotalDescReturnsCorrectOrder()
+    {
+        uasort($this->results, function($a, $b) {
+            $aTotal = ($a['luxor'] * 100) + ($a['frames'] * 10) + $a['pictures'];
+            $bTotal = ($b['luxor'] * 100) + ($b['frames'] * 10) + $b['pictures'];
+            if($aTotal > $bTotal){
+                return 1;
+            }else if($aTotal < $bTotal){
+                return -1;
+            }
+            return 0; });
+            
+            $this->assertEquals(implode('',array_keys($this->results)), 'acdbe');
+    }
+    
+    public function testOrderByUniqueTotalReturnsCorrectOrder()
+    {
+        uasort($this->results, function($a, $b) {
+            $aTotal = ($a['unique_luxor'] * 100) + ($a['unique_frame'] * 10) + $a['unique_picture'];
+            $bTotal = ($b['unique_luxor'] * 100) + ($b['unique_frame'] * 10) + $b['unique_picture'];
+            if($aTotal < $bTotal){
+                return 1;
+            }else if($aTotal > $bTotal){
+                return -1;
+            }
+            return 0; });
+            
+            $this->assertEquals(implode('',array_keys($this->results)), 'beacd');
+    }
+    
+    public function testOrderByUniqueTotalDescReturnsCorrectOrder()
+    {
+        uasort($this->results, function($a, $b) {
+            $aTotal = ($a['unique_luxor'] * 100) + ($a['unique_frame'] * 10) + $a['unique_picture'];
+            $bTotal = ($b['unique_luxor'] * 100) + ($b['unique_frame'] * 10) + $b['unique_picture'];
+            if($aTotal > $bTotal){
+                return 1;
+            }else if($aTotal < $bTotal){
+                return -1;
+            }
+            return 0; });
+            
+            $this->assertEquals(implode('',array_keys($this->results)), 'cdaeb');
     }
     
 }

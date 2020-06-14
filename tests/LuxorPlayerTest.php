@@ -17,8 +17,8 @@ class LuxorPlayerTest extends TestCase
         $this->results = ['a' => ['luxor' => 0, 'unique_luxor' => 0, 'unique_frame' => 5, 'unique_picture' => 15, 'frames' => 5, 'pictures' => 20], 
                           'b' => ['luxor' => 1, 'unique_luxor' => 1, 'unique_frame' => 3, 'unique_picture' => 8, 'frames' => 5, 'pictures' => 10], 
                           'c' => ['luxor' => 0, 'unique_luxor' => 0, 'unique_frame' => 5, 'unique_picture' => 10, 'frames' => 10, 'pictures' => 15],
-                          'd' => ['luxor' => 0, 'unique_luxor' => 0, 'unique_frame' => 5, 'unique_picture' => 10, 'frames' => 10, 'pictures' => 15],
-                          'e' => ['luxor' => 2, 'unique_luxor' => 1, 'unique_frame' => 3, 'unique_picture' => 7, 'frames' => 5, 'pictures' => 8]
+                          'd' => ['luxor' => 0, 'unique_luxor' => 0, 'unique_frame' => 5, 'unique_picture' => 10, 'frames' => 10, 'pictures' => 16],
+                          'e' => ['luxor' => 2, 'unique_luxor' => 1, 'unique_frame' => 3, 'unique_picture' => 7, 'frames' => 5, 'pictures' => 15]
                          ];
     }
     
@@ -58,16 +58,33 @@ class LuxorPlayerTest extends TestCase
     }
     
     public function testOrderByUniquePicturesAndFramesReturnsCorrectOrder()
-    {
-        $reflector = new ReflectionClass(LuxorPlayer::class);
-        $method = $reflector->getMethod('orderByUniquePicturesAndFrames');
-        $method->setAccessible(true);
-        
-        var_dump($reflector->hasMethod('orderByUniquePicturesAndFrames'));
-        
-        uasort($this->results, [$reflector, 'orderByUniquePicturesAndFrames']);
+    {       
+        uasort($this->results, function($a, $b) {
+            $aTotal = ($a['unique_frame'] * 10) + $a['unique_picture'];
+            $bTotal = ($b['unique_frame'] * 10) + $b['unique_picture'];
+            if($aTotal < $bTotal){
+                return 1;
+            }else if($aTotal > $bTotal){
+                return -1;
+            }
+            return 0; });
         
         $this->assertEquals(implode('',array_keys($this->results)), 'acdbe');
+    }
+    
+    public function testOrderByPicturesAndFramesReturnsCorrectOrder()
+    {
+        uasort($this->results, function($a, $b) {
+            $aTotal = ($a['frames'] * 10) + $a['pictures'];
+            $bTotal = ($b['frames'] * 10) + $b['pictures'];
+            if($aTotal < $bTotal){
+                return 1;
+            }else if($aTotal > $bTotal){
+                return -1;
+            }
+            return 0; });
+            
+            $this->assertEquals(implode('',array_keys($this->results)), 'dcaeb');
     }
     
 }

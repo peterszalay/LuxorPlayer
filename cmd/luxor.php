@@ -33,7 +33,7 @@ print
                                                               
                                                               ';
 print PHP_EOL;
-print 'Welcome to LuxorPlayer (LP)! LP is a program that plays the Hungarian lotto game called Luxor.' . PHP_EOL;
+print 'Welcome to Luxor Player (LP)! LP is a program that can be configured to play the Hungarian lotto game Luxor.' . PHP_EOL;
 print PHP_EOL;
 print 'What would you like to do?' . PHP_EOL;
 

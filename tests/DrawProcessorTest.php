@@ -101,7 +101,7 @@ class DrawProcessorTest extends TestCase
         $method = $reflector->getMethod('sliceArray');
         $method->setAccessible(true);
         
-        $draw = array_fill(1, 75, 0);
+        $draw = array_fill(1, 75, ['times_drawn' => 0, 'avg_draw_position' => 0]);
         $result = $method->invokeArgs($this->drawProcessor, [$draw, 1]);
         $this->assertEquals(sizeof($result), 15);       
     }

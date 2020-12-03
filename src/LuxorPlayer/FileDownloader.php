@@ -1,16 +1,20 @@
 <?php
 namespace LuxorPlayer;
 
+use DateTime;
+use Exception;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
 
-class FileDownloader {
+class FileDownloader
+{
     
-    private $name = "File Downloader";
-    private $logger;
+    private string $name = "File Downloader";
+    private Logger $logger;
     
-    public function __construct(){
+    public function __construct()
+    {
         $this->logger = new Logger($this->name);    
     }
     
@@ -19,16 +23,17 @@ class FileDownloader {
      * csv file was deleted from local directory or remote file is 
      * newer than locally stored version
      * 
-     * @return boolean
+     * @return bool
      */    
-    public function downloadCsv(){
+    public function downloadCsv() :bool
+    {
         try {
             $file = include  __DIR__ . '/../../config/luxor.php';
             if(@fopen($file['file_paths']['remote_path'],"r")==true){
                 $header = get_headers($file['file_paths']['remote_path'], 1);          
                 $remoteTimestamp = 0;
                 if(!$header || strpos($header[0], '200') !== false) {
-                    $remoteModificationDate = new \DateTime($header['Last-Modified']);
+                    $remoteModificationDate = new DateTime($header['Last-Modified']);
                     $remoteTimestamp = $remoteModificationDate->getTimestamp();
                 }
                 if(!file_exists($file['file_paths']['local_path']) || (file_exists($file['file_paths']['local_path']) && 
@@ -40,7 +45,7 @@ class FileDownloader {
                 $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log', Logger::ERROR));
                 $this->logger->error($file['file_paths']['remote_path'] . " not found");    
             }
-        } catch(\Exception $ex){
+        } catch(Exception $ex){
             $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log', Logger::CRITICAL));
             $this->logger->critical($ex);
         }

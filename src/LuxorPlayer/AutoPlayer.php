@@ -2,252 +2,275 @@
 namespace LuxorPlayer;
 
 
-class AutoPlayer {
+class AutoPlayer
+{
+    private static array $draws = [];
+    private static int $drawCount = 0;
+    private static int $ticketCount = 0;
+    private static array $strategies = [];
+    private static array $previousDraws = [];
+    private static int $weeksAnalyzed = 0;
+    private static int $repeat = 0;
+    private static int $minSelection = 0;
+    private static int $maxSelection = 0;
+    private static array $firstSelection = [];
+    private static array $secondSelection = [];
+    private static array $thirdSelection = [];
+    private static string $orderBy = '';
+
+    private string $playerName;
+    private array $playerStrategies = [];
+    private array $playerPreviousDraws = [];
+    private int $playerWeeksAnalyzed = 0;
+    private int $playerRepeat = 0;
+    private int $playerMinSelection = 0;
+    private int $playerMaxSelection = 0;
+    private array $playerFirstSelection = [];
+    private array $playerSecondSelection = [];
+    private array $playerThirdSelection = [];
+    private int $playerStrategiesPlayed = 0;
+    private string $playerOrderBy = '';
+    private array $playerResults = [];
     
-    private static $draws = [];
-    private static $drawCount = 0;
-    private static $ticketCount = 0;
-    private static $strategies = [];
-    private static $previousDraws = [];
-    private static $weeksAnalyzed = 0;
-    private static $repeat = 0;
-    private static $minSelection = 0;
-    private static $maxSelection = 0;
-    private static $firstSelection = [];
-    private static $secondSelection = [];
-    private static $thirdSelection = [];
-    private static $orderBy = '';
     
-    private $playerName = '';
-    private $playerStrategies = [];
-    private $playerPreviousDraws = [];
-    private $playerWeeksAnalyzed = 0;
-    private $playerRepeat = 0;
-    private $playerMinSelection = 0;
-    private $playerMaxSelection = 0;
-    private $playerFirstSelection = [];
-    private $playerSecondSelection = [];
-    private $playerThirdSelection = [];
-    private $playerStrategiesPlayed = 0;
-    private $playerOrderBy = '';
-    private $playerResults = [];
-    
-    
-    public function __construct($name)
+    public function __construct(string $name)
     {
         $this->playerName = $name;
     }
     
-    public static function create($name)
+    public static function create(string $name) :AutoPlayer
     {
         return new AutoPlayer($name);
     }
     
     /**
+     * Set draws
+     *
      * @param array $draws
      */
-    public static function setDraws($draws)
+    public static function setDraws(array $draws) :void
     {
         self::$draws = $draws;
     }
 
     /**
+     * Set draw count for player
+     *
      * @param int $drawCount
      */
-    public static function setDrawCount($drawCount)
+    public static function setDrawCount(int $drawCount) :void
     {
         self::$drawCount = $drawCount;
     }
 
     /**
+     * Set ticket count for player
+     *
      * @param int $ticketCount
      */
-    public static function setTicketCount($ticketCount)
+    public static function setTicketCount(int $ticketCount) :void
     {
         self::$ticketCount = $ticketCount;
     }
-    
+
     /**
+     * Set strategies for player
+     *
      * @param array $strategies
      */
-    public static function setStrategies($strategies)
+    public static function setStrategies(array $strategies) :void
     {
         self::$strategies = $strategies;
     }
 
 
     /**
+     * Set previous draws
+     *
      * @param array $previousDraws
      */
-    public static function setPreviousDraws($previousDraws)
+    public static function setPreviousDraws(array $previousDraws) :void
     {
         self::$previousDraws = $previousDraws;
     }
 
     /**
+     * Set weeks analyzed
+     *
      * @param int $weeksAnalyzed
      */
-    public static function setWeeksAnalyzed($weeksAnalyzed)
+    public static function setWeeksAnalyzed(int $weeksAnalyzed) :void
     {
         self::$weeksAnalyzed = $weeksAnalyzed;
     }
 
     /**
+     * Set repeat
+     *
      * @param int $repeat
      */
-    public static function setRepeat($repeat)
+    public static function setRepeat(int $repeat) :void
     {
         self::$repeat = $repeat;
     }
 
     /**
+     * Set minimum selection
+     *
      * @param int $minSelection
      */
-    public static function setMinSelection($minSelection)
+    public static function setMinSelection(int $minSelection) :void
     {
         self::$minSelection = $minSelection;
     }
 
     /**
+     * Set maximum selection
      * @param int $maxSelection
      */
-    public static function setMaxSelection($maxSelection)
+    public static function setMaxSelection(int $maxSelection) :void
     {
         self::$maxSelection = $maxSelection;
     }
 
     /**
+     * Set first selection
+     *
      * @param array $firstSelection
      */
-    public static function setFirstSelection($firstSelection)
+    public static function setFirstSelection(array $firstSelection) :void
     {
         self::$firstSelection = $firstSelection;
     }
 
     /**
-     * @param array $secondselection
+     * Set second selection
+     *
+     * @param array $secondSelection
      */
-    public static function setSecondSelection($secondSelection)
+    public static function setSecondSelection(array $secondSelection) :void
     {
         self::$secondSelection = $secondSelection;
     }
 
     /**
+     * Set third selection
+     *
      * @param array $thirdSelection
      */
-    public static function setThirdSelection($thirdSelection)
+    public static function setThirdSelection(array $thirdSelection) :void
     {
         self::$thirdSelection = $thirdSelection;
     }
     
     /**
+     * Set order by
+     *
      * @param string $orderBy
      */
-    public static function setOrderBy($orderBy)
+    public static function setOrderBy(string $orderBy) :void
     {
         AutoPlayer::$orderBy = $orderBy;
     }
 
     /**
-     * @param int $strategiesPlayed
-     */
-    public function setStrategiesPlayed($strategiesPlayed)
-    {
-        $this->strategiesPlayed = $strategiesPlayed;
-    }
-
-    /**
      * @return array $playerResults
      */
-    public function getResults()
+    public function getResults() :array
     {
         return $this->playerResults;
     }
     
     /**
-     * @return String playeRane
+     * @return string playerName
      */
-    public function getName()
+    public function getName() :string
     {
         return $this->playerName;
     }
     
     /**
-     * @param multitype: $playerStrategies
+     * @param array $playerStrategies
      */
-    public function setPlayerStrategies($playerStrategies)
+    public function setPlayerStrategies(array $playerStrategies) :void
     {
         $this->playerStrategies = $playerStrategies;
     }
 
     /**
-     * @param multitype: $playerPreviousDraws
+     * @param array $playerPreviousDraws
      */
-    public function setPlayerPreviousDraws($playerPreviousDraws)
+    public function setPlayerPreviousDraws(array $playerPreviousDraws) :void
     {
         $this->playerPreviousDraws = $playerPreviousDraws;
     }
 
     /**
-     * @param number $playerWeeksAnalyzed
+     * @param int $playerWeeksAnalyzed
      */
-    public function setPlayerWeeksAnalyzed($playerWeeksAnalyzed)
+    public function setPlayerWeeksAnalyzed(int $playerWeeksAnalyzed) :void
     {
         $this->playerWeeksAnalyzed = $playerWeeksAnalyzed;
     }
 
     /**
-     * @param number $playerRepeat
+     * @param int $playerRepeat
      */
-    public function setPlayerRepeat($playerRepeat)
+    public function setPlayerRepeat(int $playerRepeat) :void
     {
         $this->playerRepeat = $playerRepeat;
     }
 
     /**
-     * @param multitype: $playerFirstSelection
+     * @param array $playerFirstSelection
      */
-    public function setPlayerFirstSelection($playerFirstSelection)
+    public function setPlayerFirstSelection(array $playerFirstSelection) :void
     {
         $this->playerFirstSelection = $playerFirstSelection;
     }
 
     /**
-     * @param multitype: $playerSecondSelection
+     * @param array $playerSecondSelection
      */
-    public function setPlayerSecondSelection($playerSecondSelection)
+    public function setPlayerSecondSelection(array $playerSecondSelection) :void
     {
         $this->playerSecondSelection = $playerSecondSelection;
     }
 
     /**
-     * @param multitype: $playerThirdSelection
+     * @param array $playerThirdSelection
      */
-    public function setPlayerThirdSelection($playerThirdSelection)
+    public function setPlayerThirdSelection(array $playerThirdSelection) :void
     {
         $this->playerThirdSelection = $playerThirdSelection;
     }
 
     /**
-     * @param number $playerStrategiesPlayed
+     * Set player strategies played
+     *
+     * @param int $playerStrategiesPlayed
      */
-    public function setPlayerStrategiesPlayed($playerStrategiesPlayed)
+    public function setPlayerStrategiesPlayed(int $playerStrategiesPlayed) :void
     {
         $this->playerStrategiesPlayed = $playerStrategiesPlayed;
     }
 
     /**
-     * @param number $playerMinSelection
+     * Set player minimum selection
+     *
+     * @param int $playerMinSelection
      */
-    public function setPlayerMinSelection($playerMinSelection)
+    public function setPlayerMinSelection(int $playerMinSelection) :void
     {
         $this->playerMinSelection = $playerMinSelection;
     }
 
     /**
-     * @param number $playerMaxSelection
+     * Set player max selection
+     *
+     * @param int $playerMaxSelection
      */
-    public function setPlayerMaxSelection($playerMaxSelection)
+    public function setPlayerMaxSelection(int $playerMaxSelection) :void
     {
         $this->playerMaxSelection = $playerMaxSelection;
     }
@@ -255,16 +278,18 @@ class AutoPlayer {
     /**
      * @param string $playerOrderBy
      */
-    public function setPlayerOrderBy($playerOrderBy)
+    public function setPlayerOrderBy(string $playerOrderBy) :void
     {
         $this->playerOrderBy = $playerOrderBy;
     }
 
     /**
-     * Each player plays according to its settings
-     * 
+     * Each player plays according to its settings in config
+     *
+     * @return array
      */
-    public function play(){
+    public function play() :array
+    {
         if(isset($this->playerStrategies) && !is_array($this->playerStrategies)){
             $luxorPlayer = new LuxorPlayer;
             $luxorPlayer->init();
@@ -334,7 +359,6 @@ class AutoPlayer {
             for($i = (self::$drawCount-1); $i > 0; $i--){
                 $maxPreviousDraws = max($previousDraws);
                 $draws = array_slice(self::$draws, $i+1, ($weeksAnalyzed + $maxPreviousDraws));
-                //print_r($draws);
                 $luxorPlayer = new LuxorPlayer;
                 $luxorPlayer->init();
                 $ticketGenerator = new LuxorTicketGenerator;                
@@ -344,25 +368,18 @@ class AutoPlayer {
                     $ticketCount = self::$ticketCount;
                 }
                 $analysisResults =  $luxorPlayer->autoAnalyzeStrategies($draws, $previousDraws, $ticketCount, $repeatTimes, $minSelection, $maxSelection, $strategies, $selections, $orderBy, $maxPreviousDraws);
-                /*print_r(['previous_draws' => $previousDraws, 'ticket_count' => $ticketCount, 'repeat_times' => $repeatTimes, 'min_selection' => $minSelection, 
-                         'max_selection' => $maxSelection, 'strategies' => $strategies, 'selections' => $selections, 'order_by' => $orderBy, 'max_previous' => $maxPreviousDraws]);*/
-                
-                $selection = [];
+
                 $tickets = [];
                 if(isset($this->playerStrategiesPlayed) && $this->playerStrategiesPlayed > 1){
-                    $bestStrategies = array_slice($analysisResults, 0, $this->playerStrategiesPlayed);     
-                    //print_r($bestStrategies);
+                    $bestStrategies = array_slice($analysisResults, 0, $this->playerStrategiesPlayed);
                     foreach($bestStrategies as $bestStrategy){
-                        //print_r($bestStrategy);
                         $selection = $luxorPlayer->autoGenerateNumbers($draws, $bestStrategy['prev_draws'], $bestStrategy['first_selection'], $bestStrategy['strategy'], 
                                                                                 $bestStrategy['second_selection'], $bestStrategy['third_selection']);
                         $ticketGenerator->generateTicketsWithRandomNumbersFromSelection($ticketCount, $selection);
                         $tickets = array_merge($tickets, $ticketGenerator->getTickets());
-                        //print_r($tickets);
                     }
                 } else {
                     $bestStrategy = array_slice($analysisResults, 0, 1);
-                    //print_r($bestStrategy);
                     $selection = $luxorPlayer->autoGenerateNumbers($draws, $bestStrategy[key($bestStrategy)]['prev_draws'], $bestStrategy[key($bestStrategy)]['first_selection'], 
                                                                            $bestStrategy[key($bestStrategy)]['strategy'], $bestStrategy[key($bestStrategy)]['second_selection'], 
                                                                            $bestStrategy[key($bestStrategy)]['third_selection']);

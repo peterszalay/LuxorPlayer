@@ -4,9 +4,9 @@ use LuxorPlayer\LuxorPlayer;
 
 class LuxorPlayerTest extends TestCase
 { 
-    protected $luxorPlayer;
-    protected $draws;
-    protected $results;
+    protected LuxorPlayer $luxorPlayer;
+    protected array $draws;
+    protected array $results;
     
     protected function setUp(): void
     {
@@ -14,19 +14,24 @@ class LuxorPlayerTest extends TestCase
         $this->luxorPlayer->init();
         $this->luxorPlayer->setDrawCount(1);
         $this->luxorPlayer->setTicketCount(2);
-        $this->results = ['a' => ['luxor' => 0, 'unique_luxor' => 0, 'unique_frame' => 5, 'unique_picture' => 15, 'frames' => 5, 'pictures' => 20], 
-                          'b' => ['luxor' => 1, 'unique_luxor' => 1, 'unique_frame' => 3, 'unique_picture' => 8, 'frames' => 5, 'pictures' => 10], 
-                          'c' => ['luxor' => 0, 'unique_luxor' => 0, 'unique_frame' => 5, 'unique_picture' => 10, 'frames' => 10, 'pictures' => 15],
-                          'd' => ['luxor' => 0, 'unique_luxor' => 0, 'unique_frame' => 5, 'unique_picture' => 10, 'frames' => 10, 'pictures' => 16],
-                          'e' => ['luxor' => 2, 'unique_luxor' => 1, 'unique_frame' => 3, 'unique_picture' => 7, 'frames' => 5, 'pictures' => 15]
+        $this->results = ['a' => ['luxor' => 0, 'unique_luxor' => 0, 'unique_frame' => 5,
+                                  'unique_picture' => 15, 'frames' => 5, 'pictures' => 20],
+                          'b' => ['luxor' => 1, 'unique_luxor' => 1, 'unique_frame' => 3,
+                                  'unique_picture' => 8, 'frames' => 5, 'pictures' => 10],
+                          'c' => ['luxor' => 0, 'unique_luxor' => 0, 'unique_frame' => 5,
+                                  'unique_picture' => 10, 'frames' => 10, 'pictures' => 15],
+                          'd' => ['luxor' => 0, 'unique_luxor' => 0, 'unique_frame' => 5,
+                                  'unique_picture' => 10, 'frames' => 10, 'pictures' => 16],
+                          'e' => ['luxor' => 2, 'unique_luxor' => 1, 'unique_frame' => 3,
+                                  'unique_picture' => 7, 'frames' => 5, 'pictures' => 15]
                          ];
     }
     
-    public function testPlayWithRandomNumbersReturnsAssociativeArrayWithCorrectKeys()
+    public function testPlayWithRandomNumbersReturnsAssociativeArrayWithCorrectKeys() :void
     {   
         $result = $this->luxorPlayer->playWithRandomNumbers();
         
-        $this->assertEquals(sizeof($result), 12);
+        $this->assertEquals(12, sizeof($result));
         $this->assertArrayHasKey('jackpot', $result);
         $this->assertArrayHasKey('luxor', $result);
         $this->assertArrayHasKey('first_frame', $result);
@@ -42,7 +47,7 @@ class LuxorPlayerTest extends TestCase
         
         $result = $this->luxorPlayer->playWithRandomNumbers(true);
         
-        $this->assertEquals(sizeof($result), 12);
+        $this->assertEquals(12, sizeof($result));
         $this->assertArrayHasKey('jackpot', $result);
         $this->assertArrayHasKey('luxor', $result);
         $this->assertArrayHasKey('first_frame', $result);
@@ -57,7 +62,7 @@ class LuxorPlayerTest extends TestCase
         $this->assertArrayHasKey('frame_dates', $result);
     }
     
-    public function testOrderByUniquePicturesAndFramesReturnsCorrectOrder()
+    public function testOrderByUniquePicturesAndFramesReturnsCorrectOrder() :void
     {       
         uasort($this->results, function($a, $b) {
             $aTotal = ($a['unique_frame'] * 10) + $a['unique_picture'];
@@ -69,10 +74,10 @@ class LuxorPlayerTest extends TestCase
             }
             return 0; });
         
-        $this->assertEquals(implode('',array_keys($this->results)), 'acdbe');
+        $this->assertEquals('acdbe', implode('',array_keys($this->results)));
     }
     
-    public function testOrderByUniquePicturesAndFramesDescReturnsCorrectOrder()
+    public function testOrderByUniquePicturesAndFramesDescReturnsCorrectOrder() :void
     {
         uasort($this->results, function($a, $b) {
             $aTotal = ($a['unique_frame'] * 10) + $a['unique_picture'];
@@ -84,7 +89,7 @@ class LuxorPlayerTest extends TestCase
             }
             return 0; });
             
-            $this->assertEquals(implode('',array_keys($this->results)), 'ebcda');
+            $this->assertEquals('ebcda', implode('',array_keys($this->results)));
     }
     
     public function testOrderByPicturesAndFramesReturnsCorrectOrder()
@@ -99,10 +104,10 @@ class LuxorPlayerTest extends TestCase
             }
             return 0; });
             
-            $this->assertEquals(implode('',array_keys($this->results)), 'dcaeb');
+            $this->assertEquals('dcaeb', implode('',array_keys($this->results)));
     }
     
-    public function testOrderByPicturesAndFramesDescReturnsCorrectOrder()
+    public function testOrderByPicturesAndFramesDescReturnsCorrectOrder() :void
     {
         uasort($this->results, function($a, $b) {
             $aTotal = ($a['frames'] * 10) + $a['pictures'];
@@ -114,10 +119,10 @@ class LuxorPlayerTest extends TestCase
             }
             return 0; });
             
-            $this->assertEquals(implode('',array_keys($this->results)), 'beacd');
+            $this->assertEquals('beacd', implode('',array_keys($this->results)));
     }
     
-    public function testOrderByTotalReturnsCorrectOrder()
+    public function testOrderByTotalReturnsCorrectOrder() :void
     {
         uasort($this->results, function($a, $b) {
             $aTotal = ($a['luxor'] * 100) + ($a['frames'] * 10) + $a['pictures'];
@@ -129,10 +134,10 @@ class LuxorPlayerTest extends TestCase
             }
             return 0; });
             
-            $this->assertEquals(implode('',array_keys($this->results)), 'ebdca');
+            $this->assertEquals('ebdca', implode('',array_keys($this->results)));
     }
     
-    public function testOrderByTotalDescReturnsCorrectOrder()
+    public function testOrderByTotalDescReturnsCorrectOrder() :void
     {
         uasort($this->results, function($a, $b) {
             $aTotal = ($a['luxor'] * 100) + ($a['frames'] * 10) + $a['pictures'];
@@ -144,10 +149,10 @@ class LuxorPlayerTest extends TestCase
             }
             return 0; });
             
-            $this->assertEquals(implode('',array_keys($this->results)), 'acdbe');
+            $this->assertEquals('acdbe', implode('',array_keys($this->results)));
     }
     
-    public function testOrderByUniqueTotalReturnsCorrectOrder()
+    public function testOrderByUniqueTotalReturnsCorrectOrder() :void
     {
         uasort($this->results, function($a, $b) {
             $aTotal = ($a['unique_luxor'] * 100) + ($a['unique_frame'] * 10) + $a['unique_picture'];
@@ -159,10 +164,10 @@ class LuxorPlayerTest extends TestCase
             }
             return 0; });
             
-            $this->assertEquals(implode('',array_keys($this->results)), 'beacd');
+            $this->assertEquals('beacd', implode('',array_keys($this->results)));
     }
     
-    public function testOrderByUniqueTotalDescReturnsCorrectOrder()
+    public function testOrderByUniqueTotalDescReturnsCorrectOrder() :void
     {
         uasort($this->results, function($a, $b) {
             $aTotal = ($a['unique_luxor'] * 100) + ($a['unique_frame'] * 10) + $a['unique_picture'];
@@ -174,7 +179,7 @@ class LuxorPlayerTest extends TestCase
             }
             return 0; });
             
-            $this->assertEquals(implode('',array_keys($this->results)), 'cdaeb');
+            $this->assertEquals('cdaeb', implode('',array_keys($this->results)));
     }
     
 }

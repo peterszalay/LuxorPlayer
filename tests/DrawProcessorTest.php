@@ -4,16 +4,16 @@ use LuxorPlayer\DrawProcessor;
 
 class DrawProcessorTest extends TestCase
 {   
-    protected $drawProcessor;
+    protected DrawProcessor $drawProcessor;
     
     protected function setUp(): void
     {
         $this->drawProcessor = new DrawProcessor;    
     }
     
-    public function testGetNumberDrawStatisticsReturnsArrayWithSizeOf75()
+    public function testGetNumberDrawStatisticsReturnsArrayWithSizeOf75() :void
     {
-        $this->assertEquals(sizeof($this->drawProcessor->getNumberDrawStatistics([])), 75); 
+        $this->assertEquals(75, sizeof($this->drawProcessor->getNumberDrawStatistics([])));
     }
     
     public function testGetNumberDrawStatisticsReturnsArrayWithZerosIfEmptyArrayGivenAsArgument()
@@ -24,10 +24,10 @@ class DrawProcessorTest extends TestCase
             $sum += $number['times_drawn'];
             $sum += $number['avg_draw_position'];
         }
-        $this->assertEquals($sum, 0);
+        $this->assertEquals(0, $sum);
     }
     
-    public function testGetNumberDrawStatisticsReturnsArrayWithZerosIfArrayWithZeroValuesGivenAsArgument()
+    public function testGetNumberDrawStatisticsReturnsArrayWithZerosIfArrayWithZeroValuesGivenAsArgument() :void
     {
         $draws = [];
         $draws[0][1] = array_fill(1, 75, 0);
@@ -41,11 +41,11 @@ class DrawProcessorTest extends TestCase
             $sum += $number['times_drawn'];
             $sum += $number['avg_draw_position'];
         }
-        $this->assertEquals($sum, 0);
+        $this->assertEquals(0, $sum);
         
     }
     
-    public function testGetNumberDrawStatisticsReturnsCorrectResultsWhenActualNumbersAregiven()
+    public function testGetNumberDrawStatisticsReturnsCorrectResultsWhenActualNumbersAreGiven() :void
     {
         $draws = [];
         $draws[0][1] = array_fill(1, 75, 0);
@@ -58,96 +58,112 @@ class DrawProcessorTest extends TestCase
         $draws[2][1][11] = 30;
         
         $results = $this->drawProcessor->getNumberDrawStatistics($draws);
-        $this->assertEquals($results[11]['times_drawn'], 3);
-        $this->assertEquals($results[11]['avg_draw_position'], 20);
+        $this->assertEquals(3, $results[11]['times_drawn']);
+        $this->assertEquals(20, $results[11]['avg_draw_position']);
         
         $draws[0][1][7] = 17;
         $draws[1][1][7] = 38;
         
         $results = $this->drawProcessor->getNumberDrawStatistics($draws);
-        $this->assertEquals($results[7]['times_drawn'], 2);
-        $this->assertEquals($results[7]['avg_draw_position'], 27.5);
+        $this->assertEquals(2, $results[7]['times_drawn']);
+        $this->assertEquals(27.5, $results[7]['avg_draw_position']);
         
         $draws[3][1][17] = 1;
         $results = $this->drawProcessor->getNumberDrawStatistics($draws);
-        $this->assertEquals($results[17]['times_drawn'], 1);
-        $this->assertEquals($results[17]['avg_draw_position'], 1);
+        $this->assertEquals(1, $results[17]['times_drawn']);
+        $this->assertEquals(1, $results[17]['avg_draw_position']);
         
-        $this->assertEquals($results[75]['avg_draw_position'], 0);
+        $this->assertEquals(0, $results[75]['avg_draw_position']);
     }
     
-    public function testEnsureDivisableByFiveReturnsCorrectResults()
+    public function testEnsureDivisibleByFiveReturnsCorrectResults() :void
     {
         $reflector = new ReflectionClass(DrawProcessor::class);
-        $method = $reflector->getMethod('ensureDivisableByFive');
-        $method->setAccessible(true);
-        
-        $result = $method->invokeArgs($this->drawProcessor, [26]);
-        $this->assertEquals($result, 25);
-        
-        $result = $method->invokeArgs($this->drawProcessor, [-100]);
-        $this->assertEquals($result, 0);
-        
-        $result = $method->invokeArgs($this->drawProcessor, [79]);
-        $this->assertEquals($result, 70);
-        
-        $result = $method->invokeArgs($this->drawProcessor, [99]);
-        $this->assertEquals($result, 70);
-    }
-    
-    public function testSliceArrayReturnsArrayWithSizeOf15()
-    {
-        $reflector = new ReflectionClass(DrawProcessor::class);
-        $method = $reflector->getMethod('sliceArray');
-        $method->setAccessible(true);
-        
-        $draw = array_fill(1, 75, ['times_drawn' => 0, 'avg_draw_position' => 0]);
-        $result = $method->invokeArgs($this->drawProcessor, [$draw, 1]);
-        $this->assertEquals(sizeof($result), 15);       
-    }
-    
-    public function testSliceArrayReturnsOnlyCorrectValues()
-    {
-        $reflector = new ReflectionClass(DrawProcessor::class);
-        $method = $reflector->getMethod('sliceArray');
-        $method->setAccessible(true);
-        
-        $draw = array_fill(1, 75, ['times_drawn' => 0, 'avg_draw_position' => 0]);
-        $result = $method->invokeArgs($this->drawProcessor, [$draw, 1]);
-        $sum = 0;
-        foreach($result as $num){
-            $sum += $num['times_drawn'];
-            $sum += $num['avg_draw_position'];
+        try {
+            $method = $reflector->getMethod('ensureDivisibleByFive');
+            $method->setAccessible(true);
+
+            $result = $method->invokeArgs($this->drawProcessor, [26]);
+            $this->assertEquals(25, $result);
+
+            $result = $method->invokeArgs($this->drawProcessor, [-100]);
+            $this->assertEquals(0, $result);
+
+            $result = $method->invokeArgs($this->drawProcessor, [79]);
+            $this->assertEquals(70, $result);
+
+            $result = $method->invokeArgs($this->drawProcessor, [99]);
+            $this->assertEquals(70, $result);
+        } catch (ReflectionException $e) {
+            print $e->getMessage();
         }
-        $this->assertEquals($sum, 0);
-        
-        $draw[1]['times_drawn'] = 10;
-        $draw[1]['avg_draw_position'] = 5;
-        
-        $result = $method->invokeArgs($this->drawProcessor, [$draw, 1]);
-        $this->assertEquals($result[0]['number'], 1);
-        $this->assertEquals($result[0]['times_drawn'], 10);
-        $this->assertEquals($result[0]['avg_draw_position'], 5);
     }
     
-    public function testSimplifyArrayReturnsOneDimensionalArray()
+    public function testSliceArrayReturnsArrayWithSizeOf15() :void
     {
         $reflector = new ReflectionClass(DrawProcessor::class);
-        $method = $reflector->getMethod('simplifyArray');
-        $method->setAccessible(true);
-        
-        $slice = array_fill(0, 15, ['number' => 0, 'times_drawn' => 0, 'avg_draw_position' => 0]);
-        for($i = 0; $i < 15; $i++){
-            $slice[$i]['number'] = $i + 1;
+        try {
+            $method = $reflector->getMethod('sliceArray');
+            $method->setAccessible(true);
+
+            $draw = array_fill(1, 75, ['times_drawn' => 0, 'avg_draw_position' => 0]);
+            $result = $method->invokeArgs($this->drawProcessor, [$draw, 1]);
+            $this->assertEquals(15, sizeof($result));
+        } catch (ReflectionException $e) {
+            print $e->getMessage();
         }
-        $result = $method->invokeArgs($this->drawProcessor, [$slice]);
-        $this->assertEquals(sizeof($result), 15);
-        $this->assertEquals($result[0], 1);
-        $this->assertEquals($result[7], 8);
-        $this->assertEquals($result[14], 15);
     }
     
-    public function testGetMostDrawnNumbersReturnsArrayContainingFiveArrays()
+    public function testSliceArrayReturnsOnlyCorrectValues() :void
+    {
+        $reflector = new ReflectionClass(DrawProcessor::class);
+        try {
+            $method = $reflector->getMethod('sliceArray');
+            $method->setAccessible(true);
+
+            $draw = array_fill(1, 75, ['times_drawn' => 0, 'avg_draw_position' => 0]);
+            $result = $method->invokeArgs($this->drawProcessor, [$draw, 1]);
+            $sum = 0;
+            foreach($result as $num){
+                $sum += $num['times_drawn'];
+                $sum += $num['avg_draw_position'];
+            }
+            $this->assertEquals(0, $sum);
+
+            $draw[1]['times_drawn'] = 10;
+            $draw[1]['avg_draw_position'] = 5;
+
+            $result = $method->invokeArgs($this->drawProcessor, [$draw, 1]);
+            $this->assertEquals(1, $result[0]['number']);
+            $this->assertEquals(10, $result[0]['times_drawn']);
+            $this->assertEquals(5, $result[0]['avg_draw_position']);
+        } catch (ReflectionException $e) {
+            print $e->getMessage();
+        }
+    }
+    
+    public function testSimplifyArrayReturnsOneDimensionalArray() :void
+    {
+        $reflector = new ReflectionClass(DrawProcessor::class);
+        try {
+            $method = $reflector->getMethod('simplifyArray');
+            $method->setAccessible(true);
+
+            $slice = array_fill(0, 15, ['number' => 0, 'times_drawn' => 0, 'avg_draw_position' => 0]);
+            for($i = 0; $i < 15; $i++){
+                $slice[$i]['number'] = $i + 1;
+            }
+            $result = $method->invokeArgs($this->drawProcessor, [$slice]);
+            $this->assertEquals(15, sizeof($result));
+            $this->assertEquals(1, $result[0]);
+            $this->assertEquals(8, $result[7]);
+            $this->assertEquals(15, $result[14]);
+        } catch (ReflectionException $e) {
+            print $e->getMessage();
+        }
+    }
+    
+    public function testGetMostDrawnNumbersReturnsArrayContainingFiveArrays() :void
     {
         $draws = [];
         $draws[0][1] = array_fill(1, 75, 0);
@@ -157,7 +173,7 @@ class DrawProcessorTest extends TestCase
         
         $results = $this->drawProcessor->getMostDrawnNumbers($draws, 50);
         $this->assertIsArray($results);
-        $this->assertEquals(sizeof($results), 5);
+        $this->assertEquals(5, sizeof($results));
         $this->assertIsArray($results['first_range'] );
         $this->assertIsArray($results['second_range']);
         $this->assertIsArray($results['third_range']);
@@ -165,7 +181,7 @@ class DrawProcessorTest extends TestCase
         $this->assertIsArray($results['fifth_range']);
     }
     
-    public function testGetMostDrawnNumbersReturnsCorrectSizeRangeInCorrectOrder()
+    public function testGetMostDrawnNumbersReturnsCorrectSizeRangeInCorrectOrder() :void
     {
         $draws = [];
         $draws[0][1] = array_fill(1, 75, 0);
@@ -303,14 +319,14 @@ class DrawProcessorTest extends TestCase
         $draws[3][1][75] = 25;
         
         $results = $this->drawProcessor->getMostDrawnNumbers($draws, 30);
-        $this->assertEquals($results['first_range'], [15,11,3,5,1,6]);
-        $this->assertEquals($results['second_range'], [29,26,17,20,27,25]);
-        $this->assertEquals($results['third_range'], [36,38,41,45,35,34]);
-        $this->assertEquals($results['fourth_range'], [57,47,60,49,50,53]);
-        $this->assertEquals($results['fifth_range'], [63,72,75,68,64,66]);
+        $this->assertEquals([15,11,3,5,1,6], $results['first_range']);
+        $this->assertEquals([29,26,17,20,27,25], $results['second_range']);
+        $this->assertEquals([36,38,41,45,35,34], $results['third_range']);
+        $this->assertEquals([57,47,60,49,50,53], $results['fourth_range']);
+        $this->assertEquals([63,72,75,68,64,66], $results['fifth_range']);
     }
     
-    public function testGetLeastDrawnNumbersReturnsCorrectSizeRangeInCorrectOrder()
+    public function testGetLeastDrawnNumbersReturnsCorrectSizeRangeInCorrectOrder() :void
     {
         $draws = [];
         $draws[0][1] = array_fill(1, 75, 0);
@@ -489,10 +505,10 @@ class DrawProcessorTest extends TestCase
         $draws[3][1][75] = 4;
         
         $results = $this->drawProcessor->getLeastDrawnNumbers($draws);
-        $this->assertEquals($results['first_range'], [14,4,2,7,6,1,10,8]);
-        $this->assertEquals($results['second_range'], [29,17,19,22,16,21,25,23]);
-        $this->assertEquals($results['third_range'], [33,35,38,40,41,42,44,43]);
-        $this->assertEquals($results['fourth_range'], [47,49,52,46,59,51,55,53]);
-        $this->assertEquals($results['fifth_range'], [63,65,68,70,71,72,74,73]);
+        $this->assertEquals([14,4,2,7,6,1,10,8], $results['first_range']);
+        $this->assertEquals([29,17,19,22,16,21,25,23], $results['second_range']);
+        $this->assertEquals([33,35,38,40,41,42,44,43], $results['third_range']);
+        $this->assertEquals([47,49,52,46,59,51,55,53], $results['fourth_range']);
+        $this->assertEquals([63,65,68,70,71,72,74,73], $results['fifth_range']);
     }
 }

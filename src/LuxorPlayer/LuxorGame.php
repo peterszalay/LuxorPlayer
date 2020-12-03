@@ -2,13 +2,12 @@
 namespace LuxorPlayer;
 
 
-class LuxorGame {
+class LuxorGame
+{
+    private array $results = [];
     
-    private $name = "Luxor Game";
-    private $logger;
-    private $results = [];
-    
-    public function __construct(){
+    public function __construct()
+    {
         $this->results['jackpot'] = 0;
         $this->results['luxor'] = 0; 
         $this->results['first_frame'] = 0; 
@@ -28,7 +27,8 @@ class LuxorGame {
      * 
      * @return array
      */
-    public function getResults(){
+    public function getResults() :array
+    {
         return $this->results;
     }
     
@@ -39,7 +39,8 @@ class LuxorGame {
      * @param array $draws
      * @return array $results
      */
-    public function processTicketsForDraws($tickets, $draws){
+    public function processTicketsForDraws(array $tickets, array $draws) :array
+    {
         foreach($draws as $draw){
             $this->processTicketsForADraw($tickets, $draw);
         }
@@ -52,16 +53,8 @@ class LuxorGame {
      * @param array $tickets
      * @param array $draw
      */
-    public function processTicketsForADraw($tickets, $draw){
-        
-        /*print $draw[0]['date'];
-        print ' DRAW: ';
-        foreach($draw[1] as $key => $value){
-            if($value > 0){
-                print $key . ' ';
-            }
-        }
-        print PHP_EOL;*/
+    public function processTicketsForADraw(array $tickets, array $draw) :void
+    {
         foreach($tickets as $ticket){
             $this->processTicket($ticket, $draw);    
         }
@@ -70,13 +63,13 @@ class LuxorGame {
     /**
      * Process one ticket, compare ticket's numbers to drawn numbers 
      * 
-     * @param array $ticket
+     * @param LuxorTicket $ticket
      * @param array $draw
      */
-    public function processTicket($ticket, $draw){
+    public function processTicket(LuxorTicket $ticket, array $draw) :void
+    {
         $drawNumber = 1;
-        $ticketCopy = clone $ticket; //cloned because ticket could be used in more than one draw
-        //print 'TICKET: picture: ' . implode(' ',$ticketCopy->picture) . ' frame: ' . implode(' ', $ticketCopy->frame) . PHP_EOL;
+        $ticketCopy = clone $ticket;
         while($draw[0]['luxor'] >= $drawNumber){
             $number = array_search($drawNumber, $draw[1]);
             if(in_array($number, $ticketCopy->picture)){
@@ -105,14 +98,12 @@ class LuxorGame {
             }
             if(empty($ticketCopy->frame) && empty($ticketCopy->picture)){
                 if($drawNumber <= $draw[0]['jackpot_limit'] && !in_array($draw[0]['date'], $this->results['luxor_dates'])){
-                    //print $draw[0]['date'] . ' jackpot' . PHP_EOL;
                     $this->results['jackpot_dates'][] = $draw[0]['date'];
                     $this->results['luxor_dates'][] = $draw[0]['date'];
                     $this->results['jackpot']++;
                     $this->results['luxor']++;
                     break;
                 } elseif(!in_array($draw[0]['date'], $this->results['luxor_dates'])) {
-                    //print $draw[0]['date'] . ' luxor' . PHP_EOL;
                     $this->results['luxor_dates'][] = $draw[0]['date'];
                     $this->results['luxor']++;
                     break;

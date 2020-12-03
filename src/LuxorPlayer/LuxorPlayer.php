@@ -2,26 +2,28 @@
 namespace LuxorPlayer;
 
 
-class LuxorPlayer {
-   
-    private $fileDownloader;
-    private $fileProcessor;
-    private $ticketGenerator;
-    private $drawProcessor;
-    private $game;
+use Exception;
+
+class LuxorPlayer
+{
+    use Ordering;
+
+    private FileProcessor $fileProcessor;
+    private LuxorTicketGenerator $ticketGenerator;
+    private DrawProcessor $drawProcessor;
+    private LuxorGame $game;
     /**
      * User set variables
      */
-    private $drawCount = 0;
-    private $ticketCount = 0;
-    private $gameType;
+    private int $drawCount = 0;
+    private int $ticketCount = 0;
     
     public function init(){
-        $this->fileDownloader = new FileDownloader();
+        $fileDownloader = new FileDownloader();
+        $fileDownloader->downloadCsv();
         $this->fileProcessor = new FileProcessor();
         $this->ticketGenerator = new LuxorTicketGenerator();
         $this->drawProcessor = new DrawProcessor();
-        $this->fileDownloader->downloadCsv();
     }
     
     
@@ -30,7 +32,8 @@ class LuxorPlayer {
      * 
      * @return array
      */
-    public function playFromConfig(){
+    public function playFromConfig() :array
+    {
         try {
             $file = include  __DIR__ . '/../../config/luxor.php';
             if(isset($file['manual_player'])){
@@ -48,30 +51,26 @@ class LuxorPlayer {
                 $selections[2] = (isset($file['manual_player']['three_selections']) && is_array($file['manual_player']['three_selections'])) ? $file['manual_player']['three_selections'] : [];
                 
                 $results = $this->initializeResultsFromConfig($strategies, $previousDraws, $selections, $minSelection, $maxSelection);
-                //print_r($results);
                 $this->setDrawCount($drawCount);
                 $this->setTicketCount($ticketCount);
                 
                 while($i <= $repeatTimes){
-                    $drawResult = [];
                     $drawResult = $this->playWithRandomNumbers();
                     $this->addToResults('SAME_RANDOM', $results, $drawResult);
-                    
-                    $drawResult = [];
+
                     $drawResult = $this->playWithRandomNumbers(true);
                     $this->addToResults('REGENERATED_RANDOM', $results, $drawResult);
-                    
-                    $drawResult = [];
+
                     $drawResult = $this->playWithRandomNumbers(false, true);
                     $this->addToResults('SAME_RANDOM_ENFORCED_PROPORTIONS', $results, $drawResult);
-                    
-                    $drawResult = [];
+
                     $drawResult = $this->playWithRandomNumbers(true, true);
                     $this->addToResults('REGENERATED_RANDOM_ENFORCED_PROPORTIONS', $results, $drawResult);
                     
                    
                     foreach($previousDraws as $previousDraw){
                         foreach($strategies as $strategy){
+                            $key = '';
                             if(in_array($strategy, ["LEAST_DRAWN", "MOST_DRAWN"])){
                                 foreach($selections[0] as $selection){
                                     if(($selection < $minSelection) || ($selection > $maxSelection)){
@@ -121,7 +120,6 @@ class LuxorPlayer {
                                             if(($firstSelection + $secondSelection + $thirdSelection < $minSelection) || ($firstSelection + $secondSelection + $thirdSelection > $maxSelection)){
                                                 continue;
                                             }
-                                            $drawResult = [];
                                             $key = $strategy .  '_' . $previousDraw . '_M' . $firstSelection . '_L' . $secondSelection . '_R' . $thirdSelection;
                                             $drawResult = $this->playWithSelectedNumbers($previousDraw, $firstSelection, "MOST_LEAST_AND_RANDOM", $secondSelection, $thirdSelection);
                                             $this->addToResults($key, $results, $drawResult);
@@ -134,29 +132,29 @@ class LuxorPlayer {
                     $i++;
                 }                   
             }
-        } catch(\Exception $ex){
+        } catch(Exception $ex){
         }
         $this->cleanResultDates($results);
         uasort($results, [$this, 'orderByTotal']);
         return $results;
     }
-    
-    /*
-     * Autoplayer uses this to load its config
-     * 
+
+    /**
+     * AutoPlayer uses this to load its config
+     *
      * @param array $draws
-     * @param int $previousDraws
+     * @param array $previousDraws
      * @param int $ticketCount
      * @param int $repeatTimes
      * @param int $minSelection
      * @param int $maxSelection
      * @param array $strategies
-     * $param array $selections
+     * @param array $selections
      * @param string $orderBy
+     * @param $maxPreviousDraws
      * @return array
-     * 
      */
-    public function autoAnalyzeStrategies($draws, $previousDraws, $ticketCount, $repeatTimes, $minSelection, $maxSelection, $strategies, $selections, $orderBy = 'orderByUniqueTotal', $maxPreviousDraws){
+    public function autoAnalyzeStrategies(array $draws, array $previousDraws, int $ticketCount, int $repeatTimes, int $minSelection, int $maxSelection, array $strategies, array $selections, string $orderBy = 'orderByUniqueTotal', $maxPreviousDraws){
         try {
             $i = 1;          
             $results = $this->initializeResultsFromConfig($strategies, $previousDraws, $selections, $minSelection, $maxSelection, false);
@@ -165,6 +163,7 @@ class LuxorPlayer {
             while($i <= $repeatTimes){         
                 foreach($previousDraws as $previousDraw){
                     foreach($strategies as $strategy){
+                        $key = '';
                         if(in_array($strategy, ["LEAST_DRAWN", "MOST_DRAWN"])){
                             foreach($selections[0] as $selection){
                                 if(($selection < $minSelection) || ($selection > $maxSelection)){
@@ -214,7 +213,6 @@ class LuxorPlayer {
                                         if(($firstSelection + $secondSelection + $thirdSelection < $minSelection) || ($firstSelection + $secondSelection + $thirdSelection > $maxSelection)){
                                             continue;
                                         }
-                                        $drawResult = [];
                                         $key = $strategy .  '_' . $previousDraw . '_M' . $firstSelection . '_L' . $secondSelection . '_R' . $thirdSelection;
                                         $drawResult = $this->autoPlayWithSelectedNumbers($draws, $previousDraw, $firstSelection, "MOST_LEAST_AND_RANDOM", $maxPreviousDraws, $secondSelection, $thirdSelection);
                                         $this->addToResults($key, $results, $drawResult);
@@ -226,7 +224,7 @@ class LuxorPlayer {
                 }
                 $i++;
             }
-        } catch(\Exception $ex){
+        } catch(Exception $ex){
         }
         $this->cleanResultDates($results);
         uasort($results, [$this, $orderBy]);
@@ -244,7 +242,8 @@ class LuxorPlayer {
      * @param int $repeatTimes
      * @return array
      */
-    public function play($drawCount, $ticketCount, $previousDrawsToSelectFrom, $strategy, $selections, $repeatTimes){
+    public function play(int $drawCount, int $ticketCount, int $previousDrawsToSelectFrom, string $strategy, array $selections, int $repeatTimes) :array
+    {
         $i = 1;
         $results = $this->initializeResults($strategy, $selections);
         
@@ -252,24 +251,19 @@ class LuxorPlayer {
         $this->setTicketCount($ticketCount);
         
         while($i <= $repeatTimes){
-            $drawResult = [];
             $drawResult = $this->playWithRandomNumbers();
             $this->addToResults('SAME_RANDOM', $results, $drawResult);
-            
-            $drawResult = [];
+
             $drawResult = $this->playWithRandomNumbers(false, true);
             $this->addToResults('SAME_RANDOM_ENFORCED_PROPORTIONS', $results, $drawResult);
-            
-            $drawResult = [];
+
             $drawResult = $this->playWithRandomNumbers(true);
             $this->addToResults('REGENERATED_RANDOM', $results, $drawResult);
-            
-            $drawResult = [];
+
             $drawResult = $this->playWithRandomNumbers(true, true);
             $this->addToResults('REGENERATED_RANDOM_ENFORCED_PROPORTIONS', $results, $drawResult);
-            
 
-            $drawResult = [];
+            $key = '';
             switch($strategy){
                 case "LEAST_DRAWN":
                     $key = 'LEAST_DRAWN_' . $selections['first'];
@@ -308,39 +302,40 @@ class LuxorPlayer {
     /**
      * Play with random numbers
      * 
-     * @param boolean $regenerateTicketsBeforeEveryDraw
-     * @param boolean $enforceOddEvenRatio
+     * @param bool $regenerateTicketsBeforeEveryDraw
+     * @param bool $enforceOddEvenRatio
+     * @return array
      */
-    public function playWithRandomNumbers($regenerateTicketsBeforeEveryDraw = false, $enforceOddEvenRatio = false){
+    public function playWithRandomNumbers(bool $regenerateTicketsBeforeEveryDraw = false, bool $enforceOddEvenRatio = false) :array
+    {
         $this->game = new LuxorGame();
         $this->fileProcessor = new FileProcessor();
         $this->fileProcessor->readFileIntoArray($this->drawCount);
         $draws = $this->fileProcessor->getDrawResults();
         if($regenerateTicketsBeforeEveryDraw){
-            //print PHP_EOL . 'REGENERATED RANDOM DRAW COUNT: ' . sizeof($draws) . ' THIS DRAWCOUNT: ' . $this->drawCount . PHP_EOL;
             foreach($draws as $draw){
                 $this->ticketGenerator->generateTicketsWithRandomNumbers($this->ticketCount, $enforceOddEvenRatio);
                 $this->game->processTicketsForADraw($this->ticketGenerator->getTickets(), $draw);
             }
             return $this->game->getResults();
         } else {
-            //print PHP_EOL .'RANDOM DRAW COUNT: ' . sizeof($draws) . ' THIS DRAWCOUNT: ' . $this->drawCount . PHP_EOL;
             $this->ticketGenerator->generateTicketsWithRandomNumbers($this->ticketCount, $enforceOddEvenRatio);
-            $results = $this->game->processTicketsForDraws($this->ticketGenerator->getTickets(), $draws);
-            return $results;
+            return $this->game->processTicketsForDraws($this->ticketGenerator->getTickets(), $draws);
         }
     }
-    
+
     /**
      * Play with selected numbers
-     * 
+     *
      * @param int $previousDrawsToSelectFrom
      * @param int $firstSelection
      * @param string $strategy
      * @param int $secondSelection
+     * @param int $thirdSelection
      * @return array
      */
-    public function playWithSelectedNumbers($previousDrawsToSelectFrom, $firstSelection, $strategy = "MOST_DRAWN", $secondSelection = 0, $thirdSelection = 0){
+    public function playWithSelectedNumbers(int $previousDrawsToSelectFrom, int $firstSelection, string $strategy = "MOST_DRAWN", int $secondSelection = 0, int $thirdSelection = 0) :array
+    {
         $this->game = new LuxorGame();
         $this->fileProcessor = new FileProcessor();
         $this->fileProcessor->readFileIntoArray($this->drawCount + $previousDrawsToSelectFrom);
@@ -356,24 +351,24 @@ class LuxorPlayer {
                 case "LEAST_AND_MOST_DRAWN":
                     $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($previousDraws, $firstSelection);
                     $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $secondSelection);
-                    $selection = $this->ticketGenerator->mergeTwofSelections($leastDrawnSelection, $mostDrawnSelection);
+                    $selection = $this->ticketGenerator->mergeTwoSelections($leastDrawnSelection, $mostDrawnSelection);
                     break;
                 case "LEAST_DRAWN_AND_RANDOM":
                     $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($previousDraws, $firstSelection);
                     $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
-                    $selection = $this->ticketGenerator->mergeTwofSelections($leastDrawnSelection, $randomSelection);
+                    $selection = $this->ticketGenerator->mergeTwoSelections($leastDrawnSelection, $randomSelection);
                     break;
                 case "MOST_DRAWN_AND_RANDOM":
                     $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);
                     $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
-                    $selection = $this->ticketGenerator->mergeTwofSelections($mostDrawnSelection, $randomSelection);
+                    $selection = $this->ticketGenerator->mergeTwoSelections($mostDrawnSelection, $randomSelection);
                     break;
                 case "MOST_LEAST_AND_RANDOM":
                     $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);
                     $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($previousDraws, $secondSelection);
                     $randomSelection = $this->ticketGenerator->generateRandomSelection($thirdSelection);
-                    $selection1 = $this->ticketGenerator->mergeTwofSelections($mostDrawnSelection, $leastDrawnSelection);
-                    $selection = $this->ticketGenerator->mergeTwofSelections($selection1, $randomSelection);
+                    $selection1 = $this->ticketGenerator->mergeTwoSelections($mostDrawnSelection, $leastDrawnSelection);
+                    $selection = $this->ticketGenerator->mergeTwoSelections($selection1, $randomSelection);
                     break;
                 case "MOST_DRAWN": default:
                     $selection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);
@@ -387,7 +382,7 @@ class LuxorPlayer {
         }*/
         return $this->game->getResults();
     }
-    
+
     /**
      * PAuto play with selected numbers
      *
@@ -395,11 +390,13 @@ class LuxorPlayer {
      * @param int $previousDraw
      * @param int $firstSelection
      * @param string $strategy
-     * @param int $secondSelection
      * @param int $maxPreviousDraws
+     * @param int $secondSelection
+     * @param int $thirdSelection
      * @return array
      */
-    public function autoPlayWithSelectedNumbers($draws, $previousDraw, $firstSelection, $strategy = "MOST_DRAWN", $maxPreviousDraws, $secondSelection = 0, $thirdSelection = 0){
+    public function autoPlayWithSelectedNumbers(array $draws, int $previousDraw, int $firstSelection, string $strategy = "MOST_DRAWN", int $maxPreviousDraws, int $secondSelection = 0, int $thirdSelection = 0) :array
+    {
         $this->game = new LuxorGame();
         $draws = array_reverse($draws);
         for($i = 0; $i < (sizeof($draws) - $maxPreviousDraws); $i++){
@@ -412,24 +409,24 @@ class LuxorPlayer {
                 case "LEAST_AND_MOST_DRAWN":
                     $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($previousDraws, $firstSelection);
                     $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $secondSelection);
-                    $selection = $this->ticketGenerator->mergeTwofSelections($leastDrawnSelection, $mostDrawnSelection);
+                    $selection = $this->ticketGenerator->mergeTwoSelections($leastDrawnSelection, $mostDrawnSelection);
                     break;
                 case "LEAST_DRAWN_AND_RANDOM":
                     $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($previousDraws, $firstSelection);
                     $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
-                    $selection = $this->ticketGenerator->mergeTwofSelections($leastDrawnSelection, $randomSelection);
+                    $selection = $this->ticketGenerator->mergeTwoSelections($leastDrawnSelection, $randomSelection);
                     break;
                 case "MOST_DRAWN_AND_RANDOM":
                     $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);
                     $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
-                    $selection = $this->ticketGenerator->mergeTwofSelections($mostDrawnSelection, $randomSelection);
+                    $selection = $this->ticketGenerator->mergeTwoSelections($mostDrawnSelection, $randomSelection);
                     break;
                 case "MOST_LEAST_AND_RANDOM":
                     $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);
                     $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($previousDraws, $secondSelection);
                     $randomSelection = $this->ticketGenerator->generateRandomSelection($thirdSelection);
-                    $selection1 = $this->ticketGenerator->mergeTwofSelections($mostDrawnSelection, $leastDrawnSelection);
-                    $selection = $this->ticketGenerator->mergeTwofSelections($selection1, $randomSelection);
+                    $selection1 = $this->ticketGenerator->mergeTwoSelections($mostDrawnSelection, $leastDrawnSelection);
+                    $selection = $this->ticketGenerator->mergeTwoSelections($selection1, $randomSelection);
                     break;
                 case "MOST_DRAWN": default:
                     $selection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);
@@ -437,10 +434,6 @@ class LuxorPlayer {
             $this->ticketGenerator->generateTicketsWithRandomNumbersFromSelection($this->ticketCount, $selection);
             $this->game->processTicketsForADraw($this->ticketGenerator->getTickets(), $lastDraw);
         }
-        /*$results = $this->game->getResults();
-         if($results['luxor'] >= 1){
-         print $strategy . ' ' . $previousDrawsToSelectFrom . ' ' . $firstSelection . ' ' . $secondSelection . ' ' . $thirdSelection . PHP_EOL;
-         }*/
         return $this->game->getResults();
     }
 
@@ -470,10 +463,10 @@ class LuxorPlayer {
      * @param int $thirdSelection
      * @return array
      */
-    public function generateNumbers($previousDrawsToSelectFrom, $firstSelection, $strategy = "MOST_DRAWN", $secondSelection = 0, $thirdSelection = 0){
+    public function generateNumbers(int $previousDrawsToSelectFrom, int $firstSelection, string $strategy = "MOST_DRAWN", int $secondSelection = 0, int $thirdSelection = 0) :array
+    {
         $this->fileProcessor->readFileIntoArray($previousDrawsToSelectFrom);
         $draws = $this->fileProcessor->getDrawResults();
-        $selection = [];
         switch($strategy){
             case "LEAST_DRAWN":
                 $selection = $this->drawProcessor->getLeastDrawnNumbers($draws, $firstSelection);
@@ -481,24 +474,24 @@ class LuxorPlayer {
             case "LEAST_AND_MOST_DRAWN":
                 $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($draws, $firstSelection);
                 $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($draws, $secondSelection);
-                $selection = $this->ticketGenerator->mergeTwofSelections($leastDrawnSelection, $mostDrawnSelection);
+                $selection = $this->ticketGenerator->mergeTwoSelections($leastDrawnSelection, $mostDrawnSelection);
                 break;
             case "LEAST_DRAWN_AND_RANDOM":
                 $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($draws, $firstSelection);
                 $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
-                $selection = $this->ticketGenerator->mergeTwofSelections($leastDrawnSelection, $randomSelection);
+                $selection = $this->ticketGenerator->mergeTwoSelections($leastDrawnSelection, $randomSelection);
                 break;
             case "MOST_DRAWN_AND_RANDOM":
                 $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($draws, $firstSelection);
                 $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
-                $selection = $this->ticketGenerator->mergeTwofSelections($mostDrawnSelection, $randomSelection);
+                $selection = $this->ticketGenerator->mergeTwoSelections($mostDrawnSelection, $randomSelection);
                 break;
             case "MOST_LEAST_AND_RANDOM":
                 $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($draws, $firstSelection);
                 $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($draws, $secondSelection);
                 $randomSelection = $this->ticketGenerator->generateRandomSelection($thirdSelection);
-                $selection1 = $this->ticketGenerator->mergeTwofSelections($mostDrawnSelection, $leastDrawnSelection);
-                $selection = $this->ticketGenerator->mergeTwofSelections($selection1, $randomSelection);
+                $selection1 = $this->ticketGenerator->mergeTwoSelections($mostDrawnSelection, $leastDrawnSelection);
+                $selection = $this->ticketGenerator->mergeTwoSelections($selection1, $randomSelection);
                 break;
             case "MOST_DRAWN": default:
                 $selection = $this->drawProcessor->getMostDrawnNumbers($draws, $firstSelection);
@@ -518,8 +511,8 @@ class LuxorPlayer {
      * @param int $thirdSelection
      * @return array
      */
-    public function autoGenerateNumbers($draws, $previousDrawsToSelectFrom, $firstSelection, $strategy = "MOST_DRAWN", $secondSelection = 0, $thirdSelection = 0){
-        $selection = [];
+    public function autoGenerateNumbers(array $draws, int $previousDrawsToSelectFrom, int $firstSelection, string $strategy = "MOST_DRAWN", int $secondSelection = 0, int $thirdSelection = 0) :array
+    {
         switch($strategy){
             case "LEAST_DRAWN":
                 $selection = $this->drawProcessor->getLeastDrawnNumbers($draws, $firstSelection);
@@ -527,24 +520,24 @@ class LuxorPlayer {
             case "LEAST_AND_MOST_DRAWN":
                 $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($draws, $firstSelection);
                 $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($draws, $secondSelection);
-                $selection = $this->ticketGenerator->mergeTwofSelections($leastDrawnSelection, $mostDrawnSelection);
+                $selection = $this->ticketGenerator->mergeTwoSelections($leastDrawnSelection, $mostDrawnSelection);
                 break;
             case "LEAST_DRAWN_AND_RANDOM":
                 $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($draws, $firstSelection);
                 $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
-                $selection = $this->ticketGenerator->mergeTwofSelections($leastDrawnSelection, $randomSelection);
+                $selection = $this->ticketGenerator->mergeTwoSelections($leastDrawnSelection, $randomSelection);
                 break;
             case "MOST_DRAWN_AND_RANDOM":
                 $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($draws, $firstSelection);
                 $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
-                $selection = $this->ticketGenerator->mergeTwofSelections($mostDrawnSelection, $randomSelection);
+                $selection = $this->ticketGenerator->mergeTwoSelections($mostDrawnSelection, $randomSelection);
                 break;
             case "MOST_LEAST_AND_RANDOM":
                 $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($draws, $firstSelection);
                 $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($draws, $secondSelection);
                 $randomSelection = $this->ticketGenerator->generateRandomSelection($thirdSelection);
-                $selection1 = $this->ticketGenerator->mergeTwofSelections($mostDrawnSelection, $leastDrawnSelection);
-                $selection = $this->ticketGenerator->mergeTwofSelections($selection1, $randomSelection);
+                $selection1 = $this->ticketGenerator->mergeTwoSelections($mostDrawnSelection, $leastDrawnSelection);
+                $selection = $this->ticketGenerator->mergeTwoSelections($selection1, $randomSelection);
                 break;
             case "MOST_DRAWN": default:
                 $selection = $this->drawProcessor->getMostDrawnNumbers($draws, $firstSelection);
@@ -559,7 +552,8 @@ class LuxorPlayer {
      * @param array $selections
      * @return array
      */
-    private function initializeResults($strategy, $selections){
+    private function initializeResults(string $strategy, array $selections) :array
+    {
         $results = [];
         $startValue = ['total' => 0, 'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0,  'last_win_date' => '', 'win_dates' => 0, 
                        'jackpot_dates' => [], 'luxor_dates' => [], 'first_picture_dates' => [], 'first_frame_dates' => [], 'picture_dates' => [], 'frame_dates' => [], 'unique_jackpot' => 0, 
@@ -573,10 +567,7 @@ class LuxorPlayer {
         $results["SAME_RANDOM_ENFORCED_PROPORTIONS"] = $startValue;
         $results["REGENERATED_RANDOM_ENFORCED_PROPORTIONS"] = $startValue;
         switch($strategy){
-            case "LEAST_DRAWN":
-                $results[$strategy . '_' . $firstSelection] = $startValue;
-                break;
-            case "MOST_DRAWN":
+            case "LEAST_DRAWN": case "MOST_DRAWN":
                 $results[$strategy . '_' . $firstSelection] = $startValue;
                 break;
             case "LEAST_DRAWN_AND_RANDOM":
@@ -598,7 +589,7 @@ class LuxorPlayer {
     /**
      * Initialize results array to hold results
      * 
-     * @param string $strategy
+     * @param array $strategies
      * @param array $previousDraws
      * @param array $selections
      * @param int $minSelection
@@ -606,7 +597,8 @@ class LuxorPlayer {
      * @param bool $withRandoms
      * @return array
      */
-    private function initializeResultsFromConfig($strategies, $previousDraws, $selections, $minSelection = 20, $maxSelection = 70, $withRandoms = true){
+    private function initializeResultsFromConfig(array $strategies, array $previousDraws, array $selections, int $minSelection = 20, int $maxSelection = 70, bool $withRandoms = true) :array
+    {
         $results = [];
         $startValue = ['random' => false, 'most' => false, 'least' => false, 'mixed' => false, 'prev_draws' => 0, 
                        'first_selection' => 0, 'second_selection' => 0, 'third_selection' => 0, 'total' => 0, 
@@ -725,7 +717,8 @@ class LuxorPlayer {
      * @param array $results
      * @param array $drawResult
      */
-    private function addToResults($key, &$results, $drawResult){
+    private function addToResults(string $key, array &$results, array $drawResult) :void
+    {
         $results[$key]['total'] += $drawResult['pictures'] 
                                 + (10 * $drawResult['frames']) 
                                 + (20 * $drawResult['first_picture']) 
@@ -747,155 +740,12 @@ class LuxorPlayer {
     }
     
     /**
-     * Helper function that orders array elements by value of unique picture and frame
-     * 
-     * @param array $a
-     * @param array $b
-     * @return number
-     */
-    private function orderByUniquePicturesAndFrames($a, $b){
-        $aTotal = ($a['unique_frame'] * 10) + $a['unique_picture'];
-        $bTotal = ($b['unique_frame'] * 10) + $b['unique_picture'];
-        if($aTotal < $bTotal){
-            return 1;
-        }else if($aTotal > $bTotal){
-            return -1;
-        }
-        return 0;
-    }
-    
-    /**
-     * Helper function that orders array elements by value of unique picture and frame desc
-     *
-     * @param array $a
-     * @param array $b
-     * @return number
-     */
-    private function orderByUniquePicturesAndFramesDesc($a, $b){
-        $aTotal = ($a['unique_frame'] * 10) + $a['unique_picture'];
-        $bTotal = ($b['unique_frame'] * 10) + $b['unique_picture'];
-        if($aTotal > $bTotal){
-            return 1;
-        }else if($aTotal < $bTotal){
-            return -1;
-        }
-        return 0;
-    }
-    
-    /**
-     * Helper function that orders array elements by value of picture and frame
-     *
-     * @param array $a
-     * @param array $b
-     * @return number
-     */
-    private function orderByPicturesAndFrames($a, $b){
-        $aTotal = ($a['frames'] * 10) + $a['pictures'];
-        $bTotal = ($b['frames'] * 10) + $b['pictures'];
-        if($aTotal < $bTotal){
-            return 1;
-        }else if($aTotal > $bTotal){
-            return -1;
-        }
-        return 0;
-    }
-    
-    /**
-     * Helper function that orders array elements by value of picture and frame desc
-     *
-     * @param array $a
-     * @param array $b
-     * @return number
-     */
-    private function orderByPicturesAndFramesDesc($a, $b){
-        $aTotal = ($a['frames'] * 10) + $a['pictures'];
-        $bTotal = ($b['frames'] * 10) + $b['pictures'];
-        if($aTotal > $bTotal){
-            return 1;
-        }else if($aTotal < $bTotal){
-            return -1;
-        }
-        return 0;
-    }
-    
-    /**
-     * Helper function that orders array elements by value of total
-     *
-     * @param array $a
-     * @param array $b
-     * @return number
-     */
-    private function orderByTotal($a, $b){
-        $aTotal = ($a['luxor'] * 100) + ($a['frames'] * 10) + $a['pictures'];
-        $bTotal = ($b['luxor'] * 100) + ($b['frames'] * 10) + $b['pictures'];
-        if($aTotal < $bTotal){
-            return 1;
-        }else if($aTotal > $bTotal){
-            return -1;
-        }
-        return 0;
-    }
-    
-    /**
-     * Helper function that orders array elements by value of total desc
-     *
-     * @param array $a
-     * @param array $b
-     * @return number
-     */
-    private function orderByTotalDesc($a, $b){
-        $aTotal = ($a['luxor'] * 100) + ($a['frames'] * 10) + $a['pictures'];
-        $bTotal = ($b['luxor'] * 100) + ($b['frames'] * 10) + $b['pictures'];
-        if($aTotal > $bTotal){
-            return 1;
-        }else if($aTotal < $bTotal){
-            return -1;
-        }
-        return 0;
-    }
-    
-    /**
-     * Helper function that orders array elements by value of total
-     *
-     * @param array $a
-     * @param array $b
-     * @return number
-     */
-    private function orderByUniqueTotal($a, $b){
-        $aTotal = ($a['unique_luxor'] * 100) + ($a['unique_frame'] * 10) + $a['unique_picture'];
-        $bTotal = ($b['unique_luxor'] * 100) + ($b['unique_frame'] * 10) + $b['unique_picture'];
-        if($aTotal < $bTotal){
-            return 1;
-        }else if($aTotal > $bTotal){
-            return -1;
-        }
-        return 0;
-    }
-    
-    /**
-     * Helper function that orders array elements by value of total desc
-     *
-     * @param array $a
-     * @param array $b
-     * @return number
-     */
-    private function orderByUniqueTotalDesc($a, $b){
-        $aTotal = ($a['unique_luxor'] * 100) + ($a['unique_frame'] * 10) + $a['unique_picture'];
-        $bTotal = ($b['unique_luxor'] * 100) + ($b['unique_frame'] * 10) + $b['unique_picture'];
-        if($aTotal > $bTotal){
-            return 1;
-        }else if($aTotal < $bTotal){
-            return -1;
-        }
-        return 0;
-    }
-    
-    /**
      * Helper function that cleans result dates
      * 
      * @param array $results
      */
-    private function cleanResultDates(&$results){
+    private function cleanResultDates(array &$results) :void
+    {
         foreach ($results as $key => $result){
             $jackpotDates = array_unique($result['jackpot_dates']);
             $luxorDates = array_unique($result['luxor_dates']);

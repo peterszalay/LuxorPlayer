@@ -2,43 +2,40 @@
 namespace LuxorPlayer;
 
 
-class LuxorTicketGenerator {
-    
-    private $name = "Ticket Generator";
-    private $logger;
+class LuxorTicketGenerator
+{
     /**
-     * Luxornumbers are split into 5 ranges. Each range contains 15 numbers, 75 in total. 
+     * Luxor numbers are split into 5 ranges. Each range contains 15 numbers, 75 in total.
      * From each range a player picks 4 numbers, 20 in total.
      */
-    private $firstRange;
-    private $secondRange;
-    private $thirdRange;
-    private $fourthRange;
-    private $fifthRange;
+    private array $firstRange;
+    private array $secondRange;
+    private array $thirdRange;
+    private array $fourthRange;
+    private array $fifthRange;
     /**
      * $tickets will contain the players bets
      */
-    private $tickets = [];
-    
-    
-    public function __construct(){
-    }
+    private array $tickets = [];
     
     /**
      * Get generated $tickets array
      * 
      * @return array
      */
-    public function getTickets(){
+    public function getTickets() :array
+    {
         return $this->tickets;
     }
-    
+
     /**
      * Generate number of tickets with randomly selected numbers
-     * 
+     *
      * @param int $numberOfTickets
+     * @param bool $enforceOddEvenRatio
      */
-    public function generateTicketsWithRandomNumbers($numberOfTickets, $enforceOddEvenRatio = false){
+    public function generateTicketsWithRandomNumbers(int $numberOfTickets, bool $enforceOddEvenRatio = false) :void
+    {
         $this->tickets = [];
         for($i = 0; $i < $numberOfTickets; $i++){
             $this->tickets[$i] = $this->generateTicketWithRandomNumbers($enforceOddEvenRatio);     
@@ -51,21 +48,23 @@ class LuxorTicketGenerator {
      * @param int $numberOfTickets
      * @param array $selection
      */
-    public function generateTicketsWithRandomNumbersFromSelection($numberOfTickets, $selection){
+    public function generateTicketsWithRandomNumbersFromSelection(int $numberOfTickets, array $selection) :void
+    {
         $this->tickets = [];
         for($i = 0; $i < $numberOfTickets; $i++){
             $this->tickets[$i] = $this->generateTicketWithRandomNumbersFromSelection($selection);
         }
     }
-    
+
     /**
      * Generate one ticket populated with random numbers
-     * 
+     *
+     * @param bool $enforceOddEvenRatio
+     * @return LuxorTicket
      * @todo implement force odd even ratio, force prime ratio functionality
-     * 
-     * @return \LuxorPlayer\LuxorTicket
      */
-    public function generateTicketWithRandomNumbers($enforceOddEvenRatio = false){
+    public function generateTicketWithRandomNumbers(bool $enforceOddEvenRatio = false) :LuxorTicket
+    {
         $this->fillRanges();
         return $this->generateTicketWithRandomNumberUsingRanges($enforceOddEvenRatio);
     }
@@ -74,19 +73,22 @@ class LuxorTicketGenerator {
      * Generate ticket from selection of number split into 5 ranges
      * 
      * @param array $selection
-     * @return \LuxorPlayer\LuxorTicket
+     * @return LuxorTicket
      */
-    public function generateTicketWithRandomNumbersFromSelection($selection){       
+    public function generateTicketWithRandomNumbersFromSelection(array $selection) :LuxorTicket
+    {
         $this->fillRanges($selection);
         return $this->generateTicketWithRandomNumberUsingRanges();
     }
-    
+
     /**
      * Generates ticket with random numbers using the five ranges
      *
-     * @return \LuxorPlayer\LuxorTicket
+     * @param bool $oddEven
+     * @return LuxorTicket
      */
-    private function generateTicketWithRandomNumberUsingRanges($oddEven = false){
+    private function generateTicketWithRandomNumberUsingRanges(bool $oddEven = false) :LuxorTicket
+    {
         $frame = [];
         $picture = [];
         $i = 1;
@@ -223,7 +225,8 @@ class LuxorTicketGenerator {
      * @param array $range
      * @param array $pictureOrFrame
      */
-    private function putNumberInFrameOrPicture($number, &$range, &$pictureOrFrame){
+    private function putNumberInFrameOrPicture(int $number, array &$range, array &$pictureOrFrame) :void
+    {
         $pictureOrFrame[] = $number;
         $key = array_search($number, $range);
         unset($range[$key]);
@@ -234,7 +237,8 @@ class LuxorTicketGenerator {
      * 
      * @param array $selection
      */
-    private function fillRanges($selection = []){
+    private function fillRanges(array $selection = []) :void
+    {
         if(empty($selection)){
             $this->firstRange = range(1,15);
             $this->secondRange = range(16,30);
@@ -257,7 +261,8 @@ class LuxorTicketGenerator {
      * @param array $selection2
      * @return array
      */
-    public function mergeTwofSelections($selection1, $selection2){
+    public function mergeTwoSelections(array $selection1, array $selection2) :array
+    {
         $firstRange = array_values(array_unique(array_merge($selection1['first_range'], $selection2['first_range'])));
         $secondRange = array_values(array_unique(array_merge($selection1['second_range'], $selection2['second_range'])));
         $thirdRange = array_values(array_unique(array_merge($selection1['third_range'], $selection2['third_range'])));
@@ -272,7 +277,8 @@ class LuxorTicketGenerator {
      * @param int $size
      * @return array
      */
-    public function generateRandomSelection($size){
+    public function generateRandomSelection(int $size) :array
+    {
         $this->fillRanges();
         $firstRange = [];
         $secondRange = [];

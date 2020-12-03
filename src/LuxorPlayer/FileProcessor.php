@@ -2,23 +2,19 @@
 namespace LuxorPlayer;
 
 
-class FileProcessor {
-    
-    private $name = "File Processor";
-    private $logger;
+class FileProcessor
+{
     /**
      * Stores draw results
      */
-    private $drawResults = [];
-    
-    public function __construct(){
-    }
-    
+    private array $drawResults = [];
+
     /**
      * Reads csv file into $drawResults which can be used by Game class to simulate game
-     * 
+     * @param int $drawCount
      */
-    public function readFileIntoArray($drawCount = 0){
+    public function readFileIntoArray(int $drawCount = 0) :void
+    {
         $file = include  __DIR__ . '/../../config/luxor.php';
         if($drawCount == 0 && isset($file['game_variables']['draws']) && is_int($file['game_variables']['draws'])){
             $drawCount = $file['game_variables']['draws'];
@@ -54,9 +50,10 @@ class FileProcessor {
     }
     
     /**
-     * @return $drawResults
+     * @return array $drawResults
      */
-    public function getDrawResults(){
+    public function getDrawResults() :array
+    {
         return $this->drawResults;
     }
     

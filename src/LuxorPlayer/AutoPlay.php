@@ -1,24 +1,34 @@
 <?php
 namespace LuxorPlayer;
 
+use Exception;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
 
-class AutoPlay {
-    
-    private $players = [];
-    private $results = [];
-    private $fileProcessor;
-    
-    /**
-     * Creates players according to setting in luxor config under auto_player and initializes results arra which stores final results
-     */
-    public function createPlayers()
+class AutoPlay
+{
+    use Ordering;
+
+    private string $name = "AutoPlay";
+    private array $players = [];
+    private array $results = [];
+    private Logger $logger;
+
+    public function __construct()
     {
-        try{
+        $this->logger = new Logger($this->name);
+    }
+
+    /**
+     * Creates players according to setting in luxor config under auto_player and initializes results array
+     * which stores final results
+     */
+    public function createPlayers() :void
+    {
+        try {
             $file = include  __DIR__ . '/../../config/luxor.php';
-            if(isset($file['auto_player'])){
+            if(isset($file['auto_player'])) {
                 //load players from luxor config file
                 $drawCount = (isset($file['auto_player']['draws_played']) && is_int($file['auto_player']['draws_played']) && $file['auto_player']['draws_played'] > 1) ? $file['auto_player']['draws_played'] : 0;
                 AutoPlayer::setDrawCount($drawCount);
@@ -43,12 +53,12 @@ class AutoPlay {
                 $thirdSelections = (isset($file['auto_player']['three_selections']) && is_array($file['auto_player']['three_selections'])) ? $file['auto_player']['three_selections'] : [];
                 AutoPlayer::setThirdSelection($thirdSelections);
                 
-                $this->fileProcessor  = new FileProcessor();
-                $this->fileProcessor->readFileIntoArray($drawCount + $weeksAnalyzed + max($previousDraws));
-                $draws = $this->fileProcessor->getDrawResults();
+                $fileProcessor = new FileProcessor();
+                $fileProcessor->readFileIntoArray($drawCount + $weeksAnalyzed + max($previousDraws));
+                $draws = $fileProcessor->getDrawResults();
                 AutoPlayer::setDraws($draws);   
                 
-                if(isset($file['auto_player']['players']) && is_array($file['auto_player']['players'])){
+                if(isset($file['auto_player']['players']) && is_array($file['auto_player']['players'])) {
                     foreach ($file['auto_player']['players'] as $player){
                         if(isset($player['name'])){
                             $newPlayer = AutoPlayer::create($player['name']);
@@ -80,24 +90,28 @@ class AutoPlay {
                     }
                 }
             } else {
-                $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log', Logger::ERROR));
+                $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log',
+                                                        Logger::ERROR));
                 $this->logger->error("auto_player not found in luxor config");
             }
-        } catch(\Exception $ex){
-            $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log', Logger::CRITICAL));
+        } catch(Exception $ex){
+            $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log',
+                                                    Logger::CRITICAL));
             $this->logger->critical($ex);
         }
     }
-    
+
     /**
-     * Add player to $results array with starting values 
-     * 
+     * Add player to $results array with starting values
+     *
      * @param String $playerName
      */
-    private function initializePlayerResults($playerName)
+    private function initializePlayerResults(string $playerName) :void
     {
-        $startValue = ['total' => 0, 'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0, 'frames' => 0, 'pictures' => 0, 'jackpot_dates' => [],
-            'luxor_dates' => [], 'first_picture_dates' => [], 'first_frame_dates' => [], 'picture_dates' => [], 'frame_dates' => []];
+        $startValue = ['total' => 0, 'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0,
+                       'frames' => 0, 'pictures' => 0, 'jackpot_dates' => [], 'luxor_dates' => [],
+                       'first_picture_dates' => [], 'first_frame_dates' => [], 'picture_dates' => [],
+                       'frame_dates' => []];
         $this->results[$playerName] = $startValue;
     }
     
@@ -106,7 +120,7 @@ class AutoPlay {
      * 
      * @return array $results
      */
-    public function play()
+    public function play() :array
     {
         $this->createPlayers();
         //loop through the players array and play each player
@@ -115,20 +129,6 @@ class AutoPlay {
         }
         uasort($this->results, [$this, 'orderByTotal']);
         return $this->results;
-    }
-    
-    /**
-     * Helper to usort
-     */
-    private function orderByTotal($a, $b){
-        $aTotal = ($a['jackpot'] * 200) + ($a['luxor'] * 100) + ($a['first_frame'] * 50) + ($a['first_picture'] * 20) + ($a['frames'] * 10) + $a['pictures'];
-        $bTotal = ($b['jackpot'] * 200) + ($b['luxor'] * 100) + ($b['first_frame'] * 50) + ($b['first_picture'] * 20) + ($b['frames'] * 10) + $b['pictures'];
-        if($aTotal < $bTotal){
-            return 1;
-        }else if($aTotal > $bTotal){
-            return -1;
-        }
-        return 0;
     }
 
 }

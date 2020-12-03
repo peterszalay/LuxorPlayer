@@ -2,14 +2,14 @@
 namespace LuxorPlayer;
 
 /**
- * A Luxor Ticket or Bet consists of a picture (6 numbers betwee 16 and 60) 
+ * A Luxor Ticket or Bet consists of a picture (6 numbers between 16 and 60)
  * and a frame (14 numbers between 1 and 75)
  *
  */
 class LuxorTicket {
     
-    public $picture;
-    public $frame;
+    public array $picture;
+    public array $frame;
     
     public function __construct($picture, $frame){
         $this->picture = $picture;

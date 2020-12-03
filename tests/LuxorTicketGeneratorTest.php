@@ -5,30 +5,30 @@ use LuxorPlayer\LuxorTicketGenerator;
 
 class LuxorTicketGeneratorTest extends TestCase
 {
-    protected $luxorTicketGenerator;
+    protected LuxorTicketGenerator $luxorTicketGenerator;
     
     protected function setUp(): void
     {
         $this->luxorTicketGenerator = new LuxorTicketGenerator;
     }
     
-    public function testGenerateTicketWithRandomNumbersReturnsInstanceOfLuxorTicket()
+    public function testGenerateTicketWithRandomNumbersReturnsInstanceOfLuxorTicket() :void
     {
         $luxorTicket = $this->luxorTicketGenerator->generateTicketWithRandomNumbers();
         
         $this->assertInstanceOf(LuxorTicket::class, $luxorTicket);
     }
     
-    public function testGenerateTicketWithRandomNumbersReturnsTicketWithCorrectSizePictureAndFrame()
+    public function testGenerateTicketWithRandomNumbersReturnsTicketWithCorrectSizePictureAndFrame() :void
     {
         $luxorTicket = $this->luxorTicketGenerator->generateTicketWithRandomNumbers();
         
-        $this->assertEquals(sizeof($luxorTicket->picture), 6);
+        $this->assertEquals(6, sizeof($luxorTicket->picture));
         
-        $this->assertEquals(sizeof($luxorTicket->frame), 14);        
+        $this->assertEquals(14, sizeof($luxorTicket->frame));
     }
     
-    public function testGenerateTicketWithRandomNumbersReturnsTicketWithPictureAndFrameInCorrectRange()
+    public function testGenerateTicketWithRandomNumbersReturnsTicketWithPictureAndFrameInCorrectRange() :void
     {
         $luxorTicket = $this->luxorTicketGenerator->generateTicketWithRandomNumbers();
         
@@ -53,7 +53,7 @@ class LuxorTicketGeneratorTest extends TestCase
         $this->assertTrue($frameInRange);
     }
     
-    public function testGenerateTicketsWithRandomNumbersReturnsTicketsWithPictureAndFrameContainingDifferentNumbers()
+    public function testGenerateTicketsWithRandomNumbersReturnsTicketsWithPictureAndFrameContainingDifferentNumbers() :void
     {
         $this->luxorTicketGenerator->generateTicketsWithRandomNumbers(1000);
         
@@ -70,7 +70,7 @@ class LuxorTicketGeneratorTest extends TestCase
         $this->assertTrue($pictureFrameOnlyContainsDifferentNumbers);
     }
     
-    public function testGenerateTicketWithRandomNumbersFromSelectionReturnsLuxorTicketWithCorrectPictureFrameSizes()
+    public function testGenerateTicketWithRandomNumbersFromSelectionReturnsLuxorTicketWithCorrectPictureFrameSizes() :void
     {
         $ranges = ['first_range' => [ 1, 2, 3, 4, 5, 6, 7, 8], 'second_range' => [16,17,18,19,20,21,22,23], 
                    'third_range' => [31,32,33,34,35,36,37,38], 'fourth_range' => [46,47,48,49,50,51,52,53], 
@@ -80,13 +80,13 @@ class LuxorTicketGeneratorTest extends TestCase
         
         $this->assertInstanceOf(LuxorTicket::class, $luxorTicket);
         
-        $this->assertEquals(sizeof($luxorTicket->picture), 6);
+        $this->assertEquals(6, sizeof($luxorTicket->picture));
         
-        $this->assertEquals(sizeof($luxorTicket->frame), 14); 
+        $this->assertEquals(14, sizeof($luxorTicket->frame));
         
     }
     
-    public function testGenerateTicketWithRandomNumbersFromSelectionReturnsTicketWithPictureAndFrameInCorrectRangeAndOnlyNumbersFromSection()
+    public function testGenerateTicketWithRandomNumbersFromSelectionReturnsTicketWithPictureAndFrameInCorrectRangeAndOnlyNumbersFromSection() :void
     {
         $ranges = ['first_range' => [ 1, 2, 3, 4, 5, 6, 7, 8], 'second_range' => [16,17,18,19,20,21,22,23],
                    'third_range' => [31,32,33,34,35,36,37,38], 'fourth_range' => [46,47,48,49,50,51,52,53],
@@ -115,7 +115,7 @@ class LuxorTicketGeneratorTest extends TestCase
         $this->assertTrue($frameInRange);
     }
     
-    public function testGenerateTicketsWithRandomNumbersFromSelectionReturnsTicketsWithPictureAndFrameContainingDifferentNumbers()
+    public function testGenerateTicketsWithRandomNumbersFromSelectionReturnsTicketsWithPictureAndFrameContainingDifferentNumbers() :void
     {
         $ranges = ['first_range' => [ 1, 2, 3, 4, 5, 6, 7, 8], 'second_range' => [16,17,18,19,20,21,22,23],
                    'third_range' => [31,32,33,34,35,36,37,38], 'fourth_range' => [46,47,48,49,50,51,52,53],
@@ -133,13 +133,10 @@ class LuxorTicketGeneratorTest extends TestCase
                 break;
             }
         }
-        /*if(!$pictureFrameOnlyContainsDifferentNumbers){
-            print_r($tickets);
-        }*/
         $this->assertTrue($pictureFrameOnlyContainsDifferentNumbers);
     }
     
-    public function testMergeTwofSelectionsReturnsCorreclyMergedArrays()
+    public function testMergeTwoSelectionsReturnsCorrectlyMergedArrays() :void
     {
         $selection1 = ['first_range' => [ 1, 2, 3, 4], 'second_range' => [16,17,18,19],
                        'third_range' => [31,32,33,34], 'fourth_range' => [46,47,48,49],
@@ -148,58 +145,63 @@ class LuxorTicketGeneratorTest extends TestCase
                        'third_range' => [33,35], 'fourth_range' => [50,55],
                        'fifth_range' => [67,68]];
         
-        $mergedSelection = $this->luxorTicketGenerator->mergeTwofSelections($selection1, $selection2);
+        $mergedSelection = $this->luxorTicketGenerator->mergeTwoSelections($selection1, $selection2);
         
-        $this->assertEquals($mergedSelection, ['first_range' => [ 1, 2, 3, 4, 5], 'second_range' => [16,17,18,19,22,24], 'third_range' => [31,32,33,34,35], 'fourth_range' => [46,47,48,49,50,55],
-            'fifth_range' => [61,62,63,64,67,68]]);
+        $this->assertEquals(['first_range' => [ 1, 2, 3, 4, 5], 'second_range' => [16,17,18,19,22,24],
+                             'third_range' => [31,32,33,34,35], 'fourth_range' => [46,47,48,49,50,55],
+                             'fifth_range' => [61,62,63,64,67,68]], $mergedSelection);
     }
     
-    public function testGenerateRandomSelectionReturnsCorrectSizeArrayWithCorrectSizeRanges()
+    public function testGenerateRandomSelectionReturnsCorrectSizeArrayWithCorrectSizeRanges() :void
     {
         $selection = $this->luxorTicketGenerator->generateRandomSelection(-10); //min: 0
         
-        $this->assertEquals(sizeof($selection['first_range']), 0);
-        $this->assertEquals(sizeof($selection['second_range']), 0);
-        $this->assertEquals(sizeof($selection['third_range']), 0);
-        $this->assertEquals(sizeof($selection['fourth_range']), 0);
-        $this->assertEquals(sizeof($selection['fifth_range']), 0);
+        $this->assertEquals(0, sizeof($selection['first_range']));
+        $this->assertEquals(0, sizeof($selection['second_range']));
+        $this->assertEquals(0, sizeof($selection['third_range']));
+        $this->assertEquals(0, sizeof($selection['fourth_range']));
+        $this->assertEquals(0, sizeof($selection['fifth_range']));
         
         $selection = $this->luxorTicketGenerator->generateRandomSelection(20);
         
-        $this->assertEquals(sizeof($selection['first_range']), 4);
-        $this->assertEquals(sizeof($selection['second_range']), 4);
-        $this->assertEquals(sizeof($selection['third_range']), 4);
-        $this->assertEquals(sizeof($selection['fourth_range']), 4);
-        $this->assertEquals(sizeof($selection['fifth_range']), 4);
+        $this->assertEquals(4, sizeof($selection['first_range']));
+        $this->assertEquals(4, sizeof($selection['second_range']));
+        $this->assertEquals(4, sizeof($selection['third_range']));
+        $this->assertEquals(4, sizeof($selection['fourth_range']));
+        $this->assertEquals(4, sizeof($selection['fifth_range']));
         
         $selection = $this->luxorTicketGenerator->generateRandomSelection(100); //max: 40
         
-        $this->assertEquals(sizeof($selection['first_range']), 8);
-        $this->assertEquals(sizeof($selection['second_range']), 8);
-        $this->assertEquals(sizeof($selection['third_range']), 8);
-        $this->assertEquals(sizeof($selection['fourth_range']), 8);
-        $this->assertEquals(sizeof($selection['fifth_range']), 8);
+        $this->assertEquals(8, sizeof($selection['first_range']));
+        $this->assertEquals(8, sizeof($selection['second_range']));
+        $this->assertEquals(8, sizeof($selection['third_range']));
+        $this->assertEquals(8, sizeof($selection['fourth_range']));
+        $this->assertEquals(8, sizeof($selection['fifth_range']));
     }
     
-    public function testGenerateTicketWithRandomNumberUsingRangesEnforceProportionsReturnsCorrectOddEvenProportions()
+    public function testGenerateTicketWithRandomNumberUsingRangesEnforceProportionsReturnsCorrectOddEvenProportions() :void
     {
         $reflector = new ReflectionClass(LuxorTicketGenerator::class);
-        $method1 = $reflector->getMethod('fillRanges');
-        $method2 = $reflector->getMethod('generateTicketWithRandomNumberUsingRanges');
-        $method1->setAccessible(true);
-        $method2->setAccessible(true);
-        
-        $method1->invokeArgs($this->luxorTicketGenerator, []);
-        $result = $method2->invokeArgs($this->luxorTicketGenerator, [true]);
-        $allNumbers = array_merge($result->picture, $result->frame);
-        
-        $this->assertEquals(sizeof($allNumbers), 20);
-        $evenCount = 0;
-        foreach($allNumbers as $number){
-            if($number % 2 == 0){
-                $evenCount++;
+        try {
+            $method1 = $reflector->getMethod('fillRanges');
+            $method2 = $reflector->getMethod('generateTicketWithRandomNumberUsingRanges');
+            $method1->setAccessible(true);
+            $method2->setAccessible(true);
+
+            $method1->invokeArgs($this->luxorTicketGenerator, []);
+            $result = $method2->invokeArgs($this->luxorTicketGenerator, [true]);
+            $allNumbers = array_merge($result->picture, $result->frame);
+
+            $this->assertEquals(20, sizeof($allNumbers));
+            $evenCount = 0;
+            foreach($allNumbers as $number){
+                if($number % 2 == 0){
+                    $evenCount++;
+                }
             }
+            $this->assertTrue($evenCount <= 11 && $evenCount >= 9);
+        } catch (ReflectionException $e) {
+            print $e->getMessage();
         }
-        $this->assertTrue($evenCount <= 11 && $evenCount >= 9);
     }
 }

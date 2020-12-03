@@ -1,1 +1,1 @@
-@php "%~dp0cmd/luxor.php" %* 
+@php "%~dp0bin/luxor.php" %*

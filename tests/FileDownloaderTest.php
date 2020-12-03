@@ -4,14 +4,14 @@ use LuxorPlayer\FileDownloader;
 
 class FileDownloaderTest extends TestCase
 {
-    public function testDownloadCsv()
+    public function testDownloadCsv() :void
     {
         $fileDownloader = new FileDownloader;
         
         $this->assertIsBool($fileDownloader->downloadCsv());
     }
     
-    public function testLocalLuxorCsvExistsAfterDownloadCsv()
+    public function testLocalLuxorCsvExistsAfterDownloadCsv() :void
     {
         $this->assertFileExists(__DIR__ . '/../files/luxor.csv');
     }

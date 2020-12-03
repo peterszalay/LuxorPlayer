@@ -1,17 +1,21 @@
 <?php
+
+use LuxorPlayer\LuxorTicket;
 use PHPUnit\Framework\TestCase;
 use LuxorPlayer\LuxorGame;
 
 class LuxorGameTest extends TestCase
 {   
-    public function testProcessTicket()
+    public function testProcessTicket() :void
     {
-        $ticket = new stdClass();
-        $ticket->picture = [16,21,31,42,54,56];
-        $ticket->frame = [2,6,7,9,17,20,35,37,53,59,62,67,68,72];
+        $picture = [16,21,31,42,54,56];
+        $frame = [2,6,7,9,17,20,35,37,53,59,62,67,68,72];
+        $ticket = LuxorTicket::create($picture, $frame);
         $draw = [];
-        $draw[0] = ['jackpot_limit' => 40, 'first_picture' => 14, 'first_frame' => 35, 'luxor' => 37, 'date' => '2019.05.16'];
+        $draw[0] = ['jackpot_limit' => 40, 'first_picture' => 14, 'first_frame' => 35, 'luxor' => 37,
+                    'date' => '2019.05.16'];
         $draw[1] = array_fill(1, 75, 0);
+
         $draw[1][16] = 1;
         $draw[1][21] = 2;
         $draw[1][31] = 3;
@@ -38,36 +42,36 @@ class LuxorGameTest extends TestCase
         $luxorGame->processTicket($ticket, $draw);
         $results = $luxorGame->getResults();
 
-        $this->assertEquals($results['luxor'], 1);
-        $this->assertEquals($results['jackpot'], 1);
-        $this->assertEquals($results['frames'], 1);
-        $this->assertEquals($results['first_frame'], 1);
-        $this->assertEquals($results['pictures'], 1);
-        $this->assertEquals($results['first_picture'], 1);
+        $this->assertEquals(1, $results['luxor']);
+        $this->assertEquals(1, $results['jackpot']);
+        $this->assertEquals(1, $results['frames']);
+        $this->assertEquals(1, $results['first_frame']);
+        $this->assertEquals(1, $results['pictures']);
+        $this->assertEquals(1, $results['first_picture']);
         
         $draw[1][56] = 37;
         $luxorGame = new LuxorGame;
         $luxorGame->processTicket($ticket, $draw);
         $results = $luxorGame->getResults();
 
-        $this->assertEquals($results['pictures'], 1);
-        $this->assertEquals($results['first_picture'], 0);
-        $this->assertEquals($results['luxor'], 1);
-        $this->assertEquals($results['jackpot'], 1);
-        $this->assertEquals($results['frames'], 1);
-        $this->assertEquals($results['first_frame'], 1);
+        $this->assertEquals(1, $results['pictures']);
+        $this->assertEquals(0, $results['first_picture']);
+        $this->assertEquals(1, $results['luxor']);
+        $this->assertEquals(1, $results['jackpot']);
+        $this->assertEquals(1, $results['frames']);
+        $this->assertEquals(1, $results['first_frame']);
         
         $draw[1][56] = 0;
         $luxorGame = new LuxorGame;
         $luxorGame->processTicket($ticket, $draw);
         $results = $luxorGame->getResults();
 
-        $this->assertEquals($results['pictures'], 0);
-        $this->assertEquals($results['first_picture'], 0);
-        $this->assertEquals($results['luxor'], 0);
-        $this->assertEquals($results['jackpot'], 0);
-        $this->assertEquals($results['frames'], 1);
-        $this->assertEquals($results['first_frame'], 1);
+        $this->assertEquals(0, $results['pictures']);
+        $this->assertEquals(0, $results['first_picture']);
+        $this->assertEquals(0, $results['luxor']);
+        $this->assertEquals(0, $results['jackpot']);
+        $this->assertEquals(1, $results['frames']);
+        $this->assertEquals(1, $results['first_frame']);
         
         $draw[1][56] = 0;
         $draw[1][72] = 36;
@@ -75,12 +79,12 @@ class LuxorGameTest extends TestCase
         $luxorGame->processTicket($ticket, $draw);
         $results = $luxorGame->getResults();
 
-        $this->assertEquals($results['pictures'], 0);
-        $this->assertEquals($results['first_picture'], 0);
-        $this->assertEquals($results['luxor'], 0);
-        $this->assertEquals($results['jackpot'], 0);
-        $this->assertEquals($results['frames'], 1);
-        $this->assertEquals($results['first_frame'], 0);
+        $this->assertEquals(0, $results['pictures']);
+        $this->assertEquals(0, $results['first_picture']);
+        $this->assertEquals(0, $results['luxor']);
+        $this->assertEquals(0, $results['jackpot']);
+        $this->assertEquals(1, $results['frames']);
+        $this->assertEquals(0, $results['first_frame']);
     }
     
 }

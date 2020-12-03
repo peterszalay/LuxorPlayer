@@ -5,7 +5,7 @@ use LuxorPlayer\FileProcessor;
 class FileProcessorTest extends TestCase
 {
     
-    protected $fileProcessor;
+    protected FileProcessor $fileProcessor;
     
     protected function setUp(): void 
     {
@@ -18,11 +18,11 @@ class FileProcessorTest extends TestCase
 
     }
     
-    public function testGetDrawResultsReturnCorrectSizeArray()
+    public function testGetDrawResultsReturnCorrectSizeArray() :void
     {
         $this->fileProcessor->readFileIntoArray(50);
         
-        $this->assertEquals(sizeof($this->fileProcessor->getDrawResults()), 50);
+        $this->assertEquals(50, sizeof($this->fileProcessor->getDrawResults()));
     }
 }
     

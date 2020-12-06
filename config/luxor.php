@@ -15,9 +15,9 @@ return [
           */
         'manual_player' => 
                         [
-                          'draws' => 5,
+                          'draws' => 25,
                           'tickets' => 50,
-                          'repeat' => 50,
+                          'repeat' => 5,
                           'min_selection' => 25,
                           'max_selection' => 50,
                           'previous_draws' => [1,2,3,4,5,6,7,8,9,10,11,12,13,14],

@@ -268,11 +268,13 @@ class LuxorTicketGenerator
         $thirdRange = array_values(array_unique(array_merge($selection1['third_range'], $selection2['third_range'])));
         $fourthRange = array_values(array_unique(array_merge($selection1['fourth_range'], $selection2['fourth_range'])));
         $fifthRange = array_values(array_unique(array_merge($selection1['fifth_range'], $selection2['fifth_range'])));
-        return ['first_range' => $firstRange, 'second_range' => $secondRange, 'third_range' => $thirdRange, 'fourth_range' => $fourthRange, 'fifth_range' => $fifthRange];
+        return ['first_range' => $firstRange, 'second_range' => $secondRange, 'third_range' => $thirdRange,
+                'fourth_range' => $fourthRange, 'fifth_range' => $fifthRange];
     }
     
     /**
-     * Helper function that returns a selection of random numbers of size (rounded so it is minimum 0, maximum 40 and dividable by 5) 
+     * Helper function that returns a selection of random numbers of size
+     * (rounded so it is minimum 0, maximum 40 and dividable by 5)
      * 
      * @param int $size
      * @return array
@@ -314,7 +316,8 @@ class LuxorTicketGenerator
             }
             $i++;
         } 
-        return ['first_range' => $firstRange, 'second_range' => $secondRange, 'third_range' => $thirdRange, 'fourth_range' => $fourthRange, 'fifth_range' => $fifthRange];
+        return ['first_range' => $firstRange, 'second_range' => $secondRange, 'third_range' => $thirdRange,
+                'fourth_range' => $fourthRange, 'fifth_range' => $fifthRange];
     }
     
 }

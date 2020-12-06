@@ -9,11 +9,21 @@ use Monolog\Logger;
 class AutoPlay
 {
     use Ordering;
+    use Validator;
 
+    private const DEFAULT_WEEKS_ANALYZED = 0;
+    private const DEFAULT_DRAWS_PLAYED = 0;
+    private const DEFAULT_NUM_TICKETS = 0;
+    private const DEFAULT_MIN_SELECTION = 20;
+    private const DEFAULT_MAX_SELECTION = 70;
+    private const DEFAULT_REPEAT_TIMES = 1;
+    private const DEFAULT_STRATEGIES_PLAYED = 1;
+    private const DEFAULT_ORDER_BY = "orderByUniqueTotal";
     private string $name = "AutoPlay";
     private array $players = [];
     private array $results = [];
     private Logger $logger;
+
 
     public function __construct()
     {
@@ -30,28 +40,17 @@ class AutoPlay
             $file = include  __DIR__ . '/../../config/luxor.php';
             if(isset($file['auto_player'])) {
                 //load players from luxor config file
-                $drawCount = (isset($file['auto_player']['draws_played']) && is_int($file['auto_player']['draws_played']) && $file['auto_player']['draws_played'] > 1) ? $file['auto_player']['draws_played'] : 0;
-                AutoPlayer::setDrawCount($drawCount);
-                $weeksAnalyzed = (isset($file['auto_player']['weeks_analyzed']) && is_int($file['auto_player']['weeks_analyzed']) && $file['auto_player']['weeks_analyzed'] > 1) ? $file['auto_player']['weeks_analyzed'] : 0;
-                AutoPlayer::setWeeksAnalyzed($weeksAnalyzed);                         
-                $ticketCount = (isset($file['auto_player']['tickets_per_player']) && is_int($file['auto_player']['tickets_per_player']) && $file['auto_player']['tickets_per_player'] > 1) ? $file['auto_player']['tickets_per_player'] : 0;
-                AutoPlayer::setTicketCount($ticketCount);
-                $repeatTimes = (isset($file['auto_player']['repeat']) && is_int($file['auto_player']['repeat']) && $file['auto_player']['repeat'] > 1) ? $file['auto_player']['repeat'] : 1;
-                AutoPlayer::setRepeat($repeatTimes);
-                $minSelection = (isset($file['auto_player']['min_selection']) && is_int($file['auto_player']['min_selection']) && $file['auto_player']['min_selection'] > 20) ? $file['auto_player']['min_selection'] : 20;
-                AutoPlayer::setMinSelection($minSelection);
-                $maxSelection = (isset($file['auto_player']['max_selection']) && is_int($file['auto_player']['max_selection']) && $file['auto_player']['max_selection'] > 20) ? $file['auto_player']['max_selection'] : 70;
-                AutoPlayer::setMaxSelection($maxSelection);
-                $strategies = (isset($file['auto_player']['strategies']) && is_array($file['auto_player']['strategies'])) ? $file['auto_player']['strategies'] : [];
-                AutoPlayer::setStrategies($strategies);
-                $previousDraws = (isset($file['auto_player']['previous_draws']) && is_array($file['auto_player']['previous_draws'])) ? $file['auto_player']['previous_draws'] : [];
-                AutoPlayer::setPreviousDraws($previousDraws);
-                $firstSelections = (isset($file['auto_player']['one_selection']) && is_array($file['auto_player']['one_selection'])) ? $file['auto_player']['one_selection'] : [];
-                AutoPlayer::setFirstSelection($firstSelections);
-                $secondSelections = (isset($file['auto_player']['two_selections']) && is_array($file['auto_player']['two_selections'])) ? $file['auto_player']['two_selections'] : [];
-                AutoPlayer::setSecondSelection($secondSelections);
-                $thirdSelections = (isset($file['auto_player']['three_selections']) && is_array($file['auto_player']['three_selections'])) ? $file['auto_player']['three_selections'] : [];
-                AutoPlayer::setThirdSelection($thirdSelections);
+                AutoPlayer::setDrawCount($drawCount = $this->getIntValue($file['auto_player']['draws_played'], 2, self::DEFAULT_WEEKS_ANALYZED));
+                AutoPlayer::setWeeksAnalyzed($weeksAnalyzed = $this->getIntValue($file['auto_player']['weeks_analyzed'], 2, self::DEFAULT_WEEKS_ANALYZED));
+                AutoPlayer::setTicketCount($this->getIntValue($file['auto_player']['tickets_per_player'], 2, self::DEFAULT_NUM_TICKETS));
+                AutoPlayer::setRepeat($this->getIntValue($file['auto_player']['repeat'], 2, self::DEFAULT_REPEAT_TIMES));
+                AutoPlayer::setMinSelection($this->getIntValue($file['auto_player']['min_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MIN_SELECTION));
+                AutoPlayer::setMaxSelection($this->getIntValue($file['auto_player']['max_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MAX_SELECTION));
+                AutoPlayer::setStrategies($this->getArrayValues($file['auto_player']['strategies'], []));
+                AutoPlayer::setPreviousDraws($previousDraws = $this->getArrayValues($file['auto_player']['previous_draws'], []));
+                AutoPlayer::setFirstSelection($this->getArrayValues($file['auto_player']['one_selection'], []));
+                AutoPlayer::setSecondSelection($this->getArrayValues($file['auto_player']['two_selections'], []));
+                AutoPlayer::setThirdSelection($this->getArrayValues($file['auto_player']['three_selections'], []));
                 
                 $fileProcessor = new FileProcessor();
                 $fileProcessor->readFileIntoArray($drawCount + $weeksAnalyzed + max($previousDraws));
@@ -64,28 +63,17 @@ class AutoPlay
                             $newPlayer = AutoPlayer::create($player['name']);
                             $this->players[] = $newPlayer;
                             $this->initializePlayerResults($newPlayer->getName());
-                            $playerWeeksAnalyzed = (isset($player['weeks_analyzed']) && is_int($player['weeks_analyzed']) && $player['weeks_analyzed'] > 1) ? $player['weeks_analyzed'] : 0;
-                            $newPlayer->setPlayerWeeksAnalyzed($playerWeeksAnalyzed);
-                            $playerRepeat = (isset($player['repeat']) && is_int($player['repeat']) && $player['repeat'] > 1) ? $player['repeat'] : 0;
-                            $newPlayer->setPlayerRepeat($playerRepeat);
-                            $playerStrategies = (isset($player['strategies'])) ? $player['strategies'] : [];
-                            $newPlayer->setPlayerStrategies($playerStrategies);
-                            $playerPreviousDraws = (isset($player['previous_draws']) && is_array($player['previous_draws'])) ? $player['previous_draws'] : [];
-                            $newPlayer->setPlayerPreviousDraws($playerPreviousDraws);
-                            $playerMinSelection = (isset($player['min_selection']) && is_int($player['min_selection']) && $player['min_selection'] > 20) ? $player['min_selection'] : 20;
-                            $newPlayer->setPlayerMinSelection($playerMinSelection);
-                            $playerMaxSelection = (isset($player['max_selection']) && is_int($player['max_selection']) && $player['max_selection'] > 20) ? $player['max_selection'] : 70;
-                            $newPlayer->setPlayerMaxSelection($playerMaxSelection);
-                            $playerFirstSelections = (isset($player['one_selection']) && is_array($player['one_selection'])) ? $player['one_selection'] : [];
-                            $newPlayer->setPlayerFirstSelection($playerFirstSelections);
-                            $playerSecondSelections = (isset($player['two_selections']) && is_array($player['two_selections'])) ? $player['two_selections'] : [];
-                            $newPlayer->setPlayerSecondSelection($playerSecondSelections);
-                            $playerThirdSelections = (isset($player['three_selections']) && is_array($player['three_selections'])) ? $player['three_selections'] : [];
-                            $newPlayer->setPlayerThirdSelection($playerThirdSelections);
-                            $playerStrategiesPlayed = (isset($player['strategies_played']) && is_int($player['strategies_played']) && $player['strategies_played'] > 1) ? $player['strategies_played'] : 1;
-                            $newPlayer->setPlayerStrategiesPlayed($playerStrategiesPlayed);
-                            $playerOrderBy = (isset($player['order_by']) && is_string($player['order_by']) && $player['order_by'] != '') ? $player['order_by'] : 'orderByUniqueTotal';
-                            $newPlayer->setPlayerOrderBy($playerOrderBy);                           
+                            $newPlayer->setPlayerWeeksAnalyzed($this->getIntValue($player['weeks_analyzed'], 2, self::DEFAULT_WEEKS_ANALYZED));
+                            $newPlayer->setPlayerRepeat($this->getIntValue($player['repeat'], 2, self::DEFAULT_REPEAT_TIMES));
+                            $newPlayer->setPlayerStrategies($this->getArrayValues($player['strategies'], []));
+                            $newPlayer->setPlayerPreviousDraws($this->getArrayValues($player['previous_draws'], []));
+                            $newPlayer->setPlayerMinSelection($this->getIntValue($player['min_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MIN_SELECTION));
+                            $newPlayer->setPlayerMaxSelection($this->getIntValue($player['max_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MAX_SELECTION));
+                            $newPlayer->setPlayerFirstSelection($this->getArrayValues($player['one_selection'], []));
+                            $newPlayer->setPlayerSecondSelection($this->getArrayValues($player['two_selections'], []));
+                            $newPlayer->setPlayerThirdSelection($this->getArrayValues($player['three_selections'], []));
+                            $newPlayer->setPlayerStrategiesPlayed($this->getIntValue($player['strategies_played'], 2, self::DEFAULT_STRATEGIES_PLAYED));
+                            $newPlayer->setPlayerOrderBy($this->getStringValue($player['order_by'], self::DEFAULT_ORDER_BY));
                         }
                     }
                 }

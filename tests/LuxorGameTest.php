@@ -41,7 +41,6 @@ class LuxorGameTest extends TestCase
         $luxorGame = new LuxorGame;
         $luxorGame->processTicket($ticket, $draw);
         $results = $luxorGame->getResults();
-
         $this->assertEquals(1, $results['luxor']);
         $this->assertEquals(1, $results['jackpot']);
         $this->assertEquals(1, $results['frames']);

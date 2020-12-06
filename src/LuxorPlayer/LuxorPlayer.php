@@ -7,7 +7,16 @@ use Exception;
 class LuxorPlayer
 {
     use Ordering;
+    use Validator;
 
+    private const DEFAULT_WEEKS_ANALYZED = 0;
+    private const DEFAULT_DRAWS_PLAYED = 0;
+    private const DEFAULT_NUM_TICKETS = 0;
+    private const DEFAULT_MIN_SELECTION = 20;
+    private const DEFAULT_MAX_SELECTION = 70;
+    private const DEFAULT_REPEAT_TIMES = 1;
+    private const DEFAULT_STRATEGIES_PLAYED = 1;
+    private const DEFAULT_ORDER_BY = "orderByUniqueTotal";
     private FileProcessor $fileProcessor;
     private LuxorTicketGenerator $ticketGenerator;
     private DrawProcessor $drawProcessor;
@@ -38,18 +47,19 @@ class LuxorPlayer
             $file = include  __DIR__ . '/../../config/luxor.php';
             if(isset($file['manual_player'])){
                 $i = 1;
-                $drawCount = (isset($file['manual_player']['draws']) && is_int($file['manual_player']['draws']) && $file['manual_player']['draws'] > 1) ? $file['manual_player']['draws'] : 1;
-                $ticketCount = (isset($file['manual_player']['tickets']) && is_int($file['manual_player']['tickets']) && $file['manual_player']['tickets'] > 1) ? $file['manual_player']['tickets'] : 1;
-                $repeatTimes = (isset($file['manual_player']['repeat']) && is_int($file['manual_player']['repeat']) && $file['manual_player']['repeat'] > 1) ? $file['manual_player']['repeat'] : 1;
-                $minSelection = (isset($file['manual_player']['min_selection']) && is_int($file['manual_player']['min_selection']) && $file['manual_player']['min_selection'] > 20) ? $file['manual_player']['min_selection'] : 20;
-                $maxSelection = (isset($file['manual_player']['max_selection']) && is_int($file['manual_player']['max_selection']) && $file['manual_player']['max_selection'] > 20) ? $file['manual_player']['max_selection'] : 70;
-                $strategies = (isset($file['manual_player']['strategies']) && is_array($file['manual_player']['strategies'])) ? $file['manual_player']['strategies'] : [];
-                $previousDraws = (isset($file['manual_player']['previous_draws']) && is_array($file['manual_player']['previous_draws'])) ? $file['manual_player']['previous_draws'] : [];
+                $drawCount = $this->getIntValue($file['manual_player']['draws'], 2, self::DEFAULT_WEEKS_ANALYZED);
+                $ticketCount = $this->getIntValue($file['manual_player']['tickets'], 2, self::DEFAULT_NUM_TICKETS);
+                $repeatTimes = $this->getIntValue($file['manual_player']['repeat'], 2, self::DEFAULT_REPEAT_TIMES);
+                $minSelection = $this->getIntValue($file['manual_player']['min_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MIN_SELECTION);
+                $maxSelection = $this->getIntValue($file['manual_player']['max_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MAX_SELECTION);
+                $strategies = $this->getArrayValues($file['manual_player']['strategies'], []);
+                $previousDraws = $this->getArrayValues($file['manual_player']['previous_draws'], []);
                 $selections = [];
-                $selections[0] = (isset($file['manual_player']['one_selection']) && is_array($file['manual_player']['one_selection'])) ? $file['manual_player']['one_selection'] : [];
-                $selections[1] = (isset($file['manual_player']['two_selections']) && is_array($file['manual_player']['two_selections'])) ? $file['manual_player']['two_selections'] : [];
-                $selections[2] = (isset($file['manual_player']['three_selections']) && is_array($file['manual_player']['three_selections'])) ? $file['manual_player']['three_selections'] : [];
-                
+                $selections[0] = $this->getArrayValues($file['manual_player']['one_selection'], []);
+                $selections[1] = $this->getArrayValues($file['manual_player']['two_selections'], []);
+                $selections[2] = $this->getArrayValues($file['manual_player']['three_selections'], []);
+                $selections[2] = $this->getArrayValues($file['manual_player']['three_selections'], []);
+
                 $results = $this->initializeResultsFromConfig($strategies, $previousDraws, $selections, $minSelection, $maxSelection);
                 $this->setDrawCount($drawCount);
                 $this->setTicketCount($ticketCount);
@@ -376,15 +386,11 @@ class LuxorPlayer
             $this->ticketGenerator->generateTicketsWithRandomNumbersFromSelection($this->ticketCount, $selection);
             $this->game->processTicketsForADraw($this->ticketGenerator->getTickets(), $lastDraw);
         }
-        /*$results = $this->game->getResults();
-        if($results['luxor'] >= 1){
-            print $strategy . ' ' . $previousDrawsToSelectFrom . ' ' . $firstSelection . ' ' . $secondSelection . ' ' . $thirdSelection . PHP_EOL;
-        }*/
         return $this->game->getResults();
     }
 
     /**
-     * PAuto play with selected numbers
+     * Auto play with selected numbers
      *
      * @param array $draws
      * @param int $previousDraw

@@ -367,22 +367,26 @@ class AutoPlayer
                 } else {
                     $ticketCount = self::$ticketCount;
                 }
-                $analysisResults =  $luxorPlayer->autoAnalyzeStrategies($draws, $previousDraws, $ticketCount, $repeatTimes, $minSelection, $maxSelection, $strategies, $selections, $orderBy, $maxPreviousDraws);
+                $analysisResults =  $luxorPlayer->autoAnalyzeStrategies($draws, $previousDraws, $ticketCount, $repeatTimes, $minSelection,
+                                                                        $maxSelection, $strategies, $selections, $orderBy, $maxPreviousDraws);
 
                 $tickets = [];
                 if(isset($this->playerStrategiesPlayed) && $this->playerStrategiesPlayed > 1){
                     $bestStrategies = array_slice($analysisResults, 0, $this->playerStrategiesPlayed);
                     foreach($bestStrategies as $bestStrategy){
-                        $selection = $luxorPlayer->autoGenerateNumbers($draws, $bestStrategy['prev_draws'], $bestStrategy['first_selection'], $bestStrategy['strategy'], 
-                                                                                $bestStrategy['second_selection'], $bestStrategy['third_selection']);
+                        $selection = $luxorPlayer->autoGenerateNumbers($draws, $bestStrategy['prev_draws'], $bestStrategy['first_selection'],
+                                                                       $bestStrategy['strategy'], $bestStrategy['second_selection'],
+                                                                       $bestStrategy['third_selection']);
                         $ticketGenerator->generateTicketsWithRandomNumbersFromSelection($ticketCount, $selection);
                         $tickets = array_merge($tickets, $ticketGenerator->getTickets());
                     }
                 } else {
                     $bestStrategy = array_slice($analysisResults, 0, 1);
-                    $selection = $luxorPlayer->autoGenerateNumbers($draws, $bestStrategy[key($bestStrategy)]['prev_draws'], $bestStrategy[key($bestStrategy)]['first_selection'], 
-                                                                           $bestStrategy[key($bestStrategy)]['strategy'], $bestStrategy[key($bestStrategy)]['second_selection'], 
-                                                                           $bestStrategy[key($bestStrategy)]['third_selection']);
+                    $selection = $luxorPlayer->autoGenerateNumbers($draws, $bestStrategy[key($bestStrategy)]['prev_draws'],
+                                                                   $bestStrategy[key($bestStrategy)]['first_selection'],
+                                                                   $bestStrategy[key($bestStrategy)]['strategy'],
+                                                                   $bestStrategy[key($bestStrategy)]['second_selection'],
+                                                                   $bestStrategy[key($bestStrategy)]['third_selection']);
                     $ticketGenerator->generateTicketsWithRandomNumbersFromSelection($ticketCount, $selection);
                     $tickets = $ticketGenerator->getTickets();
                 }

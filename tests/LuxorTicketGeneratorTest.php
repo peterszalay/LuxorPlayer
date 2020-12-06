@@ -23,9 +23,9 @@ class LuxorTicketGeneratorTest extends TestCase
     {
         $luxorTicket = $this->luxorTicketGenerator->generateTicketWithRandomNumbers();
         
-        $this->assertEquals(6, sizeof($luxorTicket->picture));
+        $this->assertEquals(6, sizeof($luxorTicket->getPicture()));
         
-        $this->assertEquals(14, sizeof($luxorTicket->frame));
+        $this->assertEquals(14, sizeof($luxorTicket->getFrame()));
     }
     
     public function testGenerateTicketWithRandomNumbersReturnsTicketWithPictureAndFrameInCorrectRange() :void
@@ -34,7 +34,7 @@ class LuxorTicketGeneratorTest extends TestCase
         
         $pictureInRange = true;
         
-        foreach($luxorTicket->picture as $number){
+        foreach($luxorTicket->getPicture() as $number){
             if($number < 16 || $number > 60){
                 $pictureInRange = false;
             }
@@ -44,7 +44,7 @@ class LuxorTicketGeneratorTest extends TestCase
         
         $frameInRange = true;
         
-        foreach($luxorTicket->frame as $number){
+        foreach($luxorTicket->getFrame() as $number){
             if($number < 1 || $number > 75){
                 $frameInRange = false;
             }
@@ -62,7 +62,7 @@ class LuxorTicketGeneratorTest extends TestCase
         $tickets = $this->luxorTicketGenerator->getTickets();
         
         foreach ($tickets as $ticket){
-            if(!empty(array_intersect($ticket->frame, $ticket->picture))){
+            if(!empty(array_intersect($ticket->getFrame(), $ticket->getPicture()))){
                 $pictureFrameOnlyContainsDifferentNumbers = false;
                 break;
             }
@@ -80,9 +80,9 @@ class LuxorTicketGeneratorTest extends TestCase
         
         $this->assertInstanceOf(LuxorTicket::class, $luxorTicket);
         
-        $this->assertEquals(6, sizeof($luxorTicket->picture));
+        $this->assertEquals(6, sizeof($luxorTicket->getPicture()));
         
-        $this->assertEquals(14, sizeof($luxorTicket->frame));
+        $this->assertEquals(14, sizeof($luxorTicket->getFrame()));
         
     }
     
@@ -96,7 +96,7 @@ class LuxorTicketGeneratorTest extends TestCase
         
         $pictureInRange = true;
         
-        foreach($luxorTicket->picture as $number){
+        foreach($luxorTicket->getPicture() as $number){
             if($number < 16 || $number > 53 || ($number >= 24 && $number <= 30) || ($number >= 39 && $number <= 45)){
                 $pictureInRange = false;
             }
@@ -106,7 +106,7 @@ class LuxorTicketGeneratorTest extends TestCase
         
         $frameInRange = true;
         
-        foreach($luxorTicket->frame as $number){
+        foreach($luxorTicket->getFrame() as $number){
             if($number < 1 || $number > 68 || ($number >= 24 && $number <= 30) || ($number >= 39 && $number <= 45)){
                 $frameInRange = false;
             }
@@ -128,7 +128,7 @@ class LuxorTicketGeneratorTest extends TestCase
         $tickets = $this->luxorTicketGenerator->getTickets();
         
         foreach ($tickets as $ticket){
-            if(!empty(array_intersect($ticket->frame, $ticket->picture))){
+            if(!empty(array_intersect($ticket->getFrame(), $ticket->getPicture()))){
                 $pictureFrameOnlyContainsDifferentNumbers = false;
                 break;
             }
@@ -190,7 +190,7 @@ class LuxorTicketGeneratorTest extends TestCase
 
             $method1->invokeArgs($this->luxorTicketGenerator, []);
             $result = $method2->invokeArgs($this->luxorTicketGenerator, [true]);
-            $allNumbers = array_merge($result->picture, $result->frame);
+            $allNumbers = array_merge($result->getPicture(), $result->getFrame());
 
             $this->assertEquals(20, sizeof($allNumbers));
             $evenCount = 0;

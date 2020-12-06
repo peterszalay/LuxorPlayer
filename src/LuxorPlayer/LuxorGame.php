@@ -72,10 +72,9 @@ class LuxorGame
         $ticketCopy = clone $ticket;
         while($draw[0]['luxor'] >= $drawNumber){
             $number = array_search($drawNumber, $draw[1]);
-            if(in_array($number, $ticketCopy->picture)){
-                $key = array_search($number, $ticketCopy->picture);
-                unset($ticketCopy->picture[$key]);
-                if(empty($ticketCopy->picture)){
+            if(in_array($number, $ticketCopy->getPicture())){
+                $ticketCopy->removeNumberFromPicture($number);
+                if(empty($ticketCopy->getPicture())){
                     if($drawNumber <= $draw[0]['first_picture'] && !in_array($draw[0]['date'], $this->results['first_picture_dates'])){
                         $this->results['first_picture']++;
                         $this->results['first_picture_dates'][] = $draw[0]['date'];
@@ -84,10 +83,9 @@ class LuxorGame
                     $this->results['picture_dates'][] = $draw[0]['date'];
                 }
             }
-            if(in_array($number, $ticketCopy->frame)){
-                $key = array_search($number, $ticketCopy->frame);
-                unset($ticketCopy->frame[$key]);
-                if(empty($ticketCopy->frame)){
+            if(in_array($number, $ticketCopy->getFrame())){
+                $ticketCopy->removeNumberFromFrame($number);
+                if(empty($ticketCopy->getFrame())){
                     if($drawNumber <= $draw[0]['first_frame'] && !in_array($draw[0]['date'], $this->results['first_frame_dates'])){
                         $this->results['first_frame']++;
                         $this->results['first_frame_dates'][] = $draw[0]['date'];
@@ -96,7 +94,7 @@ class LuxorGame
                     $this->results['frame_dates'][] = $draw[0]['date'];
                 }
             }
-            if(empty($ticketCopy->frame) && empty($ticketCopy->picture)){
+            if(empty($ticketCopy->getFrame()) && empty($ticketCopy->getPicture())){
                 if($drawNumber <= $draw[0]['jackpot_limit'] && !in_array($draw[0]['date'], $this->results['luxor_dates'])){
                     $this->results['jackpot_dates'][] = $draw[0]['date'];
                     $this->results['luxor_dates'][] = $draw[0]['date'];

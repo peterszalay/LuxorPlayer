@@ -1,7 +1,5 @@
 <?php
 
-use PhpOffice\PhpSpreadsheet\Style\Fill;
-
 require __DIR__ . '/../vendor/autoload.php';
 
 print
@@ -42,7 +40,7 @@ $autoPlay = new LuxorPlayer\AutoPlay;
 $handle = fopen ("php://stdin","r");
 $playGame = true;
 
-require 'main.php';
+require 'functions.php';
 
 main();
 

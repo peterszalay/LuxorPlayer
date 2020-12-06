@@ -1,4 +1,6 @@
 <?php
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+
 function main()
 {
     global $handle, $playGame;

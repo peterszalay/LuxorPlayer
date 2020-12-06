@@ -203,9 +203,11 @@ function playLuxorManually()
     $results = $luxorPlayer->play($numberOfDraws, $numberOfTickets, $previousDrawsToSelectFrom, $strategy, $selection, $numberOfTimesRepeated);
     $i = 1;
     foreach($results as $key => $value){
-        print $i  . '. ' . $key . ' reached a total of: ' . number_format((intval($value['total']) * 1000), 0, ',', ' ') . ' Ft' . PHP_EOL;
-        print 'jackpot: ' . $value['jackpot'] . ', luxor: ' . $value['luxor'] . ', first frame: ' . $value['first_frame'] . ', first picture: ' . $value['first_picture'] . ', frames: ' . $value['frames'] .
-            ', pictures: ' . $value['pictures'] . PHP_EOL . PHP_EOL;
+        print $i  . '. ' . $key . ' reached a total of: ' . number_format((intval($value['total']) * 1000), 0, ',', ' ') .
+              ' Ft' . PHP_EOL;
+        print 'jackpot: ' . $value['jackpot'] . ', luxor: ' . $value['luxor'] . ', first frame: ' . $value['first_frame'] .
+              ', first picture: ' . $value['first_picture'] . ', frames: ' . $value['frames'] . ', pictures: ' . $value['pictures'] .
+              PHP_EOL . PHP_EOL;
         if($value['jackpot'] > 0){
             print 'jackpot dates: ' . implode(', ', $value['jackpot_dates']) . PHP_EOL;
         }
@@ -288,9 +290,11 @@ function playFromConfig()
             print '...' . PHP_EOL;
         }
         if($i <= 50 || $key == "SAME_RANDOM" || $key == "REGENERATED_RANDOM" || ($i >= sizeof($results) - 10)) {
-            print $i  . '. ' . $key . ' reached a total of: ' . number_format((intval($value['total']) * 1000), 0, ',', ' ') . ' Ft' . PHP_EOL;
-            print 'jackpot: ' . $value['jackpot'] . ', luxor: ' . $value['luxor'] . ', first frame: ' . $value['first_frame'] . ', first picture: ' . $value['first_picture'] . ', frames: ' . $value['frames'] .
-                ', pictures: ' . $value['pictures'] . PHP_EOL . PHP_EOL;
+            print $i  . '. ' . $key . ' reached a total of: ' . number_format((intval($value['total']) * 1000), 0, ',', ' ') .
+                  ' Ft' . PHP_EOL;
+            print 'jackpot: ' . $value['jackpot'] . ', luxor: ' . $value['luxor'] . ', first frame: ' . $value['first_frame'] .
+                  ', first picture: ' . $value['first_picture'] . ', frames: ' . $value['frames'] . ', pictures: ' .
+                  $value['pictures'] . PHP_EOL . PHP_EOL;
             if($value['jackpot'] > 0){
                 print 'jackpot dates: ' . implode(', ', $value['jackpot_dates']) . PHP_EOL;
             }
@@ -475,11 +479,14 @@ function generateNumbers(){
     $tickets = $ticketGenerator->getTickets();
     $i = 1;
     foreach($tickets as $ticket) {
-        sort($ticket->picture);
-        sort($ticket->frame);
-        $allInOne = array_merge($ticket->picture, $ticket->frame);
+        $picture = $ticket->getPicture();
+        $frame = $ticket->getFrame();
+        sort($picture);
+        sort($frame);
+        $allInOne = array_merge($picture, $frame);
         sort($allInOne);
-        print $i . '.  picture: ' . implode(' ', $ticket->picture) . ' frame: ' . implode(' ', $ticket->frame) . PHP_EOL . '    all in one: ' . implode(' ', $allInOne) . PHP_EOL . PHP_EOL;
+        print $i . '.  picture: ' . implode(' ', $picture) . ' frame: ' . implode(' ', $frame) . PHP_EOL .
+                   '    all in one: ' . implode(' ', $allInOne) . PHP_EOL . PHP_EOL;
         $i++;
     }
     print PHP_EOL . PHP_EOL;
@@ -494,8 +501,9 @@ function autoPlay(){
     print PHP_EOL;
     foreach($results as $key => $value){
         print $i  . '. ' . $key . PHP_EOL;
-        print 'jackpot: ' . $value['jackpot'] . ', luxor: ' . $value['luxor'] . ', first frame: ' . $value['first_frame'] . ', first picture: ' . $value['first_picture'] . ', frames: ' . $value['frames'] .
-            ', pictures: ' . $value['pictures'] . PHP_EOL . PHP_EOL;
+        print 'jackpot: ' . $value['jackpot'] . ', luxor: ' . $value['luxor'] . ', first frame: ' . $value['first_frame'] .
+              ', first picture: ' . $value['first_picture'] . ', frames: ' . $value['frames'] . ', pictures: ' .
+              $value['pictures'] . PHP_EOL . PHP_EOL;
         if($value['jackpot'] > 0){
             print 'jackpot dates: ' . implode(', ', $value['jackpot_dates']) . PHP_EOL;
         }

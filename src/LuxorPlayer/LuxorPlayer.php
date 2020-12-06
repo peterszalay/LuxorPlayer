@@ -7,6 +7,7 @@ use Exception;
 class LuxorPlayer
 {
     use Ordering;
+    use Validator;
 
     private const DEFAULT_WEEKS_ANALYZED = 0;
     private const DEFAULT_DRAWS_PLAYED = 0;
@@ -46,18 +47,18 @@ class LuxorPlayer
             $file = include  __DIR__ . '/../../config/luxor.php';
             if(isset($file['manual_player'])){
                 $i = 1;
-                $drawCount = getIntValue($file['manual_player']['draws'], 2, self::DEFAULT_WEEKS_ANALYZED);
-                $ticketCount = getIntValue($file['manual_player']['tickets'], 2, self::DEFAULT_NUM_TICKETS);
-                $repeatTimes = getIntValue($file['manual_player']['repeat'], 2, self::DEFAULT_REPEAT_TIMES);
-                $minSelection = getIntValue($file['manual_player']['min_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MIN_SELECTION);
-                $maxSelection = getIntValue($file['manual_player']['max_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MAX_SELECTION);
-                $strategies = getArrayValues($file['manual_player']['strategies'], []);
-                $previousDraws = getArrayValues($file['manual_player']['previous_draws'], []);
+                $drawCount = $this->getIntValue($file['manual_player']['draws'], 2, self::DEFAULT_WEEKS_ANALYZED);
+                $ticketCount = $this->getIntValue($file['manual_player']['tickets'], 2, self::DEFAULT_NUM_TICKETS);
+                $repeatTimes = $this->getIntValue($file['manual_player']['repeat'], 2, self::DEFAULT_REPEAT_TIMES);
+                $minSelection = $this->getIntValue($file['manual_player']['min_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MIN_SELECTION);
+                $maxSelection = $this->getIntValue($file['manual_player']['max_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MAX_SELECTION);
+                $strategies = $this->getArrayValues($file['manual_player']['strategies'], []);
+                $previousDraws = $this->getArrayValues($file['manual_player']['previous_draws'], []);
                 $selections = [];
-                $selections[0] = getArrayValues($file['manual_player']['one_selection'], []);
-                $selections[1] = getArrayValues($file['manual_player']['two_selections'], []);
-                $selections[2] = getArrayValues($file['manual_player']['three_selections'], []);
-                $selections[2] = getArrayValues($file['manual_player']['three_selections'], []);
+                $selections[0] = $this->getArrayValues($file['manual_player']['one_selection'], []);
+                $selections[1] = $this->getArrayValues($file['manual_player']['two_selections'], []);
+                $selections[2] = $this->getArrayValues($file['manual_player']['three_selections'], []);
+                $selections[2] = $this->getArrayValues($file['manual_player']['three_selections'], []);
 
                 $results = $this->initializeResultsFromConfig($strategies, $previousDraws, $selections, $minSelection, $maxSelection);
                 $this->setDrawCount($drawCount);

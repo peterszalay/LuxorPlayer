@@ -40,17 +40,17 @@ class AutoPlay
             $file = include  __DIR__ . '/../../config/luxor.php';
             if(isset($file['auto_player'])) {
                 //load players from luxor config file
-                AutoPlayer::setDrawCount($drawCount = getIntValue($file['auto_player']['draws_played'], 2, self::DEFAULT_WEEKS_ANALYZED));
-                AutoPlayer::setWeeksAnalyzed($weeksAnalyzed = getIntValue($file['auto_player']['weeks_analyzed'], 2, self::DEFAULT_WEEKS_ANALYZED));
-                AutoPlayer::setTicketCount(getIntValue($file['auto_player']['tickets_per_player'], 2, self::DEFAULT_NUM_TICKETS));
-                AutoPlayer::setRepeat(getIntValue($file['auto_player']['repeat'], 2, self::DEFAULT_REPEAT_TIMES));
-                AutoPlayer::setMinSelection(getIntValue($file['auto_player']['min_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MIN_SELECTION));
-                AutoPlayer::setMaxSelection(getIntValue($file['auto_player']['max_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MAX_SELECTION));
-                AutoPlayer::setStrategies(getArrayValues($file['auto_player']['strategies'], []));
-                AutoPlayer::setPreviousDraws($previousDraws = getArrayValues($file['auto_player']['previous_draws'], []));
-                AutoPlayer::setFirstSelection(getArrayValues($file['auto_player']['one_selection'], []));
-                AutoPlayer::setSecondSelection(getArrayValues($file['auto_player']['two_selections'], []));
-                AutoPlayer::setThirdSelection(getArrayValues($file['auto_player']['three_selections'], []));
+                AutoPlayer::setDrawCount($drawCount = $this->getIntValue($file['auto_player']['draws_played'], 2, self::DEFAULT_WEEKS_ANALYZED));
+                AutoPlayer::setWeeksAnalyzed($weeksAnalyzed = $this->getIntValue($file['auto_player']['weeks_analyzed'], 2, self::DEFAULT_WEEKS_ANALYZED));
+                AutoPlayer::setTicketCount($this->getIntValue($file['auto_player']['tickets_per_player'], 2, self::DEFAULT_NUM_TICKETS));
+                AutoPlayer::setRepeat($this->getIntValue($file['auto_player']['repeat'], 2, self::DEFAULT_REPEAT_TIMES));
+                AutoPlayer::setMinSelection($this->getIntValue($file['auto_player']['min_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MIN_SELECTION));
+                AutoPlayer::setMaxSelection($this->getIntValue($file['auto_player']['max_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MAX_SELECTION));
+                AutoPlayer::setStrategies($this->getArrayValues($file['auto_player']['strategies'], []));
+                AutoPlayer::setPreviousDraws($previousDraws = $this->getArrayValues($file['auto_player']['previous_draws'], []));
+                AutoPlayer::setFirstSelection($this->getArrayValues($file['auto_player']['one_selection'], []));
+                AutoPlayer::setSecondSelection($this->getArrayValues($file['auto_player']['two_selections'], []));
+                AutoPlayer::setThirdSelection($this->getArrayValues($file['auto_player']['three_selections'], []));
                 
                 $fileProcessor = new FileProcessor();
                 $fileProcessor->readFileIntoArray($drawCount + $weeksAnalyzed + max($previousDraws));
@@ -63,17 +63,17 @@ class AutoPlay
                             $newPlayer = AutoPlayer::create($player['name']);
                             $this->players[] = $newPlayer;
                             $this->initializePlayerResults($newPlayer->getName());
-                            $newPlayer->setPlayerWeeksAnalyzed(getIntValue($player['weeks_analyzed'], 2, self::DEFAULT_WEEKS_ANALYZED));
-                            $newPlayer->setPlayerRepeat(getIntValue($player['repeat'], 2, self::DEFAULT_REPEAT_TIMES));
-                            $newPlayer->setPlayerStrategies(getArrayValues($player['strategies'], []));
-                            $newPlayer->setPlayerPreviousDraws(getArrayValues($player['previous_draws'], []));
-                            $newPlayer->setPlayerMinSelection(getIntValue($player['min_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MIN_SELECTION));
-                            $newPlayer->setPlayerMaxSelection(getIntValue($player['max_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MAX_SELECTION));
-                            $newPlayer->setPlayerFirstSelection(getArrayValues($player['one_selection'], []));
-                            $newPlayer->setPlayerSecondSelection(getArrayValues($player['two_selections'], []));
-                            $newPlayer->setPlayerThirdSelection(getArrayValues($player['three_selections'], []));
-                            $newPlayer->setPlayerStrategiesPlayed(getIntValue($player['strategies_played'], 2, self::DEFAULT_STRATEGIES_PLAYED));
-                            $newPlayer->setPlayerOrderBy(getStringValue($player['order_by'], self::DEFAULT_ORDER_BY));
+                            $newPlayer->setPlayerWeeksAnalyzed($this->getIntValue($player['weeks_analyzed'], 2, self::DEFAULT_WEEKS_ANALYZED));
+                            $newPlayer->setPlayerRepeat($this->getIntValue($player['repeat'], 2, self::DEFAULT_REPEAT_TIMES));
+                            $newPlayer->setPlayerStrategies($this->getArrayValues($player['strategies'], []));
+                            $newPlayer->setPlayerPreviousDraws($this->getArrayValues($player['previous_draws'], []));
+                            $newPlayer->setPlayerMinSelection($this->getIntValue($player['min_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MIN_SELECTION));
+                            $newPlayer->setPlayerMaxSelection($this->getIntValue($player['max_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MAX_SELECTION));
+                            $newPlayer->setPlayerFirstSelection($this->getArrayValues($player['one_selection'], []));
+                            $newPlayer->setPlayerSecondSelection($this->getArrayValues($player['two_selections'], []));
+                            $newPlayer->setPlayerThirdSelection($this->getArrayValues($player['three_selections'], []));
+                            $newPlayer->setPlayerStrategiesPlayed($this->getIntValue($player['strategies_played'], 2, self::DEFAULT_STRATEGIES_PLAYED));
+                            $newPlayer->setPlayerOrderBy($this->getStringValue($player['order_by'], self::DEFAULT_ORDER_BY));
                         }
                     }
                 }

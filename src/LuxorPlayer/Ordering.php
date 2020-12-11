@@ -3,6 +3,14 @@ namespace LuxorPlayer;
 
 trait Ordering
 {
+    private static int $luxorMultiplier = 100;
+    private static int $frameMultiplier = 10;
+
+    private static function getTotal(int $picture, int $frame, int $luxor) :int
+    {
+        return ($luxor * self::$luxorMultiplier) + ($frame * self::$frameMultiplier) + $picture;
+    }
+
     /**
      * Helper function that orders array elements by value of unique picture and frame
      *
@@ -12,14 +20,7 @@ trait Ordering
      */
     private function orderByUniquePicturesAndFrames(array $a, array $b) :int
     {
-        $aTotal = ($a['unique_frame'] * 10) + $a['unique_picture'];
-        $bTotal = ($b['unique_frame'] * 10) + $b['unique_picture'];
-        if($aTotal < $bTotal){
-            return 1;
-        }else if($aTotal > $bTotal){
-            return -1;
-        }
-        return 0;
+        return (self::getTotal($b['unique_picture'], $b['unique_frame'] , 0) <=> self::getTotal($a['unique_picture'], $a['unique_frame'] , 0) );
     }
 
     /**
@@ -31,14 +32,7 @@ trait Ordering
      */
     private function orderByUniquePicturesAndFramesDesc(array $a, array $b) :int
     {
-        $aTotal = ($a['unique_frame'] * 10) + $a['unique_picture'];
-        $bTotal = ($b['unique_frame'] * 10) + $b['unique_picture'];
-        if($aTotal > $bTotal){
-            return 1;
-        }else if($aTotal < $bTotal){
-            return -1;
-        }
-        return 0;
+        return (self::getTotal($a['unique_picture'], $a['unique_frame'] , 0) <=> self::getTotal($b['unique_picture'], $b['unique_frame'] , 0));
     }
 
     /**
@@ -50,14 +44,7 @@ trait Ordering
      */
     private function orderByPicturesAndFrames(array $a, array $b) :int
     {
-        $aTotal = ($a['frames'] * 10) + $a['pictures'];
-        $bTotal = ($b['frames'] * 10) + $b['pictures'];
-        if($aTotal < $bTotal){
-            return 1;
-        }else if($aTotal > $bTotal){
-            return -1;
-        }
-        return 0;
+        return (self::getTotal($b['pictures'], $b['frames'] , 0) <=> self::getTotal($a['pictures'], $a['frames'] , 0));
     }
 
     /**
@@ -69,14 +56,7 @@ trait Ordering
      */
     private function orderByPicturesAndFramesDesc(array $a, array $b) :int
     {
-        $aTotal = ($a['frames'] * 10) + $a['pictures'];
-        $bTotal = ($b['frames'] * 10) + $b['pictures'];
-        if($aTotal > $bTotal){
-            return 1;
-        }else if($aTotal < $bTotal){
-            return -1;
-        }
-        return 0;
+        return (self::getTotal($a['pictures'], $a['frames'] , 0) <=> self::getTotal($b['pictures'], $b['frames'] , 0));
     }
 
     /**
@@ -88,14 +68,7 @@ trait Ordering
      */
     private function orderByTotal(array $a, array $b) :int
     {
-        $aTotal = ($a['luxor'] * 100) + ($a['frames'] * 10) + $a['pictures'];
-        $bTotal = ($b['luxor'] * 100) + ($b['frames'] * 10) + $b['pictures'];
-        if($aTotal < $bTotal){
-            return 1;
-        }else if($aTotal > $bTotal){
-            return -1;
-        }
-        return 0;
+        return (self::getTotal($b['pictures'], $b['frames'] , $b['luxor']) <=> self::getTotal($a['pictures'], $a['frames'] , $a['luxor'] ));
     }
 
     /**
@@ -107,14 +80,7 @@ trait Ordering
      */
     private function orderByTotalDesc(array $a, array $b) :int
     {
-        $aTotal = ($a['luxor'] * 100) + ($a['frames'] * 10) + $a['pictures'];
-        $bTotal = ($b['luxor'] * 100) + ($b['frames'] * 10) + $b['pictures'];
-        if($aTotal > $bTotal){
-            return 1;
-        }else if($aTotal < $bTotal){
-            return -1;
-        }
-        return 0;
+        return (self::getTotal($a['pictures'], $a['frames'] , $a['luxor'] ) <=> self::getTotal($b['pictures'], $b['frames'] , $b['luxor']));
     }
 
     /**
@@ -126,14 +92,8 @@ trait Ordering
      */
     private function orderByUniqueTotal(array $a, array $b) :int
     {
-        $aTotal = ($a['unique_luxor'] * 100) + ($a['unique_frame'] * 10) + $a['unique_picture'];
-        $bTotal = ($b['unique_luxor'] * 100) + ($b['unique_frame'] * 10) + $b['unique_picture'];
-        if($aTotal < $bTotal){
-            return 1;
-        }else if($aTotal > $bTotal){
-            return -1;
-        }
-        return 0;
+        return (self::getTotal($b['unique_picture'], $b['unique_frame'] , $b['unique_luxor']) <=>
+                self::getTotal($a['unique_picture'], $a['unique_frame'] , $a['unique_luxor']));
     }
 
     /**
@@ -145,14 +105,8 @@ trait Ordering
      */
     private function orderByUniqueTotalDesc(array $a, array $b) :int
     {
-        $aTotal = ($a['unique_luxor'] * 100) + ($a['unique_frame'] * 10) + $a['unique_picture'];
-        $bTotal = ($b['unique_luxor'] * 100) + ($b['unique_frame'] * 10) + $b['unique_picture'];
-        if($aTotal > $bTotal){
-            return 1;
-        }else if($aTotal < $bTotal){
-            return -1;
-        }
-        return 0;
+        return (self::getTotal($a['unique_picture'], $a['unique_frame'] , $a['unique_luxor']) <=>
+                self::getTotal($b['unique_picture'], $b['unique_frame'] , $b['unique_luxor']));
     }
 
     /**

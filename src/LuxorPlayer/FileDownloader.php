@@ -31,23 +31,58 @@ class FileDownloader
             $file = include  __DIR__ . '/../../config/luxor.php';
             if(@fopen($file['file_paths']['remote_path'],"r")==true){
                 $header = get_headers($file['file_paths']['remote_path'], 1);          
-                $remoteTimestamp = 0;
-                if(!$header || strpos($header[0], '200') !== false) {
-                    $remoteModificationDate = new DateTime($header['Last-Modified']);
-                    $remoteTimestamp = $remoteModificationDate->getTimestamp();
-                }
-                if(!file_exists($file['file_paths']['local_path']) || (file_exists($file['file_paths']['local_path']) && 
-                    ($remoteTimestamp > filemtime($file['file_paths']['local_path'])))){
-                    file_put_contents($file['file_paths']['local_path'], file_get_contents($file['file_paths']['remote_path']));
-                    return true;
-                }
+                $remoteTimestamp = $this->getRemoteTimestamp($header);
+                return $this->saveCsv($file, $remoteTimestamp);
             } else {
-                $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log', Logger::ERROR));
-                $this->logger->error($file['file_paths']['remote_path'] . " not found");    
+                $this->logError($file['file_paths']['remote_path'] . " not found", Logger::ERROR);
             }
         } catch(Exception $ex){
-            $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log', Logger::CRITICAL));
-            $this->logger->critical($ex);
+            $this->logError($ex, Logger::CRITICAL);
+        }
+        return false;
+    }
+
+    /**
+     * Log error to file
+     *
+     * @param string $message
+     * @param int $level
+     */
+    private function logError(string $message, int $level) :void
+    {
+        $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log', $level));
+        $this->logger->critical($message);
+    }
+
+    /**
+     * Get timestamp of remote file
+     *
+     * @param $header
+     * @return int
+     * @throws Exception
+     */
+    private function getRemoteTimestamp($header) :int
+    {
+        if(!$header || strpos($header[0], '200') !== false) {
+            $remoteModificationDate = new DateTime($header['Last-Modified']);
+            return $remoteModificationDate->getTimestamp();
+        }
+        return 0;
+    }
+
+    /**
+     * Save csv
+     *
+     * @param $file
+     * @param $remoteTimestamp
+     * @return bool
+     */
+    private function saveCsv($file, $remoteTimestamp) :bool
+    {
+        if(!file_exists($file['file_paths']['local_path']) || (file_exists($file['file_paths']['local_path']) &&
+                ($remoteTimestamp > filemtime($file['file_paths']['local_path'])))){
+            file_put_contents($file['file_paths']['local_path'], file_get_contents($file['file_paths']['remote_path']));
+            return true;
         }
         return false;
     }

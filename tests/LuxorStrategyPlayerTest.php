@@ -1,16 +1,16 @@
 <?php
 use PHPUnit\Framework\TestCase;
-use LuxorPlayer\LuxorPlayer;
+use LuxorPlayer\LuxorStrategyPlayer;
 
-class LuxorPlayerTest extends TestCase
+class LuxorStrategyPlayerTest extends TestCase
 { 
-    protected LuxorPlayer $luxorPlayer;
+    protected LuxorStrategyPlayer $luxorPlayer;
     protected array $draws;
     protected array $results;
     
     protected function setUp(): void
     {
-        $this->luxorPlayer = new LuxorPlayer;
+        $this->luxorPlayer = new LuxorStrategyPlayer;
         $this->luxorPlayer->init();
         $this->luxorPlayer->setDrawCount(1);
         $this->luxorPlayer->setTicketCount(2);

@@ -53,8 +53,4 @@ class LuxorTicket {
         $key = array_search($number, $this->frame);
         unset($this->frame[$key]);
     }
-
-    public static function create($picture, $frame){
-        return new LuxorTicket($picture, $frame);
-    }
 }

@@ -32,10 +32,10 @@ print 'Welcome to Luxor Player (LP)! LP is a program that can be configured to p
 print PHP_EOL;
 print 'What would you like to do?' . PHP_EOL;
 
-$luxorPlayer = new LuxorPlayer\LuxorPlayer;
+$luxorPlayer = new LuxorPlayer\LuxorStrategyPlayer;
 $luxorPlayer->init();
-$ticketGenerator = new LuxorPlayer\LuxorTicketGenerator;
-$autoPlay = new LuxorPlayer\AutoPlay;
+$ticketGenerator = new LuxorPlayer\LuxorTicketCreator;
+$autoPlay = new LuxorPlayer\GameSimulator;
 
 $handle = fopen ("php://stdin","r");
 $playGame = true;

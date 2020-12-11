@@ -1,15 +1,15 @@
 <?php
 use PHPUnit\Framework\TestCase;
 use LuxorPlayer\LuxorTicket;
-use LuxorPlayer\LuxorTicketGenerator;
+use LuxorPlayer\LuxorTicketCreator;
 
-class LuxorTicketGeneratorTest extends TestCase
+class LuxorTicketCreatorTest extends TestCase
 {
-    protected LuxorTicketGenerator $luxorTicketGenerator;
+    protected LuxorTicketCreator $luxorTicketGenerator;
     
     protected function setUp(): void
     {
-        $this->luxorTicketGenerator = new LuxorTicketGenerator;
+        $this->luxorTicketGenerator = new LuxorTicketCreator;
     }
     
     public function testGenerateTicketWithRandomNumbersReturnsInstanceOfLuxorTicket() :void
@@ -181,7 +181,7 @@ class LuxorTicketGeneratorTest extends TestCase
     
     public function testGenerateTicketWithRandomNumberUsingRangesEnforceProportionsReturnsCorrectOddEvenProportions() :void
     {
-        $reflector = new ReflectionClass(LuxorTicketGenerator::class);
+        $reflector = new ReflectionClass(LuxorTicketCreator::class);
         try {
             $method1 = $reflector->getMethod('fillRanges');
             $method2 = $reflector->getMethod('generateTicketWithRandomNumberUsingRanges');

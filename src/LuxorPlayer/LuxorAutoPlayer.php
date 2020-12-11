@@ -2,8 +2,14 @@
 namespace LuxorPlayer;
 
 
-class AutoPlayer
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Exception;
+
+class LuxorAutoPlayer extends LuxorPlayer
 {
+    use Ordering, Validator;
+
     private static array $draws = [];
     private static int $drawCount = 0;
     private static int $ticketCount = 0;
@@ -17,6 +23,8 @@ class AutoPlayer
     private static array $secondSelection = [];
     private static array $thirdSelection = [];
     private static string $orderBy = '';
+    private static array $players = [];
+    private static array $results = [];
 
     private string $playerName;
     private array $playerStrategies = [];
@@ -38,9 +46,9 @@ class AutoPlayer
         $this->playerName = $name;
     }
     
-    public static function create(string $name) :AutoPlayer
+    public static function create(string $name) :LuxorAutoPlayer
     {
-        return new AutoPlayer($name);
+        return new LuxorAutoPlayer($name);
     }
     
     /**
@@ -170,13 +178,13 @@ class AutoPlayer
      */
     public static function setOrderBy(string $orderBy) :void
     {
-        AutoPlayer::$orderBy = $orderBy;
+        LuxorAutoPlayer::$orderBy = $orderBy;
     }
 
     /**
      * @return array $playerResults
      */
-    public function getResults() :array
+    public function getPlayerResults() :array
     {
         return $this->playerResults;
     }
@@ -284,6 +292,24 @@ class AutoPlayer
     }
 
     /**
+     * @return array
+     */
+    public static function getPlayers(): array
+    {
+        return self::$players;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getResults(): array
+    {
+        return self::$results;
+    }
+
+
+
+    /**
      * Each player plays according to its settings in config
      *
      * @return array
@@ -291,7 +317,7 @@ class AutoPlayer
     public function play() :array
     {
         if(isset($this->playerStrategies) && !is_array($this->playerStrategies)){
-            $luxorPlayer = new LuxorPlayer;
+            $luxorPlayer = new LuxorStrategyPlayer;
             $luxorPlayer->init();
             $luxorPlayer->setDrawCount(self::$drawCount);
             $luxorPlayer->setTicketCount(self::$ticketCount);
@@ -359,9 +385,9 @@ class AutoPlayer
             for($i = (self::$drawCount-1); $i > 0; $i--){
                 $maxPreviousDraws = max($previousDraws);
                 $draws = array_slice(self::$draws, $i+1, ($weeksAnalyzed + $maxPreviousDraws));
-                $luxorPlayer = new LuxorPlayer;
+                $luxorPlayer = new LuxorStrategyPlayer;
                 $luxorPlayer->init();
-                $ticketGenerator = new LuxorTicketGenerator;                
+                $ticketGenerator = new LuxorTicketCreator;
                 if(isset($this->playerStrategiesPlayed) && $this->playerStrategiesPlayed > 1){
                     $ticketCount = self::$ticketCount / $this->playerStrategiesPlayed;
                 } else {
@@ -395,5 +421,78 @@ class AutoPlayer
             $this->playerResults = $game->getResults();  
         }
         return $this->playerResults;
+    }
+
+    /**
+     * Creates players according to setting in luxor config under auto_player and initializes results array
+     * which stores final results
+     */
+    public function createPlayers() :void
+    {
+        try {
+            $file = include  __DIR__ . '/../../config/luxor.php';
+            if(isset($file['auto_player'])) {
+                //load players from luxor config file
+                LuxorAutoPlayer::setDrawCount($drawCount = $this->getIntValue($file['auto_player']['draws_played'], 2, self::DEFAULT_WEEKS_ANALYZED));
+                LuxorAutoPlayer::setWeeksAnalyzed($weeksAnalyzed = $this->getIntValue($file['auto_player']['weeks_analyzed'], 2, self::DEFAULT_WEEKS_ANALYZED));
+                LuxorAutoPlayer::setTicketCount($this->getIntValue($file['auto_player']['tickets_per_player'], 2, self::DEFAULT_NUM_TICKETS));
+                LuxorAutoPlayer::setRepeat($this->getIntValue($file['auto_player']['repeat'], 2, self::DEFAULT_REPEAT_TIMES));
+                LuxorAutoPlayer::setMinSelection($this->getIntValue($file['auto_player']['min_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MIN_SELECTION));
+                LuxorAutoPlayer::setMaxSelection($this->getIntValue($file['auto_player']['max_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MAX_SELECTION));
+                LuxorAutoPlayer::setStrategies($this->getArrayValues($file['auto_player']['strategies'], []));
+                LuxorAutoPlayer::setPreviousDraws($previousDraws = $this->getArrayValues($file['auto_player']['previous_draws'], []));
+                LuxorAutoPlayer::setFirstSelection($this->getArrayValues($file['auto_player']['one_selection'], []));
+                LuxorAutoPlayer::setSecondSelection($this->getArrayValues($file['auto_player']['two_selections'], []));
+                LuxorAutoPlayer::setThirdSelection($this->getArrayValues($file['auto_player']['three_selections'], []));
+
+                $fileProcessor = new FileProcessor();
+                $fileProcessor->readFileIntoArray($drawCount + $weeksAnalyzed + max($previousDraws));
+                $draws = $fileProcessor->getDrawResults();
+                LuxorAutoPlayer::setDraws($draws);
+
+                if(isset($file['auto_player']['players']) && is_array($file['auto_player']['players'])) {
+                    foreach ($file['auto_player']['players'] as $player){
+                        if(isset($player['name'])){
+                            $newPlayer = LuxorAutoPlayer::create($player['name']);
+                            self::$players[] = $newPlayer;
+                            $this->initializePlayerResults($newPlayer->getName());
+                            $newPlayer->setPlayerWeeksAnalyzed($this->getIntValue($player['weeks_analyzed'], 2, self::DEFAULT_WEEKS_ANALYZED));
+                            $newPlayer->setPlayerRepeat($this->getIntValue($player['repeat'], 2, self::DEFAULT_REPEAT_TIMES));
+                            $newPlayer->setPlayerStrategies($this->getArrayValues($player['strategies'], []));
+                            $newPlayer->setPlayerPreviousDraws($this->getArrayValues($player['previous_draws'], []));
+                            $newPlayer->setPlayerMinSelection($this->getIntValue($player['min_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MIN_SELECTION));
+                            $newPlayer->setPlayerMaxSelection($this->getIntValue($player['max_selection'], self::DEFAULT_MIN_SELECTION, self::DEFAULT_MAX_SELECTION));
+                            $newPlayer->setPlayerFirstSelection($this->getArrayValues($player['one_selection'], []));
+                            $newPlayer->setPlayerSecondSelection($this->getArrayValues($player['two_selections'], []));
+                            $newPlayer->setPlayerThirdSelection($this->getArrayValues($player['three_selections'], []));
+                            $newPlayer->setPlayerStrategiesPlayed($this->getIntValue($player['strategies_played'], 2, self::DEFAULT_STRATEGIES_PLAYED));
+                            $newPlayer->setPlayerOrderBy($this->getStringValue($player['order_by'], self::DEFAULT_ORDER_BY));
+                        }
+                    }
+                }
+            } else {
+                $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log',
+                    Logger::ERROR));
+                $this->logger->error("auto_player not found in luxor config");
+            }
+        } catch(Exception $ex){
+            $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log',
+                Logger::CRITICAL));
+            $this->logger->critical($ex);
+        }
+    }
+
+    /**
+     * Add player to $results array with starting values
+     *
+     * @param String $playerName
+     */
+    private function initializePlayerResults(string $playerName) :void
+    {
+        $startValue = ['total' => 0, 'jackpot' => 0, 'luxor' => 0, 'first_frame' => 0, 'first_picture' => 0,
+                       'frames' => 0, 'pictures' => 0, 'jackpot_dates' => [], 'luxor_dates' => [],
+                       'first_picture_dates' => [], 'first_frame_dates' => [], 'picture_dates' => [],
+                       'frame_dates' => []];
+        self::$results[$playerName] = $startValue;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-use LuxorPlayer\LuxorTicket;
+use LuxorPlayer\LuxorTicketCreator;
 use PHPUnit\Framework\TestCase;
 use LuxorPlayer\LuxorGame;
 
@@ -10,7 +10,7 @@ class LuxorGameTest extends TestCase
     {
         $picture = [16,21,31,42,54,56];
         $frame = [2,6,7,9,17,20,35,37,53,59,62,67,68,72];
-        $ticket = LuxorTicket::create($picture, $frame);
+        $ticket = LuxorTicketCreator::createTicket($picture, $frame);
         $draw = [];
         $draw[0] = ['jackpot_limit' => 40, 'first_picture' => 14, 'first_frame' => 35, 'luxor' => 37,
                     'date' => '2019.05.16'];

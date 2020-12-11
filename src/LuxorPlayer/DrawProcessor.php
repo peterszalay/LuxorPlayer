@@ -14,7 +14,6 @@ class DrawProcessor
      */
     public function getNumberDrawStatistics(array $draws) :array
     {
-        
         $results = array_fill(1, 75, ['times_drawn' => 0, 'avg_draw_position' => 0]);
         foreach($draws as $draw) {
             for($i = 1; $i <= sizeof($draw[1]); $i++) {
@@ -24,6 +23,18 @@ class DrawProcessor
                 }
             }
         }
+        $results = $this->calculateAverageDrawPosition($results);
+        return $results;
+    }
+
+    /**
+     * Calculate the average draw position of each number in array identified by its key
+     *
+     * @param array $results
+     * @return array
+     */
+    public function calculateAverageDrawPosition(array $results) :array
+    {
         for($i = 1; $i <= sizeof($results); $i++) {
             if($results[$i]['avg_draw_position'] != 0) {
                 $results[$i]['avg_draw_position'] = round($results[$i]['avg_draw_position'] /

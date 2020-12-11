@@ -5,6 +5,7 @@ namespace LuxorPlayer;
 class LuxorGame
 {
     private array $results = [];
+    private int $drawNumber = 1;
     
     public function __construct()
     {
@@ -37,7 +38,7 @@ class LuxorGame
      * 
      * @param array $tickets
      * @param array $draws
-     * @return array $results
+     * @return array
      */
     public function processTicketsForDraws(array $tickets, array $draws) :array
     {
@@ -61,54 +62,117 @@ class LuxorGame
     }
     
     /**
-     * Process one ticket, compare ticket's numbers to drawn numbers 
+     * Process one ticket, compare ticket's numbers to draw numbers
      * 
      * @param LuxorTicket $ticket
      * @param array $draw
      */
     public function processTicket(LuxorTicket $ticket, array $draw) :void
     {
-        $drawNumber = 1;
         $ticketCopy = clone $ticket;
-        while($draw[0]['luxor'] >= $drawNumber){
-            $number = array_search($drawNumber, $draw[1]);
-            if(in_array($number, $ticketCopy->getPicture())){
-                $ticketCopy->removeNumberFromPicture($number);
-                if(empty($ticketCopy->getPicture())){
-                    if($drawNumber <= $draw[0]['first_picture'] && !in_array($draw[0]['date'], $this->results['first_picture_dates'])){
-                        $this->results['first_picture']++;
-                        $this->results['first_picture_dates'][] = $draw[0]['date'];
-                    }
-                    $this->results['pictures']++;
-                    $this->results['picture_dates'][] = $draw[0]['date'];
-                }
-            }
-            if(in_array($number, $ticketCopy->getFrame())){
-                $ticketCopy->removeNumberFromFrame($number);
-                if(empty($ticketCopy->getFrame())){
-                    if($drawNumber <= $draw[0]['first_frame'] && !in_array($draw[0]['date'], $this->results['first_frame_dates'])){
-                        $this->results['first_frame']++;
-                        $this->results['first_frame_dates'][] = $draw[0]['date'];
-                    }
-                    $this->results['frames']++;
-                    $this->results['frame_dates'][] = $draw[0]['date'];
-                }
-            }
-            if(empty($ticketCopy->getFrame()) && empty($ticketCopy->getPicture())){
-                if($drawNumber <= $draw[0]['jackpot_limit'] && !in_array($draw[0]['date'], $this->results['luxor_dates'])){
-                    $this->results['jackpot_dates'][] = $draw[0]['date'];
-                    $this->results['luxor_dates'][] = $draw[0]['date'];
-                    $this->results['jackpot']++;
-                    $this->results['luxor']++;
-                    break;
-                } elseif(!in_array($draw[0]['date'], $this->results['luxor_dates'])) {
-                    $this->results['luxor_dates'][] = $draw[0]['date'];
-                    $this->results['luxor']++;
-                    break;
-                }
-            }
-            $drawNumber++;
+        while($draw[0]['luxor'] >= $this->drawNumber){
+            $number = array_search($this->drawNumber, $draw[1]);
+            $this->checkAndRemoveNumberIfInPicture($draw, $number, $ticketCopy);
+            $this->checkAndRemoveNumberIfInFrame($draw, $number, $ticketCopy);
+            $this->checkIfBothPictureANdFrameIsEmpty($draw, $ticketCopy);
+            $this->drawNumber++;
         }  
+    }
+
+    /**
+     * Check and remove number if in picture part of ticket
+     *
+     * @param array $draw
+     * @param int $number
+     * @param LuxorTicket $ticket
+     */
+    private function checkAndRemoveNumberIfInPicture(array $draw, int $number, LuxorTicket $ticket) :void
+    {
+        if(in_array($number, $ticket->getPicture())){
+            $ticket->removeNumberFromPicture($number);
+            if(empty($ticket->getPicture())){
+                if($this->drawNumber <= $draw[0]['first_picture'] && !in_array($draw[0]['date'], $this->results['first_picture_dates'])){
+                    $this->updateFirstPictureResult($draw);
+                }
+                $this->updatePicturesResult($draw);
+            }
+        }
+    }
+
+    /**
+     * Check and remove number if in frame part of ticket
+     *
+     * @param array $draw
+     * @param int $number
+     * @param LuxorTicket $ticket
+     */
+    private function checkAndRemoveNumberIfInFrame(array $draw, int $number, LuxorTicket $ticket) :void
+    {
+        if(in_array($number, $ticket->getFrame())){
+            $ticket->removeNumberFromFrame($number);
+            if(empty($ticket->getFrame())){
+                if($this->drawNumber <= $draw[0]['first_frame'] && !in_array($draw[0]['date'], $this->results['first_frame_dates'])){
+                    $this->updateFirstFrameResult($draw);
+                }
+                $this->updateFramesResult($draw);
+            }
+        }
+    }
+
+    /**
+     * If both picture and frame are empty we have a luxor and possibly a jackpot
+     *
+     * @param array $draw
+     * @param LuxorTicket $ticket
+     */
+    private function checkIfBothPictureANdFrameIsEmpty(array $draw, LuxorTicket $ticket) :void
+    {
+        if(empty($ticket->getFrame()) && empty($ticket->getPicture())){
+            if($this->drawNumber <= $draw[0]['jackpot_limit'] && !in_array($draw[0]['date'], $this->results['luxor_dates'])){
+                $this->updateJackPotResult($draw);
+                $this->updateLuxorResult($draw);
+                return;
+            } elseif(!in_array($draw[0]['date'], $this->results['luxor_dates'])) {
+                $this->updateLuxorResult($draw);
+                return;
+            }
+        }
+    }
+
+    private function updateFirstFrameResult($draw) :void
+    {
+        $this->results['first_frame']++;
+        $this->results['first_frame_dates'][] = $draw[0]['date'];
+    }
+
+    private function updateFramesResult($draw) :void
+    {
+        $this->results['frames']++;
+        $this->results['frame_dates'][] = $draw[0]['date'];
+    }
+
+    private function updateFirstPictureResult($draw) :void
+    {
+        $this->results['first_picture']++;
+        $this->results['first_picture_dates'][] = $draw[0]['date'];
+    }
+
+    private function updatePicturesResult($draw) :void
+    {
+        $this->results['pictures']++;
+        $this->results['picture_dates'][] = $draw[0]['date'];
+    }
+
+    private function updateLuxorResult($draw) :void
+    {
+        $this->results['luxor_dates'][] = $draw[0]['date'];
+        $this->results['luxor']++;
+    }
+
+    private function updateJackPotResult($draw) :void
+    {
+        $this->results['jackpot_dates'][] = $draw[0]['date'];
+        $this->results['jackpot']++;
     }
     
 }

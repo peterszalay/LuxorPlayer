@@ -14,7 +14,7 @@ class LuxorTicketTest extends TestCase
     
     public function testCreateWithEmptyValues() :void
     {
-        $luxorTicket = LuxorTicket::create([],[]);
+        $luxorTicket = new LuxorTicket([],[]);
         
         $this->assertEquals([], $luxorTicket->getPicture());
         
@@ -23,7 +23,7 @@ class LuxorTicketTest extends TestCase
       
     public function testCreateWithNonEmptyValues() :void
     {
-        $luxorTicket = LuxorTicket::create([25,20,45,38,48,46],[12,2,11,8,19,22,43,36,57,59,70,69,73,72]);
+        $luxorTicket = new LuxorTicket([25,20,45,38,48,46],[12,2,11,8,19,22,43,36,57,59,70,69,73,72]);
         
         $this->assertEquals([25,20,45,38,48,46], $luxorTicket->getPicture());
         

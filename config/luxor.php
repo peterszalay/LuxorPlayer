@@ -33,10 +33,10 @@ return [
          */
         'auto_player' =>
                         [
-                            'draws_played' => 52,
+                            'draws_played' => 2,
                             'weeks_analyzed' => 3,
                             'tickets_per_player' => 50,
-                            'repeat' => 10,
+                            'repeat' => 1,
                             'min_selection' => 25,
                             'max_selection' => 50,
                             'previous_draws' => [1,2,3,4,5,6,7,8,9,10,11,12,13,14],
@@ -144,7 +144,7 @@ return [
                                                     'strategies_played' => 5,
                                                     'order_by' => 'orderByPicturesAndFrames'
                                                  ],
-		                            		11 =>[
+		                            		/*11 =>[
 		                            				'name' => 'Thoth',
 		                            				'description' => 'A moon god, and a god of writing and scribes, 
 		                            				                  and patron deity of Hermopolis',
@@ -246,7 +246,7 @@ return [
 		                            				'max_selection' => 25,
 		                            				'strategies_played' => 50,
 		                            				'order_by' => 'orderByTotal'
-		                            		    ],
+		                            		    ],*/
                             				
                                         ]   
                             ]

@@ -166,7 +166,6 @@ class LuxorStrategyPlayer extends LuxorPlayer
         try {
             $i = 1;          
             $results = $this->initializeResultsFromConfig($strategies, $previousDraws, $selections, $minSelection, $maxSelection, false);
-            //print_r($results);
             $this->setTicketCount($ticketCount);           
             while($i <= $repeatTimes){         
                 foreach($previousDraws as $previousDraw){
@@ -260,14 +259,12 @@ class LuxorStrategyPlayer extends LuxorPlayer
     {
         $i = 1;
         $results = $this->initializeResults($strategy, $selections);
-        
         $this->setDrawCount($drawCount);
         $this->setTicketCount($ticketCount);
         
         while($i <= $repeatTimes){
             $drawResult = $this->playWithRandomNumbers();
             $this->addToResults('SAME_RANDOM', $results, $drawResult);
-
             $drawResult = $this->playWithRandomNumbers(false, true);
             $this->addToResults('SAME_RANDOM_ENFORCED_PROPORTIONS', $results, $drawResult);
 
@@ -311,7 +308,6 @@ class LuxorStrategyPlayer extends LuxorPlayer
                     break;
             }
             $this->addToResults($key, $results, $drawResult);
-            
             $i++;
         }
         $this->cleanResultDates($results);
@@ -361,7 +357,6 @@ class LuxorStrategyPlayer extends LuxorPlayer
         $this->fileProcessor = new FileProcessor();
         $this->fileProcessor->readFileIntoArray($this->drawCount + $previousDrawsToSelectFrom);
         $draws = array_reverse($this->fileProcessor->getDrawResults());
-        //print PHP_EOL . $strategy . ' DRAW COUNT: ' . $this->drawCount . PHP_EOL;
         for($i = 0; $i < $this->drawCount; $i++){
             $lastDraw = array_pop($draws);
             $previousDraws = array_slice($draws, -($previousDrawsToSelectFrom), $previousDrawsToSelectFrom, true);

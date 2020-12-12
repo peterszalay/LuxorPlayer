@@ -69,14 +69,15 @@ class LuxorGame
      */
     public function processTicket(LuxorTicket $ticket, array $draw) :void
     {
+        $this->drawNumber = 1;
         $ticketCopy = clone $ticket;
         while($draw[0]['luxor'] >= $this->drawNumber){
             $number = array_search($this->drawNumber, $draw[1]);
             $this->checkAndRemoveNumberIfInPicture($draw, $number, $ticketCopy);
             $this->checkAndRemoveNumberIfInFrame($draw, $number, $ticketCopy);
-            $this->checkIfBothPictureANdFrameIsEmpty($draw, $ticketCopy);
+            if($this->checkIfBothPictureANdFrameIsEmpty($draw, $ticketCopy)) break;
             $this->drawNumber++;
-        }  
+        }
     }
 
     /**
@@ -125,18 +126,19 @@ class LuxorGame
      * @param array $draw
      * @param LuxorTicket $ticket
      */
-    private function checkIfBothPictureANdFrameIsEmpty(array $draw, LuxorTicket $ticket) :void
+    private function checkIfBothPictureANdFrameIsEmpty(array $draw, LuxorTicket $ticket) :bool
     {
         if(empty($ticket->getFrame()) && empty($ticket->getPicture())){
             if($this->drawNumber <= $draw[0]['jackpot_limit'] && !in_array($draw[0]['date'], $this->results['luxor_dates'])){
                 $this->updateJackPotResult($draw);
                 $this->updateLuxorResult($draw);
-                return;
+                return true;
             } elseif(!in_array($draw[0]['date'], $this->results['luxor_dates'])) {
                 $this->updateLuxorResult($draw);
-                return;
+                return true;
             }
         }
+        return false;
     }
 
     private function updateFirstFrameResult($draw) :void

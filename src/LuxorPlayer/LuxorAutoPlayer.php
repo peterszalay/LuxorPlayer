@@ -8,36 +8,11 @@ use Exception;
 
 class LuxorAutoPlayer extends LuxorPlayer
 {
-    use Ordering, Validator;
+    use Ordering;
 
-    private static array $draws = [];
-    private static int $drawCount = 0;
-    private static int $ticketCount = 0;
-    private static array $strategies = [];
-    private static array $previousDraws = [];
-    private static int $weeksAnalyzed = 0;
-    private static int $repeat = 0;
-    private static int $minSelection = 0;
-    private static int $maxSelection = 0;
-    private static array $firstSelection = [];
-    private static array $secondSelection = [];
-    private static array $thirdSelection = [];
-    private static string $orderBy = '';
     private static array $players = [];
     private static array $results = [];
 
-    private string $playerName;
-    private array $playerStrategies = [];
-    private array $playerPreviousDraws = [];
-    private int $playerWeeksAnalyzed = 0;
-    private int $playerRepeat = 0;
-    private int $playerMinSelection = 0;
-    private int $playerMaxSelection = 0;
-    private array $playerFirstSelection = [];
-    private array $playerSecondSelection = [];
-    private array $playerThirdSelection = [];
-    private int $playerStrategiesPlayed = 0;
-    private string $playerOrderBy = '';
     private array $playerResults = [];
     
     
@@ -49,136 +24,6 @@ class LuxorAutoPlayer extends LuxorPlayer
     public static function create(string $name) :LuxorAutoPlayer
     {
         return new LuxorAutoPlayer($name);
-    }
-    
-    /**
-     * Set draws
-     *
-     * @param array $draws
-     */
-    public static function setDraws(array $draws) :void
-    {
-        self::$draws = $draws;
-    }
-
-    /**
-     * Set draw count for player
-     *
-     * @param int $drawCount
-     */
-    public static function setDrawCount(int $drawCount) :void
-    {
-        self::$drawCount = $drawCount;
-    }
-
-    /**
-     * Set ticket count for player
-     *
-     * @param int $ticketCount
-     */
-    public static function setTicketCount(int $ticketCount) :void
-    {
-        self::$ticketCount = $ticketCount;
-    }
-
-    /**
-     * Set strategies for player
-     *
-     * @param array $strategies
-     */
-    public static function setStrategies(array $strategies) :void
-    {
-        self::$strategies = $strategies;
-    }
-
-
-    /**
-     * Set previous draws
-     *
-     * @param array $previousDraws
-     */
-    public static function setPreviousDraws(array $previousDraws) :void
-    {
-        self::$previousDraws = $previousDraws;
-    }
-
-    /**
-     * Set weeks analyzed
-     *
-     * @param int $weeksAnalyzed
-     */
-    public static function setWeeksAnalyzed(int $weeksAnalyzed) :void
-    {
-        self::$weeksAnalyzed = $weeksAnalyzed;
-    }
-
-    /**
-     * Set repeat
-     *
-     * @param int $repeat
-     */
-    public static function setRepeat(int $repeat) :void
-    {
-        self::$repeat = $repeat;
-    }
-
-    /**
-     * Set minimum selection
-     *
-     * @param int $minSelection
-     */
-    public static function setMinSelection(int $minSelection) :void
-    {
-        self::$minSelection = $minSelection;
-    }
-
-    /**
-     * Set maximum selection
-     * @param int $maxSelection
-     */
-    public static function setMaxSelection(int $maxSelection) :void
-    {
-        self::$maxSelection = $maxSelection;
-    }
-
-    /**
-     * Set first selection
-     *
-     * @param array $firstSelection
-     */
-    public static function setFirstSelection(array $firstSelection) :void
-    {
-        self::$firstSelection = $firstSelection;
-    }
-
-    /**
-     * Set second selection
-     *
-     * @param array $secondSelection
-     */
-    public static function setSecondSelection(array $secondSelection) :void
-    {
-        self::$secondSelection = $secondSelection;
-    }
-
-    /**
-     * Set third selection
-     *
-     * @param array $thirdSelection
-     */
-    public static function setThirdSelection(array $thirdSelection) :void
-    {
-        self::$thirdSelection = $thirdSelection;
-    }
-    
-    /**
-     * Set order by
-     *
-     * @param string $orderBy
-     */
-    public static function setOrderBy(string $orderBy) :void
-    {
-        LuxorAutoPlayer::$orderBy = $orderBy;
     }
 
     /**
@@ -433,7 +278,7 @@ class LuxorAutoPlayer extends LuxorPlayer
             $file = include  __DIR__ . '/../../config/luxor.php';
             if(isset($file['auto_player'])) {
                 //load players from luxor config file
-                LuxorAutoPlayer::setDrawCount($drawCount = $this->getIntValue($file['auto_player']['draws_played'], 2, self::DEFAULT_WEEKS_ANALYZED));
+                self::setDrawCount($drawCount = $this->getIntValue($file['auto_player']['draws_played'], 2, self::DEFAULT_WEEKS_ANALYZED));
                 LuxorAutoPlayer::setWeeksAnalyzed($weeksAnalyzed = $this->getIntValue($file['auto_player']['weeks_analyzed'], 2, self::DEFAULT_WEEKS_ANALYZED));
                 LuxorAutoPlayer::setTicketCount($this->getIntValue($file['auto_player']['tickets_per_player'], 2, self::DEFAULT_NUM_TICKETS));
                 LuxorAutoPlayer::setRepeat($this->getIntValue($file['auto_player']['repeat'], 2, self::DEFAULT_REPEAT_TIMES));
@@ -445,7 +290,7 @@ class LuxorAutoPlayer extends LuxorPlayer
                 LuxorAutoPlayer::setSecondSelection($this->getArrayValues($file['auto_player']['two_selections'], []));
                 LuxorAutoPlayer::setThirdSelection($this->getArrayValues($file['auto_player']['three_selections'], []));
 
-                $fileProcessor = new FileProcessor();
+                $fileProcessor = new LuxorFileProcessor();
                 $fileProcessor->readFileIntoArray($drawCount + $weeksAnalyzed + max($previousDraws));
                 $draws = $fileProcessor->getDrawResults();
                 LuxorAutoPlayer::setDraws($draws);

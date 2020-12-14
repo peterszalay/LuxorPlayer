@@ -2,7 +2,7 @@
 namespace LuxorPlayer;
 
 
-class LuxorTicketCreator
+class LuxorTicketCreator implements TicketCreator
 {
     use Comparator;
 
@@ -31,56 +31,56 @@ class LuxorTicketCreator
     }
 
     /**
-     * Generate number of tickets with randomly selected numbers
+     * Create number of tickets with randomly selected numbers
      *
      * @param int $numberOfTickets
      * @param bool $enforceOddEvenRatio
      */
-    public function generateTicketsWithRandomNumbers(int $numberOfTickets, bool $enforceOddEvenRatio = false) :void
+    public function createTicketsWithRandomNumbers(int $numberOfTickets, bool $enforceOddEvenRatio = false) :void
     {
         $this->tickets = [];
         for($i = 0; $i < $numberOfTickets; $i++){
-            $this->tickets[$i] = $this->generateTicketWithRandomNumbers($enforceOddEvenRatio);     
+            $this->tickets[$i] = $this->createTicketWithRandomNumbers($enforceOddEvenRatio);
         }
     }
     
     /**
-     * Generate number of tickets with randomly selected numbers from selection
+     * Create number of tickets with randomly selected numbers from selection
      * 
      * @param int $numberOfTickets
      * @param array $selection
      */
-    public function generateTicketsWithRandomNumbersFromSelection(int $numberOfTickets, array $selection) :void
+    public function createTicketsWithRandomNumbersFromSelection(int $numberOfTickets, array $selection) :void
     {
         $this->tickets = [];
         for($i = 0; $i < $numberOfTickets; $i++){
-            $this->tickets[$i] = $this->generateTicketWithRandomNumbersFromSelection($selection);
+            $this->tickets[$i] = $this->createTicketWithRandomNumbersFromSelection($selection);
         }
     }
 
     /**
-     * Generate one ticket populated with random numbers
+     * Create one ticket populated with random numbers
      *
      * @param bool $enforceOddEvenRatio
-     * @return LuxorTicket
+     * @return Ticket
      * @todo implement force prime ratio functionality
      */
-    public function generateTicketWithRandomNumbers(bool $enforceOddEvenRatio = false) :LuxorTicket
+    public function createTicketWithRandomNumbers(bool $enforceOddEvenRatio = false) :Ticket
     {
         $this->fillRanges();
-        return $this->generateTicketWithRandomNumberUsingRanges($enforceOddEvenRatio);
+        return $this->createTicketWithRandomNumberUsingRanges($enforceOddEvenRatio);
     }
     
     /**
-     * Generate ticket from selection of number split into 5 ranges
+     * Create ticket from selection of number split into 5 ranges
      * 
      * @param array $selection
-     * @return LuxorTicket
+     * @return Ticket
      */
-    public function generateTicketWithRandomNumbersFromSelection(array $selection) :LuxorTicket
+    public function createTicketWithRandomNumbersFromSelection(array $selection) :Ticket
     {
         $this->fillRanges($selection);
-        return $this->generateTicketWithRandomNumberUsingRanges();
+        return $this->createTicketWithRandomNumberUsingRanges();
     }
 
     /**
@@ -101,7 +101,7 @@ class LuxorTicketCreator
      * @param bool $oddEven
      * @return LuxorTicket
      */
-    private function generateTicketWithRandomNumberUsingRanges(bool $oddEven = false) :LuxorTicket
+    private function createTicketWithRandomNumberUsingRanges(bool $oddEven = false) :LuxorTicket
     {
         $this->shuffleRanges();
         $firstRange = $this->getNumbersFromRange($this->firstRange, $oddEven);
@@ -211,7 +211,7 @@ class LuxorTicketCreator
      * @param int $size
      * @return array
      */
-    public function generateRandomSelection(int $size) :array
+    public function createRandomSelection(int $size) :array
     {
         $this->fillRanges();
         $size = $this->adjustNumberSelectionSize($size);

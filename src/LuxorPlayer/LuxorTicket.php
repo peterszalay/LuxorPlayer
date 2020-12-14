@@ -6,7 +6,8 @@ namespace LuxorPlayer;
  * and a frame (14 numbers between 1 and 75)
  *
  */
-class LuxorTicket {
+class LuxorTicket extends Ticket
+{
     
     private array $picture;
     private array $frame;

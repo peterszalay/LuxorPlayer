@@ -8,9 +8,9 @@ class LuxorStrategyPlayer extends LuxorPlayer
 {
     use Ordering, Validator;
 
-    private FileProcessor $fileProcessor;
+    private LuxorFileProcessor $fileProcessor;
     private LuxorTicketCreator $ticketGenerator;
-    private DrawProcessor $drawProcessor;
+    private LuxorDrawProcessor $drawProcessor;
     private LuxorGame $game;
     /**
      * User set variables
@@ -20,11 +20,11 @@ class LuxorStrategyPlayer extends LuxorPlayer
 
     
     public function init(){
-        $fileDownloader = new FileDownloader();
+        $fileDownloader = new LuxorFileDownloader();
         $fileDownloader->downloadCsv();
-        $this->fileProcessor = new FileProcessor();
+        $this->fileProcessor = new LuxorFileProcessor();
         $this->ticketGenerator = new LuxorTicketCreator();
-        $this->drawProcessor = new DrawProcessor();
+        $this->drawProcessor = new LuxorDrawProcessor();
     }
     
     
@@ -325,17 +325,17 @@ class LuxorStrategyPlayer extends LuxorPlayer
     public function playWithRandomNumbers(bool $regenerateTicketsBeforeEveryDraw = false, bool $enforceOddEvenRatio = false) :array
     {
         $this->game = new LuxorGame();
-        $this->fileProcessor = new FileProcessor();
+        $this->fileProcessor = new LuxorFileProcessor();
         $this->fileProcessor->readFileIntoArray($this->drawCount);
         $draws = $this->fileProcessor->getDrawResults();
         if($regenerateTicketsBeforeEveryDraw){
             foreach($draws as $draw){
-                $this->ticketGenerator->generateTicketsWithRandomNumbers($this->ticketCount, $enforceOddEvenRatio);
+                $this->ticketGenerator->createTicketsWithRandomNumbers($this->ticketCount, $enforceOddEvenRatio);
                 $this->game->processTicketsForADraw($this->ticketGenerator->getTickets(), $draw);
             }
             return $this->game->getResults();
         } else {
-            $this->ticketGenerator->generateTicketsWithRandomNumbers($this->ticketCount, $enforceOddEvenRatio);
+            $this->ticketGenerator->createTicketsWithRandomNumbers($this->ticketCount, $enforceOddEvenRatio);
             return $this->game->processTicketsForDraws($this->ticketGenerator->getTickets(), $draws);
         }
     }
@@ -354,7 +354,7 @@ class LuxorStrategyPlayer extends LuxorPlayer
                                             int $secondSelection = 0, int $thirdSelection = 0) :array
     {
         $this->game = new LuxorGame();
-        $this->fileProcessor = new FileProcessor();
+        $this->fileProcessor = new LuxorFileProcessor();
         $this->fileProcessor->readFileIntoArray($this->drawCount + $previousDrawsToSelectFrom);
         $draws = array_reverse($this->fileProcessor->getDrawResults());
         for($i = 0; $i < $this->drawCount; $i++){
@@ -371,25 +371,25 @@ class LuxorStrategyPlayer extends LuxorPlayer
                     break;
                 case "LEAST_DRAWN_AND_RANDOM":
                     $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($previousDraws, $firstSelection);
-                    $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
+                    $randomSelection = $this->ticketGenerator->createRandomSelection($secondSelection);
                     $selection = $this->ticketGenerator->mergeTwoSelections($leastDrawnSelection, $randomSelection);
                     break;
                 case "MOST_DRAWN_AND_RANDOM":
                     $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);
-                    $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
+                    $randomSelection = $this->ticketGenerator->createRandomSelection($secondSelection);
                     $selection = $this->ticketGenerator->mergeTwoSelections($mostDrawnSelection, $randomSelection);
                     break;
                 case "MOST_LEAST_AND_RANDOM":
                     $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);
                     $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($previousDraws, $secondSelection);
-                    $randomSelection = $this->ticketGenerator->generateRandomSelection($thirdSelection);
+                    $randomSelection = $this->ticketGenerator->createRandomSelection($thirdSelection);
                     $selection1 = $this->ticketGenerator->mergeTwoSelections($mostDrawnSelection, $leastDrawnSelection);
                     $selection = $this->ticketGenerator->mergeTwoSelections($selection1, $randomSelection);
                     break;
                 case "MOST_DRAWN": default:
                     $selection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);
             }
-            $this->ticketGenerator->generateTicketsWithRandomNumbersFromSelection($this->ticketCount, $selection);
+            $this->ticketGenerator->createTicketsWithRandomNumbersFromSelection($this->ticketCount, $selection);
             $this->game->processTicketsForADraw($this->ticketGenerator->getTickets(), $lastDraw);
         }
         return $this->game->getResults();
@@ -426,25 +426,25 @@ class LuxorStrategyPlayer extends LuxorPlayer
                     break;
                 case "LEAST_DRAWN_AND_RANDOM":
                     $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($previousDraws, $firstSelection);
-                    $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
+                    $randomSelection = $this->ticketGenerator->createRandomSelection($secondSelection);
                     $selection = $this->ticketGenerator->mergeTwoSelections($leastDrawnSelection, $randomSelection);
                     break;
                 case "MOST_DRAWN_AND_RANDOM":
                     $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);
-                    $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
+                    $randomSelection = $this->ticketGenerator->createRandomSelection($secondSelection);
                     $selection = $this->ticketGenerator->mergeTwoSelections($mostDrawnSelection, $randomSelection);
                     break;
                 case "MOST_LEAST_AND_RANDOM":
                     $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);
                     $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($previousDraws, $secondSelection);
-                    $randomSelection = $this->ticketGenerator->generateRandomSelection($thirdSelection);
+                    $randomSelection = $this->ticketGenerator->createRandomSelection($thirdSelection);
                     $selection1 = $this->ticketGenerator->mergeTwoSelections($mostDrawnSelection, $leastDrawnSelection);
                     $selection = $this->ticketGenerator->mergeTwoSelections($selection1, $randomSelection);
                     break;
                 case "MOST_DRAWN": default:
                     $selection = $this->drawProcessor->getMostDrawnNumbers($previousDraws, $firstSelection);
             }
-            $this->ticketGenerator->generateTicketsWithRandomNumbersFromSelection($this->ticketCount, $selection);
+            $this->ticketGenerator->createTicketsWithRandomNumbersFromSelection($this->ticketCount, $selection);
             $this->game->processTicketsForADraw($this->ticketGenerator->getTickets(), $lastDraw);
         }
         return $this->game->getResults();
@@ -492,18 +492,18 @@ class LuxorStrategyPlayer extends LuxorPlayer
                 break;
             case "LEAST_DRAWN_AND_RANDOM":
                 $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($draws, $firstSelection);
-                $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
+                $randomSelection = $this->ticketGenerator->createRandomSelection($secondSelection);
                 $selection = $this->ticketGenerator->mergeTwoSelections($leastDrawnSelection, $randomSelection);
                 break;
             case "MOST_DRAWN_AND_RANDOM":
                 $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($draws, $firstSelection);
-                $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
+                $randomSelection = $this->ticketGenerator->createRandomSelection($secondSelection);
                 $selection = $this->ticketGenerator->mergeTwoSelections($mostDrawnSelection, $randomSelection);
                 break;
             case "MOST_LEAST_AND_RANDOM":
                 $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($draws, $firstSelection);
                 $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($draws, $secondSelection);
-                $randomSelection = $this->ticketGenerator->generateRandomSelection($thirdSelection);
+                $randomSelection = $this->ticketGenerator->createRandomSelection($thirdSelection);
                 $selection1 = $this->ticketGenerator->mergeTwoSelections($mostDrawnSelection, $leastDrawnSelection);
                 $selection = $this->ticketGenerator->mergeTwoSelections($selection1, $randomSelection);
                 break;
@@ -539,18 +539,18 @@ class LuxorStrategyPlayer extends LuxorPlayer
                 break;
             case "LEAST_DRAWN_AND_RANDOM":
                 $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($draws, $firstSelection);
-                $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
+                $randomSelection = $this->ticketGenerator->createRandomSelection($secondSelection);
                 $selection = $this->ticketGenerator->mergeTwoSelections($leastDrawnSelection, $randomSelection);
                 break;
             case "MOST_DRAWN_AND_RANDOM":
                 $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($draws, $firstSelection);
-                $randomSelection = $this->ticketGenerator->generateRandomSelection($secondSelection);
+                $randomSelection = $this->ticketGenerator->createRandomSelection($secondSelection);
                 $selection = $this->ticketGenerator->mergeTwoSelections($mostDrawnSelection, $randomSelection);
                 break;
             case "MOST_LEAST_AND_RANDOM":
                 $mostDrawnSelection = $this->drawProcessor->getMostDrawnNumbers($draws, $firstSelection);
                 $leastDrawnSelection = $this->drawProcessor->getLeastDrawnNumbers($draws, $secondSelection);
-                $randomSelection = $this->ticketGenerator->generateRandomSelection($thirdSelection);
+                $randomSelection = $this->ticketGenerator->createRandomSelection($thirdSelection);
                 $selection1 = $this->ticketGenerator->mergeTwoSelections($mostDrawnSelection, $leastDrawnSelection);
                 $selection = $this->ticketGenerator->mergeTwoSelections($selection1, $randomSelection);
                 break;

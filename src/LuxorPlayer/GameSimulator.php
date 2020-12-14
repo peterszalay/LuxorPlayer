@@ -15,7 +15,7 @@ class GameSimulator
      */
     public function play() :array
     {
-        $luxorAutoPayer = new LuxorAutoPlayer();
+        $luxorAutoPayer = new LuxorAutoPlayer("auto player");
         $luxorAutoPayer->createPlayers();
         //loop through the players array and play each player
         foreach($luxorAutoPayer->getPlayers() as $player){

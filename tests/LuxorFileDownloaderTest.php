@@ -1,12 +1,12 @@
 <?php
 use PHPUnit\Framework\TestCase;
-use LuxorPlayer\FileDownloader;
+use LuxorPlayer\LuxorFileDownloader;
 
-class FileDownloaderTest extends TestCase
+class LuxorFileDownloaderTest extends TestCase
 {
     public function testDownloadCsv() :void
     {
-        $fileDownloader = new FileDownloader;
+        $fileDownloader = new LuxorFileDownloader();
         
         $this->assertIsBool($fileDownloader->downloadCsv());
     }

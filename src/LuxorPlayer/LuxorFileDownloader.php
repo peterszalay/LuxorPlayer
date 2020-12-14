@@ -7,10 +7,10 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
 
-class FileDownloader
+class LuxorFileDownloader implements CsvDownloader
 {
     
-    private string $name = "File Downloader";
+    private string $name = "Luxor File Downloader";
     private Logger $logger;
     
     public function __construct()
@@ -73,11 +73,11 @@ class FileDownloader
     /**
      * Save csv
      *
-     * @param $file
-     * @param $remoteTimestamp
+     * @param array $file
+     * @param int $remoteTimestamp
      * @return bool
      */
-    private function saveCsv($file, $remoteTimestamp) :bool
+    public function saveCsv(array $file, int $remoteTimestamp) :bool
     {
         if(!file_exists($file['file_paths']['local_path']) || (file_exists($file['file_paths']['local_path']) &&
                 ($remoteTimestamp > filemtime($file['file_paths']['local_path'])))){

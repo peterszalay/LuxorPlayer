@@ -2,7 +2,7 @@
 namespace LuxorPlayer;
 
 
-class LuxorGame
+class LuxorGame implements Game
 {
     private array $results = [];
     private int $drawNumber = 1;
@@ -64,10 +64,10 @@ class LuxorGame
     /**
      * Process one ticket, compare ticket's numbers to draw numbers
      * 
-     * @param LuxorTicket $ticket
+     * @param Ticket $ticket
      * @param array $draw
      */
-    public function processTicket(LuxorTicket $ticket, array $draw) :void
+    public function processTicket(Ticket $ticket, array $draw) :void
     {
         $this->drawNumber = 1;
         $ticketCopy = clone $ticket;

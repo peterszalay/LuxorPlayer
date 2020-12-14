@@ -1,14 +1,14 @@
 <?php
 use PHPUnit\Framework\TestCase;
-use LuxorPlayer\DrawProcessor;
+use LuxorPlayer\LuxorDrawProcessor;
 
-class DrawProcessorTest extends TestCase
+class LuxorDrawProcessorTest extends TestCase
 {   
-    protected DrawProcessor $drawProcessor;
+    protected LuxorDrawProcessor $drawProcessor;
     
     protected function setUp(): void
     {
-        $this->drawProcessor = new DrawProcessor;    
+        $this->drawProcessor = new LuxorDrawProcessor;
     }
     
     public function testGetNumberDrawStatisticsReturnsArrayWithSizeOf75() :void
@@ -78,7 +78,7 @@ class DrawProcessorTest extends TestCase
     
     public function testEnsureDivisibleByFiveReturnsCorrectResults() :void
     {
-        $reflector = new ReflectionClass(DrawProcessor::class);
+        $reflector = new ReflectionClass(LuxorDrawProcessor::class);
         try {
             $method = $reflector->getMethod('ensureDivisibleByFive');
             $method->setAccessible(true);
@@ -101,7 +101,7 @@ class DrawProcessorTest extends TestCase
     
     public function testSliceArrayReturnsArrayWithSizeOf15() :void
     {
-        $reflector = new ReflectionClass(DrawProcessor::class);
+        $reflector = new ReflectionClass(LuxorDrawProcessor::class);
         try {
             $method = $reflector->getMethod('sliceArray');
             $method->setAccessible(true);
@@ -116,7 +116,7 @@ class DrawProcessorTest extends TestCase
     
     public function testSliceArrayReturnsOnlyCorrectValues() :void
     {
-        $reflector = new ReflectionClass(DrawProcessor::class);
+        $reflector = new ReflectionClass(LuxorDrawProcessor::class);
         try {
             $method = $reflector->getMethod('sliceArray');
             $method->setAccessible(true);
@@ -144,7 +144,7 @@ class DrawProcessorTest extends TestCase
     
     public function testSimplifyArrayReturnsOneDimensionalArray() :void
     {
-        $reflector = new ReflectionClass(DrawProcessor::class);
+        $reflector = new ReflectionClass(LuxorDrawProcessor::class);
         try {
             $method = $reflector->getMethod('simplifyArray');
             $method->setAccessible(true);

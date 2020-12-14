@@ -1,15 +1,15 @@
 <?php
 use PHPUnit\Framework\TestCase;
-use LuxorPlayer\FileProcessor;
+use LuxorPlayer\LuxorFileProcessor;
 
-class FileProcessorTest extends TestCase
+class LuxorFileProcessorTest extends TestCase
 {
     
-    protected FileProcessor $fileProcessor;
+    protected LuxorFileProcessor $fileProcessor;
     
     protected function setUp(): void 
     {
-        $this->fileProcessor = new FileProcessor;
+        $this->fileProcessor = new LuxorFileProcessor;
     }
     
     public function testGetDrawResultsIsEmptyWhenFileNotReadYet()
